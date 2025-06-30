@@ -1,25 +1,17 @@
 import { is } from '@electron-toolkit/utils'
-import { BrowserWindow, BrowserWindowConstructorOptions, shell } from 'electron'
+import { BrowserWindow, shell } from 'electron'
 import { join } from 'path'
-
-export interface OptionsType extends Partial<BrowserWindowConstructorOptions> {
-  width: number
-  height: number
-  openDevTools?: boolean
-  initShow?: boolean
-  path?: string
-}
 
 export function createWindow(options: OptionsType): BrowserWindow {
   const window = new BrowserWindow(
     Object.assign(
       {
         show: false,
-        frame: false,
+        frame: true,
         resizable: true,
-        autoHideMenuBar: false,
+        autoHideMenuBar: true,
         alwaysOnTop: false,
-        transparent: true, // 窗口透明
+        transparent: false, // 窗口透明
         webPreferences: {
           preload: join(__dirname, '../preload/index.js'),
           sandbox: false
