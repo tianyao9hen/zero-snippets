@@ -1,5 +1,6 @@
 import { is } from '@electron-toolkit/utils'
 import { BrowserWindow, shell } from 'electron'
+import icon from '../../../resources/icon.png?asset'
 import { join } from 'path'
 
 export function createWindow(options: OptionsType): BrowserWindow {
@@ -11,10 +12,11 @@ export function createWindow(options: OptionsType): BrowserWindow {
         resizable: true,
         autoHideMenuBar: true,
         alwaysOnTop: false,
-        transparent: false, // 窗口透明
+        transparent: true, // 窗口透明
+        ...(process.platform === 'linux' ? { icon } : {}),
         webPreferences: {
           preload: join(__dirname, '../preload/index.js'),
-          sandbox: false
+          sandbox: false,
         }
       },
       options
@@ -26,6 +28,8 @@ export function createWindow(options: OptionsType): BrowserWindow {
   }
 
   window.on('ready-to-show', () => {
+    window.setOpacity(0.99);  // 触发重绘
+    setTimeout(() => window.setOpacity(1),  100);
     options.initShow && window.show()
   })
 

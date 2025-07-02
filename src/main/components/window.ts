@@ -1,13 +1,19 @@
 import { app, BrowserWindow } from "electron"
 import { createWindow } from "../composables/createWindow"
 
-export const window: Record<string, WindowType> = {
+export const window: Record<WindowNameType, WindowType> = {
   search: {
     id: 0,
     options: {
       width: 500,
       height: 350,
-      openDevTools: false,
+      center: true,
+      resizable: false,
+      frame: false,
+      transparent: true, // 透明
+      autoHideMenuBar: true,
+      alwaysOnTop: true,
+      openDevTools: true,
       initShow: true,
       path: ''
     }

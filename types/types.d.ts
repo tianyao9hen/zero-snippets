@@ -1,5 +1,5 @@
 // 窗口配置类
-interface OptionsType extends Partial<BrowserWindowConstructorOptions> {
+interface OptionsType extends Partial<Electron.BrowserWindowConstructorOptions> {
   width: number
   height: number
   openDevTools?: boolean

@@ -1,0 +1,23 @@
+body {
+  width: 100vw;
+  height: 100vh;
+  background: transparent !important;
+}
+
+* {
+  opacity: 0.98;
+  background: transparent;
+}
+
+.drag {
+  -webkit-app-region: drag;
+}
+
+.no-drag,
+input,
+select,
+textarea,
+option {
+  -webkit-app-region: no-drag;
+}
+
