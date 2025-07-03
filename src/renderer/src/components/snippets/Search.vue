@@ -3,9 +3,10 @@
     <section class="p-1 rounded-lg flax items-center grap-1 no-drag">
       <Input
         ref="search"
+        type="text"
         v-model:value="snippetsStore.snippets.search"
-        @change="handleSearch()"
         autofocus
+        @change="handleSearch()"
         @focus="getFocus()"
       />
     </section>
@@ -16,17 +17,21 @@
 import { useSnippetsStore } from '@renderer/store/snippetsStore'
 import { Input } from 'ant-design-vue'
 import useSearch from '@renderer/hooks/useSearch'
-import { ref, watch } from 'vue'
+import {ref, watch } from 'vue'
 const snippetsStore = useSnippetsStore()
 const { handleSearch } = useSearch()
 
-const search = ref<HTMLDivElement>()
+const search = ref<HTMLInputElement>()
 
 watch(
   () => snippetsStore.snippets.writeFlag,
-  (newValue, _oldValue) => {
+  async (newValue, _oldValue) => {
     if(newValue){
       search.value?.focus()
+      setTimeout(() => {
+        const len = snippetsStore.snippets.search.length
+        search.value?.setSelectionRange(len,len)
+      }, 10)
     }else{
       search.value?.blur()
     }

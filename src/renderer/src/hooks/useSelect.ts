@@ -33,9 +33,16 @@ export default () => {
         const index = data.findIndex((item) => item.id === id)
         id = data[index - 1]?.id || id
         if(index-1 < 0){
-          // 选项已经到达最上面，则将输入框置为可编辑状态，进入输入模式
-          snippetsStore.snippets.writeFlag = true
-          return
+          // 选项已经到达最上面
+          if(snippetsStore.snippets.writeFlag){
+            // 输入框有焦点，则将输入框置为非焦点，选中最后一行
+            snippetsStore.snippets.writeFlag = false
+            id = data[data.length-1].id
+          }else{
+            // 输入框没有焦点,则将输入框置设为焦点，进入输入模式
+            snippetsStore.snippets.writeFlag = true
+            return
+          }
         }
         const itemRef = getItemRef(id)
         if (!itemRef) return
