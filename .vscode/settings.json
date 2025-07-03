@@ -8,5 +8,9 @@
   "[json]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "css.customData": [".vscode/tailwindcss.json"]
+  "css.customData": [
+    ".vscode/tailwindcss.json"
+  ],
+  "Codegeex.GenerationPreference": "automatic",
+  "Codegeex.CompletionDelay": 0.2
 }

@@ -15,3 +15,9 @@ type WindowType = {
 
 // 窗口名称类型
 type WindowNameType = 'search'
+
+// 内容类型
+type ContentType = {
+  id: number
+  content: string
+}

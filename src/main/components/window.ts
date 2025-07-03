@@ -6,7 +6,7 @@ export const window: Record<WindowNameType, WindowType> = {
     id: 0,
     options: {
       width: 500,
-      height: 350,
+      height: 500,
       center: true,
       resizable: false,
       frame: false,

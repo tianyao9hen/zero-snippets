@@ -1,0 +1,46 @@
+@mixin normalBgColor() {
+  @apply bg-slate-50;
+}
+
+@mixin innerBgColor() {
+  @apply bg-slate-200;
+}
+
+@mixin resultTextColor() {
+  @apply text-slate-700;
+  &.active {
+    @apply bg-orange-400 text-white;
+  }
+}
+
+.header {
+  @include normalBgColor;
+  section {
+    @include innerBgColor;
+  }
+}
+
+.search {
+  @include normalBgColor;
+  section {
+    @include innerBgColor;
+    input {
+      @include innerBgColor;
+    }
+  }
+}
+
+.result {
+  @include normalBgColor;
+  section {
+    overflow-y: auto;
+    // &::-webkit-scrollbar {
+    //   display: none;
+    // }
+    outline: none;
+    div {
+      @include resultTextColor;
+      outline: none;
+    }
+  }
+}
