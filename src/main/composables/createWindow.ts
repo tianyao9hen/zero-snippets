@@ -44,6 +44,5 @@ export function createWindow(options: OptionsType): BrowserWindow {
     // TODO 打包后加载本地文件
     window.loadFile(join(__dirname, '../renderer/index.html'))
   }
-
   return window
 }

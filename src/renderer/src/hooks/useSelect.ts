@@ -36,8 +36,7 @@ export default () => {
         id = data[index - 1]?.id || id
         // 如果当前焦点在输入框
         if (snippetsStore.snippets.writeFlag) {
-          snippetsStore.setWriteFlag(false)
-          snippetsStore.setTypeFlag(false)
+          snippetsStore.setResultFlag(true)
           id = data[data.length - 1].id
           const itemRef = getItemRef(id)
           if (!itemRef) return
@@ -48,13 +47,11 @@ export default () => {
         }
         // 如果当前焦点在类别框
         if (snippetsStore.snippets.typeFlag) {
-          snippetsStore.setTypeFlag(false)
           snippetsStore.setWriteFlag(true)
           return
         }
         // 如果选项已经到达最上面
         if (index - 1 < 0) {
-          snippetsStore.setWriteFlag(false)
           snippetsStore.setTypeFlag(true)
           return
         }
@@ -68,13 +65,13 @@ export default () => {
       case 'ArrowDown': {
         // 如果当前焦点在输入框
         if(snippetsStore.snippets.writeFlag){
-          snippetsStore.setWriteFlag(false)
           snippetsStore.setTypeFlag(true)
           return
         }
+        // 如果当前焦点在类型列表
         if(snippetsStore.snippets.typeFlag){
-          snippetsStore.setTypeFlag(false)
-          snippetsStore.setWriteFlag(false)
+          snippetsStore.setResultFlag(true)
+          return
         }
         const data = snippetsStore.snippets.resultList
         if (data.length === 0) return
@@ -95,6 +92,7 @@ export default () => {
           return
         }
         snippetsStore.setTypeFlag(true)
+        section.value?.scrollTo(0, 0)
         const data = snippetsStore.snippets.typeList
         if (data.length === 0) {
           snippetsStore.setTypeId(0)
@@ -112,6 +110,7 @@ export default () => {
           return
         }
         snippetsStore.setTypeFlag(true)
+        section.value?.scrollTo(0, 0)
         const data = snippetsStore.snippets.typeList
         if (data.length === 0) {
           snippetsStore.setTypeId(0)

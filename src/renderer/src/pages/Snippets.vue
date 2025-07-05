@@ -11,6 +11,10 @@ import Result from '@renderer/components/snippets/Result.vue';
 import { useSnippetsStore } from '@renderer/store/snippetsStore'
 
 const snippetsStore = useSnippetsStore()
+
+document.addEventListener('contextmenu', (e) => {
+window.api.showMainMenu()
+})
 </script>
 
 <style scoped>

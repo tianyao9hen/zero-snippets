@@ -1,5 +1,8 @@
 <template>
-  <main class="p-3 search rounded-xl select-none drag">
+  <main class="p-3 search rounded-xl select-none">
+    <div class="absolute top-1 left-5 w-11/12 h-3 pt-1 drag">
+      <div class="w-8/12 h-[3px] m-auto bg-slate-300 rounded-full"></div>
+    </div>
     <section class="p-1 rounded-md flax items-center grap-1 no-drag">
       <Input
         ref="search"

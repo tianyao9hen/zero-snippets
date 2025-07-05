@@ -7,6 +7,7 @@ type SnippetsStore = {
   selectId: number // 选中的id
   writeFlag: boolean // 是否输入开关
   typeFlag: boolean // 是否选择类型开关
+  resultFlag: boolean // 是否选择结果开关
   selectTypeId: number // 内容类型id
   typeList: ContentTypeType[] // 内容类型列表
 }
@@ -18,6 +19,7 @@ export const useSnippetsStore = defineStore('snippets', () => {
     selectId: 0,
     writeFlag: true,
     typeFlag: false,
+    resultFlag: false,
     selectTypeId: 0,
     typeList: []
   })
@@ -46,6 +48,7 @@ export const useSnippetsStore = defineStore('snippets', () => {
   function setTypeFlag(flag: boolean){
     if(flag){
       snippets.value.writeFlag = false
+      snippets.value.resultFlag = false
     }
     snippets.value.typeFlag = flag
   }
@@ -53,8 +56,17 @@ export const useSnippetsStore = defineStore('snippets', () => {
   function setWriteFlag(flag: boolean){
     if(flag){
       snippets.value.typeFlag = false
+      snippets.value.resultFlag = false
     }
     snippets.value.writeFlag = flag
+  }
+
+  function setResultFlag(flag: boolean){
+    if(flag){
+      snippets.value.typeFlag = false
+      snippets.value.writeFlag = false
+    }
+    snippets.value.resultFlag = flag
   }
 
   return {
@@ -64,6 +76,7 @@ export const useSnippetsStore = defineStore('snippets', () => {
     setTypeList,
     setTypeId,
     setTypeFlag,
-    setWriteFlag
+    setWriteFlag,
+    setResultFlag
   }
 })

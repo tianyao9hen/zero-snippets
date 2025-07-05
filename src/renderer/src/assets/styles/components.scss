@@ -98,12 +98,37 @@
     &::-webkit-scrollbar {
       display: none;
     }
-    div {
+    .result-item {
       @include resultTextColor;
+      .result-item-focus {
+        @apply w-1 h-2 border-l-[1px];
+        @include normalBorderColor;
+      }
+      &:hover {
+        @include hoverBgColor;
+        .result-item-focus {
+          @include innerBorderColor;
+        }
+      }
     }
     .active {
       @include activeTextColor;
       @include activeBgColor;
+      .result-item-focus {
+        @include innerBorderColor;
+      }
+      &:hover {
+        @include activeTextColor;
+        @include activeBgColor;
+        .result-item-focus {
+          @include focusBorderColor;
+        }
+      }
+    }
+    .focus {
+      .result-item-focus {
+        @include focusBorderColor;
+      }
     }
   }
 }

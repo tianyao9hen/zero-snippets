@@ -1,5 +1,6 @@
-import { app, BrowserWindow } from "electron"
-import { createWindow } from "../composables/createWindow"
+import { app, BrowserWindow } from 'electron'
+import { createWindow } from '../composables/createWindow'
+import { createMenu } from '../composables/createMenu'
 
 export const window: Record<WindowNameType, WindowType> = {
   search: {
@@ -20,14 +21,22 @@ export const window: Record<WindowNameType, WindowType> = {
   }
 }
 
-export const getWindowByName = (name: WindowNameType) => {
+export const getWindowByName = (name: WindowNameType): BrowserWindow => {
   // electron中的每一个窗口都有一个id
   let win = BrowserWindow.fromId(window[name].id)
-  if(!win){
+  if (!win) {
     // 创建窗口
     win = createWindow(window[name].options)
     window[name].id = win.id
+    createMenu(name, win)
   }
+  win.hookWindowMessage(278, function (_e) {
+    win.setEnabled(false) //窗口禁用
+    setTimeout(() => {
+      win!.setEnabled(true) //窗口启用
+    }, 100)
+    return true
+  })
   return win
 }
 
