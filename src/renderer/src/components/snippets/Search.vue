@@ -1,14 +1,15 @@
 <template>
   <main class="p-3 search rounded-xl select-none drag">
-    <section class="p-1 rounded-lg flax items-center grap-1 no-drag">
+    <section class="p-1 rounded-md flax items-center grap-1 no-drag">
       <Input
         ref="search"
         type="text"
         v-model:value="snippetsStore.snippets.search"
         autofocus
-        @change="handleSearch()"
+        @change="changeInput()"
         @focus="getFocus()"
       />
+      <div class="absolute top-6 right-7 text-white pointer-events-none tracking-widest" v-show="snippetsStore.snippets.writeFlag=== false">Tab</div>
     </section>
   </main>
 </template>
@@ -35,13 +36,16 @@ watch(
     }else{
       search.value?.blur()
     }
-    console.log(snippetsStore.snippets.writeFlag)
   },
   { immediate: true }
 )
 
 function getFocus(){
-  snippetsStore.snippets.writeFlag = true
+  snippetsStore.setWriteFlag(true)
+}
+
+function changeInput(){
+  handleSearch()
 }
 </script>
 

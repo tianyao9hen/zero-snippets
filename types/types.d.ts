@@ -19,5 +19,11 @@ type WindowNameType = 'search'
 // 内容类型
 type ContentType = {
   id: number
+  typeId: number
   content: string
+}
+
+type ContentTypeType = {
+  id: number
+  name: string
 }

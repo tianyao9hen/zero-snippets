@@ -3,25 +3,35 @@ import { ref } from 'vue'
 
 type SnippetsStore = {
   search: string // 検索文字列
-  result: ContentType[]  // 検索結果
+  resultList: ContentType[]  // 検索結果
   selectId: number // 选中的id
   writeFlag: boolean // 是否输入开关
+  typeFlag: boolean // 是否选择类型开关
+  selectTypeId: number // 内容类型id
+  typeList: ContentTypeType[] // 内容类型列表
 }
 
 export const useSnippetsStore = defineStore('snippets', () => {
   const snippets = ref<SnippetsStore>({
     search: '',
-    result: [],
+    resultList: [],
     selectId: 0,
-    writeFlag: true
+    writeFlag: true,
+    typeFlag: false,
+    selectTypeId: 0,
+    typeList: []
   })
 
   function setId(id: number) {
     snippets.value.selectId = id
   }
 
-  function setResult(result: ContentType[]) {
-    snippets.value.result = result
+  function setTypeId(id: number) {
+    snippets.value.selectTypeId = id
+  }
+
+  function setResultList(result: ContentType[]) {
+    snippets.value.resultList = result
     if (result.length > 0) {
       snippets.value.selectId = result[0].id
     } else {
@@ -29,9 +39,31 @@ export const useSnippetsStore = defineStore('snippets', () => {
     }
   }
 
+  function setTypeList(typeList: ContentTypeType[]) {
+    snippets.value.typeList = typeList
+  }
+
+  function setTypeFlag(flag: boolean){
+    if(flag){
+      snippets.value.writeFlag = false
+    }
+    snippets.value.typeFlag = flag
+  }
+
+  function setWriteFlag(flag: boolean){
+    if(flag){
+      snippets.value.typeFlag = false
+    }
+    snippets.value.writeFlag = flag
+  }
+
   return {
     snippets,
     setId,
-    setResult
+    setResultList,
+    setTypeList,
+    setTypeId,
+    setTypeFlag,
+    setWriteFlag
   }
 })

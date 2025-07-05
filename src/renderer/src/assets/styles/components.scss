@@ -2,15 +2,36 @@
   @apply bg-slate-50;
 }
 
+@mixin normalBorderColor() {
+  @apply border-slate-50;
+}
+
 @mixin innerBgColor() {
   @apply bg-slate-200;
 }
 
+@mixin innerBorderColor() {
+  @apply border-[#d9d9d9];
+}
+
+@mixin hoverBgColor() {
+  @apply bg-slate-100;
+}
+
 @mixin resultTextColor() {
+  @apply text-slate-600;
+}
+
+@mixin activeBgColor() {
+  @apply bg-slate-200;
+}
+
+@mixin activeTextColor() {
   @apply text-slate-700;
-  &.active {
-    @apply bg-orange-400 text-white;
-  }
+}
+
+@mixin focusBorderColor() {
+  @apply border-[#4096ff];
 }
 
 .header {
@@ -32,15 +53,57 @@
 
 .result {
   @include normalBgColor;
-  section {
+  .type-list {
+    .type-item {
+      @include normalBgColor;
+      @include resultTextColor;
+      @apply rounded-md p-1 mr-3 text-xs;
+      .type-item-info {
+        @apply w-full h-full p-[0.2rem] rounded-md border-[1px];
+        @include normalBorderColor;
+      }
+      &:hover {
+        @apply rounded-md p-1 mr-3 text-xs;
+        @include hoverBgColor;
+        .type-item-info {
+          @include innerBorderColor;
+        }
+      }
+    }
+    .active {
+      @include activeTextColor;
+      @include activeBgColor;
+      .type-item-info {
+        @apply border-[1px];
+        @include innerBorderColor;
+      }
+      &:hover {
+        @include activeTextColor;
+        @include activeBgColor;
+        .type-item-info {
+          @include focusBorderColor;
+        }
+      }
+      &.focus {
+        @include activeTextColor;
+        @include activeBgColor;
+        .type-item-info {
+          @include focusBorderColor;
+        }
+      }
+    }
+  }
+  .result-list {
     overflow-y: auto;
     &::-webkit-scrollbar {
       display: none;
     }
-    outline: none;
     div {
       @include resultTextColor;
-      outline: none;
+    }
+    .active {
+      @include activeTextColor;
+      @include activeBgColor;
     }
   }
 }

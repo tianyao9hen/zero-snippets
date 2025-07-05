@@ -1,7 +1,7 @@
 <template>
   <main class="relative p-1">
     <Search />
-    <Result v-if="snippetsStore.snippets.result.length > 0"/>
+    <Result v-if="snippetsStore.snippets.resultList.length > 0"/>
   </main>
 </template>
 
