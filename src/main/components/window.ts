@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, IpcMainEvent, IpcMainInvokeEvent } from 'electron'
 import { createWindow } from '../composables/createWindow'
 import { createMenu } from '../composables/createMenu'
 
@@ -14,9 +14,23 @@ export const window: Record<WindowNameType, WindowType> = {
       transparent: true, // 透明
       autoHideMenuBar: true,
       alwaysOnTop: true,
-      openDevTools: true,
+      openDevTools: false,
       initShow: true,
       path: ''
+    }
+  },
+  content: {
+    id: 0,
+    options: {
+      width: 1000,
+      height: 600,
+      center: true,
+      resizable: true,
+      frame: true,
+      transparent: false,
+      openDevTools: true,
+      initShow: true,
+      path: '/content'
     }
   }
 }
@@ -40,6 +54,11 @@ export const getWindowByName = (name: WindowNameType): BrowserWindow => {
   return win
 }
 
+export const getWindowByEvent = (event: IpcMainEvent | IpcMainInvokeEvent) => {
+  return BrowserWindow.fromWebContents(event.sender)
+}
+
 app.whenReady().then(() => {
   getWindowByName('search')
+  // getWindowByName('content')
 })

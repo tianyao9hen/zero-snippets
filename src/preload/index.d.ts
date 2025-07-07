@@ -5,6 +5,7 @@ declare global {
     electron: ElectronAPI
     api: {
       showMainMenu: () => void
+      setIgnoreMouseEvent:(ignore: boolean, options?: { forward: boolean }) => void
     }
   }
 }

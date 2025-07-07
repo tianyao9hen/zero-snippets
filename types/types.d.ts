@@ -14,7 +14,7 @@ type WindowType = {
 }
 
 // 窗口名称类型
-type WindowNameType = 'search'
+type WindowNameType = 'search' | 'content';
 
 // 内容类型
 type ContentType = {

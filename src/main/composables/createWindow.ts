@@ -39,7 +39,7 @@ export function createWindow(options: OptionsType): BrowserWindow {
   })
 
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
-    window.loadURL(process.env['ELECTRON_RENDERER_URL'] + options.path)
+    window.loadURL(process.env['ELECTRON_RENDERER_URL'] +'/#'+ options.path)
   } else {
     // TODO 打包后加载本地文件
     window.loadFile(join(__dirname, '../renderer/index.html'))

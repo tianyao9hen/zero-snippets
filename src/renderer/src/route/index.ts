@@ -1,5 +1,6 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
 import Snippets from "@renderer/pages/Snippets.vue";
+import Content from "@renderer/pages/Content.vue";
 
 const routes: RouteRecordRaw[] = [
   {
@@ -7,7 +8,12 @@ const routes: RouteRecordRaw[] = [
     redirect: '/snippets'
   },{
     path: '/snippets',
+    name: 'snippets',
     component: Snippets
+  },{
+    path: '/content',
+    name: 'content',
+    component: Content
   }
 ]
 

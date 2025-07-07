@@ -13,4 +13,5 @@ const mainMenu: Electron.MenuItemConstructorOptions[] = [
 
 export const menu: Record<WindowNameType, Electron.MenuItemConstructorOptions[] | null> = {
   search: mainMenu,
+  content: null
 }

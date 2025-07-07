@@ -1,10 +1,12 @@
 import { contextBridge } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 import { showMainMenu } from './composables/menu'
+import { setIgnoreMouseEvent } from './composables/setIgnoreMouseEvent'
 
 // Custom APIs for renderer
 const api = {
-  showMainMenu
+  showMainMenu,
+  setIgnoreMouseEvent
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

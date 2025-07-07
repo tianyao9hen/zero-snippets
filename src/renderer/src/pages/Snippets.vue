@@ -1,23 +1,28 @@
 <template>
-  <main id="snipptes" class="relative p-1">
+  <main id="snippets" class="relative p-1">
     <Search />
     <Result v-if="snippetsStore.snippets.resultList.length > 0" />
   </main>
 </template>
 
 <script setup lang="ts">
-import Search from '@renderer/components/snippets/Search.vue';
-import Result from '@renderer/components/snippets/Result.vue';
+import Search from '@renderer/components/snippets/Search.vue'
+import Result from '@renderer/components/snippets/Result.vue'
 import { useSnippetsStore } from '@renderer/store/snippetsStore'
-import { onMounted, onUnmounted } from 'vue';
+import useIgnoreMouseEvent from '@renderer/hooks/useIgnoreMouseEvent'
+import { onMounted, onUnmounted } from 'vue'
 
 const snippetsStore = useSnippetsStore()
+const { setIgnoreMouseEvent } = useIgnoreMouseEvent()
 
 onMounted(() => {
-  document.getElementById('snipptes')?.addEventListener('contextmenu', showMainMenu)
+  const snippets = document.getElementById('snippets')
+  snippets?.addEventListener('contextmenu', showMainMenu)
+  setIgnoreMouseEvent(snippets!)
 })
 onUnmounted(() => {
-  document.getElementById('snipptes')?.removeEventListener('contextmenu', showMainMenu)
+  const snippets = document.getElementById('snippets')
+  snippets?.removeEventListener('contextmenu', showMainMenu)
 })
 
 function showMainMenu() {
