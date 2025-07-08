@@ -1,3 +1,6 @@
+/**
+ * @description 空白区域忽略鼠标事件
+ */
 export default () => {
 
   const setIgnoreMouseEvent = (el: HTMLElement) => {

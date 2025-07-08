@@ -26,4 +26,5 @@ type ContentType = {
 type ContentTypeType = {
   id: number
   name: string
+  title: string
 }

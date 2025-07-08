@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
-type SnippetsStore = {
-  search: string // 検索文字列
+type SnippetsStoreType = {
+  search: string // 检索文字列
   resultList: ContentType[]  // 検索結果
   selectId: number // 选中的id
   writeFlag: boolean // 是否输入开关
@@ -12,8 +12,12 @@ type SnippetsStore = {
   typeList: ContentTypeType[] // 内容类型列表
 }
 
+type ContentStoreType = {
+  selectTypeId: number // 选择的类型id
+}
+
 export const useSnippetsStore = defineStore('snippets', () => {
-  const snippets = ref<SnippetsStore>({
+  const snippets = ref<SnippetsStoreType>({
     search: '',
     resultList: [],
     selectId: 0,
@@ -24,12 +28,20 @@ export const useSnippetsStore = defineStore('snippets', () => {
     typeList: []
   })
 
+  const content = ref<ContentStoreType>({
+    selectTypeId: 0
+  })
+
   function setId(id: number) {
     snippets.value.selectId = id
   }
 
   function setTypeId(id: number) {
     snippets.value.selectTypeId = id
+  }
+
+  function setContentTypeId(id: number){
+    content.value.selectTypeId = id
   }
 
   function setResultList(result: ContentType[]) {
@@ -71,10 +83,12 @@ export const useSnippetsStore = defineStore('snippets', () => {
 
   return {
     snippets,
+    content,
     setId,
     setResultList,
     setTypeList,
     setTypeId,
+    setContentTypeId,
     setTypeFlag,
     setWriteFlag,
     setResultFlag

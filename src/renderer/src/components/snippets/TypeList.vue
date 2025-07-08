@@ -19,13 +19,13 @@
       }"
     >
       <div class="type-item-info">
-        {{ item.name }}
+        {{ item.title }}
       </div>
     </div>
   </section>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { useSnippetsStore } from '@renderer/store/snippetsStore'
 
 const snippetsStore = useSnippetsStore()

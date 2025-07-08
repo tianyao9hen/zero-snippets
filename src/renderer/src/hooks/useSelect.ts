@@ -2,6 +2,9 @@ import { useSnippetsStore } from '@renderer/store/snippetsStore'
 import { onMounted, onUnmounted, ref } from 'vue'
 import useSearch from './useSearch'
 
+/**
+ * @description 选择类型、结果、输入框的事件处理
+ */
 export default () => {
   const snippetsStore = useSnippetsStore()
   const { handleSearch } = useSearch()

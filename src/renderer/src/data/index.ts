@@ -184,15 +184,18 @@ export const data = [
 
 export const types = [
   {
-    id: 3,
-    name: '电脑软件'
-  },
-  {
     id: 1,
-    name: '文本片段'
+    name: 'category',
+    title: '文本片段'
   },
   {
     id: 2,
-    name: '网页搜索'
-  }
+    name: 'web',
+    title: '网页搜索'
+  },
+  {
+    id: 3,
+    name: 'nativeApp',
+    title: '电脑软件'
+  },
 ] as ContentTypeType[]

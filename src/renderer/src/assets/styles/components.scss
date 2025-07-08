@@ -38,6 +38,30 @@
   @apply bg-[#4096ff];
 }
 
+@mixin contentBgColor() {
+  @apply bg-slate-100;
+}
+
+@mixin contentNormalBgColor() {
+  @apply bg-slate-50 shadow-sm;
+}
+
+@mixin contentNormalTextColor() {
+  @apply text-slate-500;
+}
+
+@mixin contentHoverBgColor() {
+  @apply bg-slate-100 shadow-md;
+}
+
+@mixin contentActiveBgColor() {
+  @apply bg-white shadow-md;
+}
+
+@mixin contentActiveTextColor() {
+  @apply text-slate-700;
+}
+
 .header {
   @include normalBgColor;
   section {
@@ -141,5 +165,35 @@
       @include focusBorderColor;
       @include focusBgColor;
     }
+  }
+}
+
+.content-page {
+  @include contentBgColor;
+  @apply h-screen w-screen pt-2;
+  display: grid;
+  grid-template: 'type content' 100% / 120px auto;
+
+  .content-type {
+    grid-area: type;
+    @apply p-1 pl-2 flex flex-col gap-2;
+
+    .content-type-item {
+      @include contentNormalBgColor;
+      @include contentNormalTextColor;
+      @apply rounded-lg p-2 text-center text-xs cursor-pointer;
+      &:hover {
+        @include contentHoverBgColor;
+
+      }
+      &.active {
+        @include contentActiveTextColor;
+        @include contentActiveBgColor;
+      }
+    }
+  }
+
+  .content-content {
+    grid-area: content;
   }
 }
