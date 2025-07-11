@@ -170,13 +170,13 @@
 
 .content-page {
   @include contentBgColor;
-  @apply h-screen w-screen pt-2;
+  @apply h-screen w-screen pt-2 pb-3;
   display: grid;
-  grid-template: 'type content' 100% / 120px auto;
+  grid-template: 'type content' 100% / 100px auto;
 
   .content-type {
     grid-area: type;
-    @apply p-1 pl-2 flex flex-col gap-2;
+    @apply mx-2 flex flex-col gap-2;
 
     .content-type-item {
       @include contentNormalBgColor;
@@ -184,7 +184,6 @@
       @apply rounded-lg p-2 text-center text-xs cursor-pointer;
       &:hover {
         @include contentHoverBgColor;
-
       }
       &.active {
         @include contentActiveTextColor;
@@ -196,4 +195,44 @@
   .content-content {
     grid-area: content;
   }
+}
+
+.category-page {
+  @apply w-full h-full;
+  display: grid;
+  grid-template: 'category content' 100% / 120px auto;
+
+  .category-box {
+    grid-area: category;
+    @include contentActiveBgColor;
+    @include contentNormalTextColor;
+    @apply rounded-lg shadow-md flex flex-col;
+
+    .category-list {
+      @apply w-full flex-1 border-b-[1px] border-slate-200;
+    }
+  }
+
+  .category-content {
+    grid-area: content;
+  }
+}
+
+.quick-nav {
+  @apply w-full h-auto p-1 border-b-[1px] border-slate-200;
+  .quick-nav-title {
+    @apply  text-slate-400 border-b-[1px] border-slate-300 mb-1;
+    font-size: 8px;
+  }
+  .quick-nav-content {
+    .quick-nav-item {
+      @apply w-full text-slate-500 p-1 px-2;
+      font-size: 12px;
+      line-height: 18px;
+    }
+  }
+}
+
+.footer-menu {
+  @apply w-full h-[20px];
 }
