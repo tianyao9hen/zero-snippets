@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
+// 检索页面
 type SnippetsStoreType = {
   search: string // 检索文字列
   resultList: ContentType[]  // 検索結果
@@ -8,12 +9,14 @@ type SnippetsStoreType = {
   writeFlag: boolean // 是否输入开关
   typeFlag: boolean // 是否选择类型开关
   resultFlag: boolean // 是否选择结果开关
-  selectTypeId: number // 内容类型id
-  typeList: ContentTypeType[] // 内容类型列表
+  selectTypeId: number // 选中的类型id
+  typeList: ContentTypeType[] // 类型列表
 }
 
+// 内容页面
 type ContentStoreType = {
   selectTypeId: number // 选择的类型id
+  selectCategoryId: number // 选择的种类id
 }
 
 export const useSnippetsStore = defineStore('snippets', () => {
@@ -29,7 +32,8 @@ export const useSnippetsStore = defineStore('snippets', () => {
   })
 
   const content = ref<ContentStoreType>({
-    selectTypeId: 0
+    selectTypeId: 0,
+    selectCategoryId: 0
   })
 
   function setId(id: number) {
@@ -81,6 +85,10 @@ export const useSnippetsStore = defineStore('snippets', () => {
     snippets.value.resultFlag = flag
   }
 
+  function choiceCategory(id: number){
+    content.value.selectCategoryId = id
+  }
+
   return {
     snippets,
     content,
@@ -91,6 +99,7 @@ export const useSnippetsStore = defineStore('snippets', () => {
     setContentTypeId,
     setTypeFlag,
     setWriteFlag,
-    setResultFlag
+    setResultFlag,
+    choiceCategory
   }
 })

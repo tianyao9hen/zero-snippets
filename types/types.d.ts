@@ -28,3 +28,9 @@ type ContentTypeType = {
   name: string
   title: string
 }
+
+type IconEntity = {
+  id: string
+  url: string
+  dUrl: string
+}

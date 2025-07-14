@@ -43,7 +43,11 @@
 }
 
 @mixin contentNormalBgColor() {
-  @apply bg-slate-50 shadow-sm;
+  @apply bg-white;
+}
+
+@mixin contentNormalBorderColor() {
+  @apply border-slate-300;
 }
 
 @mixin contentNormalTextColor() {
@@ -51,15 +55,19 @@
 }
 
 @mixin contentHoverBgColor() {
-  @apply bg-slate-100 shadow-md;
+  @apply bg-slate-100;
 }
 
 @mixin contentActiveBgColor() {
-  @apply bg-white shadow-md;
+  @apply bg-[#4096ff];
+}
+
+@mixin contentActiveEditBgColor() {
+  @apply bg-[#f1c40f];
 }
 
 @mixin contentActiveTextColor() {
-  @apply text-slate-700;
+  @apply text-slate-50;
 }
 
 .header {
@@ -181,13 +189,15 @@
     .content-type-item {
       @include contentNormalBgColor;
       @include contentNormalTextColor;
-      @apply rounded-lg p-2 text-center text-xs cursor-pointer;
+      @apply rounded-lg p-2 text-center text-xs cursor-pointer shadow-sm transition duration-500;
       &:hover {
         @include contentHoverBgColor;
+        @apply shadow-md;
       }
       &.active {
         @include contentActiveTextColor;
         @include contentActiveBgColor;
+        @apply shadow-md;
       }
     }
   }
@@ -204,13 +214,7 @@
 
   .category-box {
     grid-area: category;
-    @include contentActiveBgColor;
-    @include contentNormalTextColor;
-    @apply rounded-lg shadow-md flex flex-col;
-
-    .category-list {
-      @apply w-full flex-1 border-b-[1px] border-slate-200;
-    }
+    @apply flex flex-col;
   }
 
   .category-content {
@@ -218,21 +222,61 @@
   }
 }
 
+.category-section {
+  @include contentNormalBgColor;
+  @include contentNormalTextColor;
+  @apply rounded-lg shadow-md;
+}
+
+.category-list {
+  @apply w-full flex-1 flex flex-col mt-2 p-1 pb-0;
+  .category-list-title {
+    @include contentNormalBorderColor;
+    @include contentNormalTextColor;
+    @apply border-b-[1px] mb-1;
+    font-size: 8px;
+  }
+  .category-list-content {
+    @apply w-full flex-1 bg-red-500;
+  }
+}
+
 .quick-nav {
-  @apply w-full h-auto p-1 border-b-[1px] border-slate-200;
+  @include contentNormalBgColor;
+  @apply w-full h-auto p-1 pb-0;
   .quick-nav-title {
-    @apply  text-slate-400 border-b-[1px] border-slate-300 mb-1;
+    @include contentNormalBorderColor;
+    @include contentNormalTextColor;
+    @apply border-b-[1px] mb-1;
     font-size: 8px;
   }
   .quick-nav-content {
     .quick-nav-item {
-      @apply w-full text-slate-500 p-1 px-2;
+      @include contentNormalTextColor;
+      @apply w-full p-1 px-2 rounded-md mb-1 flex transition duration-500;
       font-size: 12px;
       line-height: 18px;
+      img {
+        @apply w-[16px] h-[16px] mr-2;
+      }
+      &:hover {
+        @include contentHoverBgColor;
+      }
+      &.active {
+        @include contentActiveTextColor;
+        @include contentActiveBgColor;
+      }
     }
   }
 }
 
 .footer-menu {
-  @apply w-full h-[20px];
+  @apply w-full h-[20px] mt-2 flex justify-center items-center transition duration-300;
+  img {
+    @apply w-[16px] h-[16px];
+  }
+
+  &.hover-edit {
+    @include contentActiveEditBgColor;
+  }
 }
