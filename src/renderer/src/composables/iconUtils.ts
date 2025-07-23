@@ -4,6 +4,8 @@ import addIcon from '@renderer/assets/icons/add.svg'
 import addDIcon from '@renderer/assets/icons/add_d.svg'
 import noFolderIcon from '@renderer/assets/icons/nofolder.svg'
 import noFolderDIcon from '@renderer/assets/icons/nofolder_d.svg'
+import folderIcon from '@renderer/assets/icons/folder.svg'
+import folderDIcon from '@renderer/assets/icons/folder_d.svg'
 export const iconMap: {[key: string]: IconEntity} = {
   all: {
     id: 'all',
@@ -19,6 +21,11 @@ export const iconMap: {[key: string]: IconEntity} = {
     id: 'noFolder',
     url: noFolderIcon,
     dUrl: noFolderDIcon
+  },
+  folder: {
+    id: 'folder',
+    url: folderIcon,
+    dUrl: folderDIcon
 
   }
 }

@@ -30,7 +30,27 @@ export default () => {
       snippetsStore.setTypeList([])
     }
   }
+
+  // 根据分类id和类型id获取内容列表
+  const getContentListByTypeIdAndCategoryId = (typeId: number, categoryId: number) => {
+    return data.filter((item) => {
+      if(typeId){
+        return item.typeId === typeId
+      }
+    }).filter((item) => {
+      if(categoryId === 0){
+        return true
+      }
+      if(categoryId === -1) {
+        return !item.categoryId
+      }
+      if(categoryId){
+        return item.categoryId === categoryId
+      }
+    })
+  }
   return {
-    handleSearch
+    handleSearch,
+    getContentListByTypeIdAndCategoryId
   }
 }

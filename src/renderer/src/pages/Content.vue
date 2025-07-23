@@ -22,10 +22,9 @@
 import useType from '@renderer/hooks/useType'
 import { useSnippetsStore } from '@renderer/store/snippetsStore'
 import { onMounted, ref } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 
 const route = useRoute()
-const router = useRouter()
 const snippetsStore = useSnippetsStore()
 const { getAllTypeList } = useType()
 let typeList = ref<ContentTypeType[]>([])
@@ -35,19 +34,19 @@ onMounted(() => {
   if (typeList.value.length > 0) {
     let typeId = typeList.value[0].id
     let typeActive = typeList.value[0]
-    if (route.params.id) {
-      typeId = Number(route.params.id)
+    if (route.params.tid) {
+      typeId = Number(route.params.tid)
       typeActive = typeList.value.filter((item) => {
         return item.id === typeId
       })[0]
     }
-    snippetsStore.setContentTypeId(typeActive.id)
-    router.push({ name: typeActive.name })
+    choiceType(typeId)
   }
 })
 
-function choiceType(id: number) {
-  snippetsStore.setContentTypeId(id)
+function choiceType(tid: number) {
+  snippetsStore.setContentTypeId(tid)
+  console.log("tid", tid)
 }
 </script>
 

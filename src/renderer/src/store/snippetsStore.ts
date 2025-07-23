@@ -17,6 +17,7 @@ type SnippetsStoreType = {
 type ContentStoreType = {
   selectTypeId: number // 选择的类型id
   selectCategoryId: number // 选择的种类id
+  selectArticleId: number | null // 选择的文章id
 }
 
 export const useSnippetsStore = defineStore('snippets', () => {
@@ -33,7 +34,8 @@ export const useSnippetsStore = defineStore('snippets', () => {
 
   const content = ref<ContentStoreType>({
     selectTypeId: 0,
-    selectCategoryId: 0
+    selectCategoryId: 0,
+    selectArticleId: null
   })
 
   function setId(id: number) {
@@ -89,6 +91,10 @@ export const useSnippetsStore = defineStore('snippets', () => {
     content.value.selectCategoryId = id
   }
 
+  function choiceArticle(id: number){
+    content.value.selectArticleId = id
+  }
+
   return {
     snippets,
     content,
@@ -100,6 +106,7 @@ export const useSnippetsStore = defineStore('snippets', () => {
     setTypeFlag,
     setWriteFlag,
     setResultFlag,
-    choiceCategory
+    choiceCategory,
+    choiceArticle
   }
 })

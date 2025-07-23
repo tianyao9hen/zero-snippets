@@ -1,6 +1,6 @@
 <template>
   <main
-    class="footer-menu category-section"
+    class="footer-menu"
     :class="{'hover-edit': hoverFlag}"
     @mouseover="choiceAddButton(true)"
     @mouseout="choiceAddButton(false)"
