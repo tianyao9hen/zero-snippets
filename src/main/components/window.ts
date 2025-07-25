@@ -30,7 +30,8 @@ export const window: Record<WindowNameType, WindowType> = {
       transparent: false,
       openDevTools: true,
       initShow: true,
-      path: '/content/1/category'
+      path: '/content'
+      // path: '/content/1/category/0/catelog'
       // path: '/content/2/web'
     }
   }

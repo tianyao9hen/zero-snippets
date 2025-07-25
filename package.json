@@ -23,6 +23,7 @@
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.0",
     "@electron-toolkit/utils": "^3.0.0",
+    "@imengyu/vue3-context-menu": "^1.5.1",
     "@types/mockjs": "^1.0.10",
     "ant-design-vue": "^4.2.6",
     "electron-updater": "^6.1.7",

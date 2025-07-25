@@ -14,6 +14,9 @@ importers:
       '@electron-toolkit/utils':
         specifier: ^3.0.0
         version: 3.0.0(electron@28.3.3)
+      '@imengyu/vue3-context-menu':
+        specifier: ^1.5.1
+        version: 1.5.1
       '@types/mockjs':
         specifier: ^1.0.10
         version: 1.0.10
@@ -437,6 +440,12 @@ packages:
   '@humanwhocodes/object-schema@2.0.3':
     resolution: {integrity: sha512-93zYdMES/c1D69yZiKDBj0V24vqNzB/koF26KPaagAfd3P/4gUlh3Dys5ogAK+Exi9QyzlD8x/08Zt7wIKcDcA==}
     deprecated: Use @eslint/object-schema instead
+
+  '@imengyu/vue-scroll-rect@0.1.7':
+    resolution: {integrity: sha512-a1ysL8LV2iFcHzMJ6tlrqr8JKtYIBrb1U3XcbjNmhponENUSbRvxs4b1sJd5sXdCFIIkDydwQM/SjVhfT7uBUw==}
+
+  '@imengyu/vue3-context-menu@1.5.1':
+    resolution: {integrity: sha512-Y3M/PVOj0Fz7lu3aviIu6NKFYjqMP1tZSffSiYy55JdAfcm/bD06dRT9RL5AccOqTSJdvcAImhiYvmBnPKtYEg==}
 
   '@isaacs/cliui@8.0.2':
     resolution: {integrity: sha512-O8jcjabXaleOG9DQ0+ARXWZBTfnP4WNAqzuiJK7ll44AmxGKv/J2M4TPjxjY3znBCfvBXFzucm1twdyFybFqEA==}
@@ -1189,7 +1198,7 @@ packages:
     resolution: {integrity: sha512-N6wEbTTZSYOY2rYAn85CuvWWkCK6QweMn7/4Nr3w+gDBeBhk/x4EJeY6FPo4QzDoJZxVTv8U7CMvgWk6pOHHqA==}
 
   core-util-is@1.0.2:
-    resolution: {integrity: sha512-3lqz5YjWTYnW6dlDa5TLaTCcShfar1e40rmcJVwCBJC6mWlFuj0eCHIElmG1g5kyuJ/GD+8Wn4FFCcz4gJPfaQ==}
+    resolution: {integrity: sha512-3lqz5YjWTYnW6dlDa5TLaTCcShfar1e40rmcJVwCBJC6mWlFuj0eCHIElmG1g5kyuJ/GD+8Wn4FFCcz4gJPfaQ==, tarball: https://repo.huaweicloud.com/repository/npm/core-util-is/-/core-util-is-1.0.2.tgz}
 
   core-util-is@1.0.3:
     resolution: {integrity: sha512-ZQBvi1DcpJ4GDqanjucZ2Hj3wEO5pZDS89BWbkcrvdxksJorwUDDZamX9ldFkp9aw2lmBDLgkObEA4DWNJ9FYQ==}
@@ -3043,6 +3052,12 @@ snapshots:
   '@humanwhocodes/module-importer@1.0.1': {}
 
   '@humanwhocodes/object-schema@2.0.3': {}
+
+  '@imengyu/vue-scroll-rect@0.1.7': {}
+
+  '@imengyu/vue3-context-menu@1.5.1':
+    dependencies:
+      '@imengyu/vue-scroll-rect': 0.1.7
 
   '@isaacs/cliui@8.0.2':
     dependencies:

@@ -5,6 +5,7 @@ import Category from "@renderer/components/content/Category.vue";
 import Web from "@renderer/components/content/Web.vue";
 import NativeApp from "@renderer/components/content/NativeApp.vue";
 import Catelog from "@renderer/components/content/Catelog.vue";
+import Article from "@renderer/components/content/Article.vue";
 
 const routes: RouteRecordRaw[] = [
   {
@@ -15,7 +16,7 @@ const routes: RouteRecordRaw[] = [
     name: 'snippets',
     component: Snippets
   },{
-    path: '/content/:tid',
+    path: '/content/:tid?',
     name: 'content',
     component: Content,
     children: [
@@ -25,9 +26,16 @@ const routes: RouteRecordRaw[] = [
         component: Category,
         children: [
           {
-            path: 'catelog',
+            path: 'catelog/:aid?',
             name: 'catelog',
-            component: Catelog
+            component: Catelog,
+            children: [
+              {
+                path: 'article',
+                name: 'article',
+                component: Article
+              }
+            ]
           }
         ]
       },{

@@ -308,3 +308,17 @@
     grid-area: article;
   }
 }
+
+.blank-page {
+  @apply h-full w-full flex justify-center items-center;
+  @include contentNormalTextColor;
+  .blank-box {
+    @apply h-12 w-12 p-3 rounded-full cursor-pointer;
+    &:hover {
+      @apply opacity-60;
+    }
+    img {
+      @apply h-full w-full;
+    }
+  }
+}

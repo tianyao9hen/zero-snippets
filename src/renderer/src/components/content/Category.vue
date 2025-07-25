@@ -6,7 +6,7 @@
       <footer-menu />
     </section>
     <section class="category-content">
-      <router-view :key="$route.fullPath" />
+      <router-view />
     </section>
   </main>
 </template>
@@ -36,7 +36,6 @@ onMounted(() => {
 
 function choiceCategory(tid: number, cid: number) {
   snippetsStore.choiceCategory(cid)
-  console.log(`/content/${tid}/category/${cid}/catelog`)
   router.push({
     name: 'catelog',
     params: {
