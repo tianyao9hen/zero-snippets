@@ -8,7 +8,7 @@ import folderIcon from '@renderer/assets/icons/folder.svg'
 import folderDIcon from '@renderer/assets/icons/folder_d.svg'
 import addArticleIcon from '@renderer/assets/icons/addArticle.svg'
 import deleteIcon from '@renderer/assets/icons/delete.svg'
-export const iconMap: {[key: string]: IconEntity} = {
+export const iconMap: {[key: string]: IconClass} = {
   all: {
     id: 'all',
     url: allIcon,

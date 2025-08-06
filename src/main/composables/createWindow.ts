@@ -3,7 +3,7 @@ import { BrowserWindow, shell } from 'electron'
 import icon from '../../../resources/icon.png?asset'
 import { join } from 'path'
 
-export function createWindow(options: OptionsType): BrowserWindow {
+export function createWindow(options: OptionsClass): BrowserWindow {
   const window = new BrowserWindow(
     Object.assign(
       {

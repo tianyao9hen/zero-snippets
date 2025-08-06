@@ -7,7 +7,7 @@ import { useSnippetsStore } from '@renderer/store/snippetsStore'
 export default () => {
   const snippetsStore = useSnippetsStore()
   const {getTypeListByIdList} = useType()
-  const handleSearch = () => {
+  const handleSearch = async () => {
     const search = snippetsStore.snippets.search.trim()
     if (search) {
       let result = data
@@ -15,7 +15,7 @@ export default () => {
         return item.content.toLowerCase().includes(search.toLowerCase())
       })
       const typeIdList = result.map((item) => item.typeId)
-      snippetsStore.setTypeList(getTypeListByIdList(typeIdList))
+      snippetsStore.setTypeList(await getTypeListByIdList(typeIdList))
       result = result.filter((item) => {
         if(snippetsStore.snippets.selectTypeId === 0){
           return true;

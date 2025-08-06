@@ -1,0 +1,24 @@
+import { ipcMain, IpcMainInvokeEvent } from 'electron'
+import * as execute from './sql'
+import { findAll as findAllType, findListByIdList as findTypeListByIdList } from './sql/typeSql'
+import { findAll as findAllCategory} from './sql/categorySql'
+import { ipcEnum } from '../../../enum/ipcEnum'
+
+ipcMain.handle(
+  ipcEnum.sql,
+  (_event: IpcMainInvokeEvent, sql: string, type: SqlActionType, params = {}) => {
+    return execute[type](sql, params)
+  }
+)
+
+ipcMain.handle(ipcEnum.getAllType, () => {
+  return findAllType()
+})
+
+ipcMain.handle(ipcEnum.getTypeListByIdList, (_event: IpcMainInvokeEvent, idList: number[]) => {
+  return findTypeListByIdList(idList)
+})
+
+ipcMain.handle(ipcEnum.getAllCategory, () => {
+  return findAllCategory()
+})

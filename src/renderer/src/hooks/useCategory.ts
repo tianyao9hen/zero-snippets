@@ -1,8 +1,8 @@
 import {categoryList} from '@renderer/data'
 
 export default () => {
-  const getAllCategoryList = (): CategoryType[] => {
-    return categoryList
+  const getAllCategoryList = async (): Promise<CategoryEntity[]> => {
+    return await window.api.getAllCategory()
   }
 
   return {

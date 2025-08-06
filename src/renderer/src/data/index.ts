@@ -427,25 +427,7 @@ export const data = [
     typeId: 2,
     content: 't23Commodo incididunt nostrud nisi voluptate.'
   }
-] as ContentType[]
-
-export const types = [
-  {
-    id: 1,
-    name: 'category',
-    title: '文本片段'
-  },
-  {
-    id: 2,
-    name: 'web',
-    title: '网页搜索'
-  },
-  {
-    id: 3,
-    name: 'nativeApp',
-    title: '电脑软件'
-  }
-] as ContentTypeType[]
+] as ContentEntity[]
 
 export const categoryList = [
   {
@@ -549,6 +531,6 @@ export const categoryList = [
     typeId: 1,
     title: 'Ncljmr Udvlxigwur Tniujiuinr Fgmnjuuu Ewoyvb'
   }
-] as CategoryType[]
+] as CategoryEntity[]
 
 

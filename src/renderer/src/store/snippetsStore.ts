@@ -4,13 +4,13 @@ import { ref } from 'vue'
 // 检索页面
 type SnippetsStoreType = {
   search: string // 检索文字列
-  resultList: ContentType[]  // 検索結果
+  resultList: ContentEntity[]  // 検索結果
   selectId: number // 选中的id
   writeFlag: boolean // 是否输入开关
   typeFlag: boolean // 是否选择类型开关
   resultFlag: boolean // 是否选择结果开关
   selectTypeId: number // 选中的类型id
-  typeList: ContentTypeType[] // 类型列表
+  typeList: typeEntity[] // 类型列表
 }
 
 // 内容页面
@@ -50,7 +50,7 @@ export const useSnippetsStore = defineStore('snippets', () => {
     content.value.selectTypeId = id
   }
 
-  function setResultList(result: ContentType[]) {
+  function setResultList(result: ContentEntity[]) {
     snippets.value.resultList = result
     if (result.length > 0) {
       snippets.value.selectId = result[0].id
@@ -59,7 +59,7 @@ export const useSnippetsStore = defineStore('snippets', () => {
     }
   }
 
-  function setTypeList(typeList: ContentTypeType[]) {
+  function setTypeList(typeList: typeEntity[]) {
     snippets.value.typeList = typeList
   }
 

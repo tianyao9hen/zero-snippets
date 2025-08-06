@@ -39,11 +39,12 @@ const itemListRef = ref<Map<number, HTMLDivElement>>(new Map())
 const folderIcon = iconMap['folder']
 const snippetsStore = useSnippetsStore()
 const { getAllCategoryList } = useCategory()
-const categoryList = getAllCategoryList()
+const categoryList = ref<CategoryEntity[]>([])
 const route = useRoute()
 const router = useRouter()
 
-onMounted(() => {
+onMounted(async () => {
+  categoryList.value = await getAllCategoryList()
   // 初始化时若有cid参数，则滚动到指定类别
   const cid = route.params.cid
   if(cid){

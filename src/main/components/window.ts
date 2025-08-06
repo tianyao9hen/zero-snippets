@@ -2,7 +2,7 @@ import { app, BrowserWindow, IpcMainEvent, IpcMainInvokeEvent } from 'electron'
 import { createWindow } from '../composables/createWindow'
 import { createMenu } from '../composables/createMenu'
 
-export const window: Record<WindowNameType, WindowType> = {
+export const window: Record<WindowNameType, WindowClass> = {
   search: {
     id: 0,
     options: {

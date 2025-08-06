@@ -5,7 +5,15 @@ declare global {
     electron: ElectronAPI
     api: {
       showMainMenu: () => void
-      setIgnoreMouseEvent:(ignore: boolean, options?: { forward: boolean }) => void
+      setIgnoreMouseEvent: (ignore: boolean, options?: { forward: boolean }) => void
+      sql: <T>(
+        sql: string,
+        type: SqlActionType,
+        params?: Record<string, string | number>
+      ) => Promise<T>
+      getAllType: () => Promise<typeEntity[]>
+      getTypeListByIdList: (idList: number[]) => Promise<typeEntity[]>
+      getAllCategory: () => Promise<categoryEntity[]>
     }
   }
 }

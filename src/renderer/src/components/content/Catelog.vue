@@ -36,7 +36,7 @@ const { getContentListByTypeIdAndCategoryId } = useSearch()
 const route = useRoute()
 const router = useRouter()
 const snippetsStore = useSnippetsStore()
-let contentList = ref<ContentType[]>([])
+let contentList = ref<ContentEntity[]>([])
 
 onMounted(() => {
   const { tid, cid, aid } = route.params as { tid: string; cid: string; aid: string }
@@ -129,7 +129,7 @@ function getRightMenu(aid: number) {
  * @param tid 类别id
  * @param cid 分类id
  */
-function getContentList(tid: string, cid: string): ContentType[] {
+function getContentList(tid: string, cid: string): ContentEntity[] {
   if (tid && cid) {
     return getContentListByTypeIdAndCategoryId(Number(tid), Number(cid))
   }

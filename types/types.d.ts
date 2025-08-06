@@ -1,5 +1,5 @@
 // 窗口配置类
-interface OptionsType extends Partial<Electron.BrowserWindowConstructorOptions> {
+interface OptionsClass extends Partial<Electron.BrowserWindowConstructorOptions> {
   width: number
   height: number
   openDevTools?: boolean
@@ -8,16 +8,25 @@ interface OptionsType extends Partial<Electron.BrowserWindowConstructorOptions> 
 }
 
 // 窗口类
-type WindowType = {
+type WindowClass = {
   id: number
-  options: OptionsType
+  options: OptionsClass
 }
 
 // 窗口名称类型
 type WindowNameType = 'search' | 'content';
 
+type SqlActionType = 'findAll' | 'findOne' | 'insert' | 'update' | 'del'
+
+// 图标类
+type IconClass = {
+  id: string
+  url: string
+  dUrl: string
+}
+
 // 内容
-type ContentType = {
+type ContentEntity = {
   id: number
   typeId: number
   categoryId: number
@@ -26,21 +35,19 @@ type ContentType = {
 }
 
 // 内容类型
-type ContentTypeType = {
+type typeEntity = {
   id: number
   name: string
   title: string
+  orderNum: number
+  createTime?: string
 }
 
-// 图标
-type IconEntity = {
-  id: string
-  url: string
-  dUrl: string
-}
-
-type CategoryType = {
+// 文章分类
+type CategoryEntity = {
   id: number
   typeId: number
   title: string
+  orderNum: number
+  createTime?: string
 }

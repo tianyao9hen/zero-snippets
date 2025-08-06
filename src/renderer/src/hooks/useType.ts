@@ -1,12 +1,10 @@
-import { types } from '@renderer/data'
-
 export default () => {
-  const getAllTypeList = ():ContentTypeType[] => {
-    return types
+  const getAllTypeList = async (): Promise<typeEntity[]> => {
+    return await window.api.getAllType()
   }
 
-  const getTypeListByIdList = (idList: number[]):ContentTypeType[] => {
-    return types.filter((item) => idList.includes(item.id))
+  const getTypeListByIdList = async (idList: number[]): Promise<typeEntity[]> => {
+    return await window.api.getTypeListByIdList(idList)
   }
 
   return {

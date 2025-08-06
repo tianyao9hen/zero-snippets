@@ -28,10 +28,10 @@ const route = useRoute()
 const router = useRouter()
 const snippetsStore = useSnippetsStore()
 const { getAllTypeList } = useType()
-let typeList = ref<ContentTypeType[]>([])
+let typeList = ref<typeEntity[]>([])
 
-onMounted(() => {
-  typeList.value = getAllTypeList()
+onMounted(async () => {
+  typeList.value = await getAllTypeList()
   if (typeList.value.length > 0) {
     if (route.params.tid) {
       let typeId = typeList.value[0].id
