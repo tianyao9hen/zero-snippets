@@ -76,6 +76,11 @@ watch(() => route.params.cid, async (newCId) => {
   }
 })
 
+/**
+ * 获取类别的DOM元素
+ * @param itemId 类别id
+ * @param el 类被元素
+ */
 function setItemRef(itemId: number, el) {
   if (el) {
     itemListRef.value.set(itemId, el)
@@ -118,6 +123,7 @@ function rightClickMenu(e: MouseEvent, cid: number) {
 
 /**
  * 获取右键菜单列表
+ * @param cid 类别id
  */
 function getRightMenu(cid: number) {
   return [
