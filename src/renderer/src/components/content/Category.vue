@@ -12,7 +12,9 @@
 </template>
 
 <script setup lang="ts">
-// 类别组件
+/**
+ * 类别列表组件
+ */
 import QuickNav from '@renderer/components/content/category/QuickNav.vue'
 import FooterMenu from '@renderer/components/content/category/FooterMenu.vue'
 import CategoryList from '@renderer/components/content/category/CategoryList.vue'

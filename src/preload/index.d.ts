@@ -14,6 +14,7 @@ declare global {
       getAllType: () => Promise<typeEntity[]>
       getTypeListByIdList: (idList: number[]) => Promise<typeEntity[]>
       getAllCategory: () => Promise<categoryEntity[]>
+      addCategory: (typeId: number, categoryName: string) => number
     }
   }
 }

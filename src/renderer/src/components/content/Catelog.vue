@@ -24,6 +24,9 @@
 </template>
 
 <script setup lang="ts">
+/**
+ * 文章目录组件
+ */
 import useSearch from '@renderer/hooks/useSearch'
 import { h, onMounted, ref } from 'vue'
 import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router'

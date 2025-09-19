@@ -20,3 +20,7 @@ export function getTypeListByIdList(idList: number[]) {
 export function getAllCategory() {
   return ipcRenderer.invoke(ipcEnum.getAllCategory)
 }
+
+export function addCategory(typeId: number, categoryName: string){
+  return ipcRenderer.invoke(ipcEnum.addCategory, typeId, categoryName)
+}
