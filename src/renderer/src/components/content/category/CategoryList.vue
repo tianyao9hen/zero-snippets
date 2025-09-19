@@ -2,26 +2,32 @@
   <main class="category-list box">
     <section class="box-title">类别目录</section>
     <section class="category-list-content box-content" ref="categoryListRef">
-      <div
-        class="category-item box-item"
-        :class="{ active: snippetsStore.content.selectCategoryId === category.id }"
-        v-for="category in categoryList"
-        :key="category.id"
-        :ref="(el) => setItemRef(category.id, el)"
-        @click="choiceCategory(category.id)"
-        @contextmenu="rightClickMenu($event, category.id)"
-      >
-        <img
-          :src="
-            snippetsStore.content.selectCategoryId === category.id
-              ? folderIcon.url
-              : folderIcon.dUrl
-          "
-        />
-        <span class="box-item-content">
-          {{ category.title }}
-        </span>
-      </div>
+      <template v-for="category in categoryList" :key="category.id">
+        <div v-if="category.id !== snippetsStore.content.updateCategoryId"
+          class="category-item box-item"
+          :class="{ active: snippetsStore.content.selectCategoryId === category.id }"
+          :ref="(el) => setItemRef(category.id, el)"
+          @click="choiceCategory(category.id)"
+          @dblclick="updateCategory(category.id)"
+          @contextmenu="rightClickMenu($event, category.id)"
+        >
+          <!-- 展示普通按钮 -->
+          <img
+            :src="
+              snippetsStore.content.selectCategoryId === category.id
+                ? folderIcon.url
+                : folderIcon.dUrl
+            "
+          />
+          <span class="box-item-content">
+            {{ category.title }}
+          </span>
+        </div>
+        <template v-else>
+          <!-- 展示更新输入框 -->
+          <div class="bg-black w-2 h-2"></div>
+        </template>
+      </template>
     </section>
   </main>
 </template>
@@ -50,9 +56,9 @@ onMounted(async () => {
   categoryList.value = await getAllCategoryList()
   // 初始化时若有cid参数，则滚动到指定类别
   const cid = route.params.cid
-  if(cid){
+  if (cid) {
     const itemRef = itemListRef.value.get(Number(cid))
-    if(itemRef){
+    if (itemRef) {
       categoryListRef.value?.scrollTo(0, itemRef.offsetTop - itemRef.offsetHeight * 5)
     }
   }
@@ -61,20 +67,23 @@ onMounted(async () => {
 /**
  * 监听路由参数cid的变化，当变化时需要重新获取类别列表
  */
-watch(() => route.params.cid, async (newCId) => {
-  categoryList.value = await getAllCategoryList()
-  if(newCId){
-    itemListRef = ref<Map<number, HTMLDivElement>>(new Map())
-    snippetsStore.choiceCategory(Number(newCId))
-    //等待DOM渲染
-    await nextTick(() => {
-      const itemRef = itemListRef.value.get(Number(newCId))
-      if(itemRef){
-        categoryListRef.value?.scrollTo(0, itemRef.offsetTop - itemRef.offsetHeight * 5)
-      }
-    })
+watch(
+  () => route.params.cid,
+  async (newCId) => {
+    categoryList.value = await getAllCategoryList()
+    if (newCId) {
+      itemListRef = ref<Map<number, HTMLDivElement>>(new Map())
+      snippetsStore.choiceCategory(Number(newCId))
+      //等待DOM渲染
+      await nextTick(() => {
+        const itemRef = itemListRef.value.get(Number(newCId))
+        if (itemRef) {
+          categoryListRef.value?.scrollTo(0, itemRef.offsetTop - itemRef.offsetHeight * 5)
+        }
+      })
+    }
   }
-})
+)
 
 /**
  * 获取类别的DOM元素
@@ -104,6 +113,14 @@ function choiceCategory(cid: number) {
       t: Date.now()
     }
   })
+}
+
+/**
+ * 更新类别
+ * @param cid 类别id
+ */
+function updateCategory(cid: number) {
+  snippetsStore.updateCategory(cid)
 }
 
 /**
