@@ -1,24 +1,37 @@
 <template>
   <main class="catelog-page">
-    <section class="catelog box">
-      <div class="box-title">文章目录</div>
-      <div class="box-content catelog-content">
-        <div class="catelog-content-box">
-          <div
-            class="box-item"
-            :class="{ active: snippetsStore.content.selectArticleId === content.id }"
-            v-for="content in contentList"
-            :key="content.id"
-            @click="choiceArticle(content.id)"
-            @contextmenu="rightClickMenu($event, content.id)"
-          >
-            <span class="box-item-content">{{ content.title }}</span>
+    <section class="catelog">
+      <div class="catelog-box box">
+        <div class="box-title">文章目录</div>
+        <div class="box-content catelog-content">
+          <div class="catelog-content-box">
+            <div
+              class="box-item"
+              :class="{ active: snippetsStore.content.selectArticleId === content.id }"
+              v-for="content in contentList"
+              :key="content.id"
+              @click="choiceArticle(content)"
+              @contextmenu="rightClickMenu($event, content.id)"
+            >
+              <span class="box-item-content">{{ content.title }}</span>
+            </div>
           </div>
         </div>
       </div>
     </section>
-    <section class="article">
+    <section class="content">
       <router-view :key="$route.fullPath" />
+    </section>
+    <section class="footer">
+      <div
+        class="footer-menu"
+        :class="{ 'hover-edit': hoverFlag }"
+        @mouseover="choiceAddButton(true)"
+        @mouseout="choiceAddButton(false)"
+        @click="addCatelog()"
+      >
+        <img :src="hoverFlag ? addIcon.url : addIcon.dUrl" />
+      </div>
     </section>
   </main>
 </template>
@@ -35,16 +48,18 @@ import ContextMenu from '@imengyu/vue3-context-menu'
 import { iconMap } from '@renderer/composables/iconUtils'
 
 const deleteIcon = iconMap['delete']
+const addIcon = iconMap['add']
 const { getContentListByTypeIdAndCategoryId } = useSearch()
 const route = useRoute()
 const router = useRouter()
 const snippetsStore = useSnippetsStore()
 let contentList = ref<ContentEntity[]>([])
+let hoverFlag = ref(false)
 
 onMounted(() => {
   const { tid, cid, aid } = route.params as { tid: string; cid: string; aid: string }
   if (!aid) {
-    snippetsStore.choiceArticle(0)
+    snippetsStore.choiceArticle(null)
     router.push({
       name: 'article',
       params: {
@@ -56,7 +71,7 @@ onMounted(() => {
         t: Date.now()
       }
     })
-  }else{
+  } else {
     contentList.value = getContentList(tid, cid)
   }
 })
@@ -64,7 +79,7 @@ onMounted(() => {
 onBeforeRouteUpdate((to, _from, next) => {
   const { tid, cid, aid } = to.params as { tid: string; cid: string; aid: string }
   if (!aid) {
-    snippetsStore.choiceArticle(0)
+    snippetsStore.choiceArticle(null)
     router.push({
       name: 'article',
       params: {
@@ -76,11 +91,27 @@ onBeforeRouteUpdate((to, _from, next) => {
         t: Date.now()
       }
     })
-  }else{
+  } else {
     contentList.value = getContentList(tid, cid)
+    console.log('onBeforeRouteUpdate', tid, cid)
   }
   next()
 })
+
+/**
+ * 新增文章
+ */
+function addCatelog() {
+  console.log('新增文章')
+}
+
+/**
+ * 鼠标移入移出
+ * @param flag 鼠标状态flag。true: 移入 false: 移出
+ */
+function choiceAddButton(flag: boolean) {
+  hoverFlag.value = flag
+}
 
 /**
  * 展示右键菜单
@@ -143,14 +174,14 @@ function getContentList(tid: string, cid: string): ContentEntity[] {
  * 选择文章
  * @param aid 文章id
  */
-function choiceArticle(aid: number) {
-  snippetsStore.choiceArticle(aid)
+function choiceArticle(content: ContentEntity) {
+  snippetsStore.choiceArticle(content)
   router.push({
     name: 'article',
     params: {
       tid: snippetsStore.content.selectTypeId,
       cid: snippetsStore.content.selectCategoryId,
-      aid
+      aid: content.id
     },
     query: {
       t: Date.now()

@@ -292,20 +292,31 @@
 .catelog-page {
   @apply h-full w-full;
   display: grid;
-  grid-template: 'catelog article' 100% / 200px auto;
+  grid-template:
+    'catelog article' calc(100% - 20px - 0.5rem)
+    'foot article' calc(20px + 0.5rem)
+    / 200px 1fr;
   .catelog {
     grid-area: catelog;
-    @apply mx-2 h-full w-full flex flex-col overflow-hidden;
-    .catelog-content {
-      @apply flex-1 pb-1;
-      overflow-y: auto;
-      &::-webkit-scrollbar {
-        display: none;
+    @apply px-2 h-full flex flex-col;
+    .catelog-box {
+      @apply flex-1 h-full w-full flex flex-col;
+      .catelog-content {
+        @apply flex-1 pb-1 h-full w-full overflow-hidden;
+        overflow-y: auto;
+        &::-webkit-scrollbar {
+          display: none;
+        }
       }
     }
   }
+
   .content {
     grid-area: article;
+  }
+  .footer {
+    grid-area: foot;
+    @apply mx-2;
   }
 }
 
@@ -321,4 +332,8 @@
       @apply h-full w-full;
     }
   }
+}
+
+.article {
+  @apply h-full w-full;
 }

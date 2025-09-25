@@ -11,5 +11,3 @@ import { iconMap } from '@renderer/composables/iconUtils'
 
 const addArticleIcon = iconMap['addArticle']
 </script>
-
-<style scoped></style>

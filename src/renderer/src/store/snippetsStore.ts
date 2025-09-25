@@ -4,7 +4,7 @@ import { ref } from 'vue'
 // 检索页面
 type SnippetsStoreType = {
   search: string // 检索文字列
-  resultList: ContentEntity[]  // 検索結果
+  resultList: ContentEntity[] // 検索結果
   selectId: number // 选中的id
   writeFlag: boolean // 是否输入开关
   typeFlag: boolean // 是否选择类型开关
@@ -17,7 +17,8 @@ type SnippetsStoreType = {
 type ContentStoreType = {
   selectTypeId: number // 选择的类型id
   selectCategoryId: number // 选择的种类id
-  selectArticleId: number | null // 选择的文章id
+  selectArticleId: number // 选择的文章id
+  selectArticle: ContentEntity | null // 选择的文章对象
   updateCategoryId: number | null // 正在更新类别id
 }
 
@@ -36,8 +37,9 @@ export const useSnippetsStore = defineStore('snippets', () => {
   const content = ref<ContentStoreType>({
     selectTypeId: 0,
     selectCategoryId: 0,
-    selectArticleId: null,
-    updateCategoryId: null,
+    selectArticleId: 0,
+    selectArticle: null,
+    updateCategoryId: null
   })
 
   function setId(id: number) {
@@ -48,7 +50,7 @@ export const useSnippetsStore = defineStore('snippets', () => {
     snippets.value.selectTypeId = id
   }
 
-  function setContentTypeId(id: number){
+  function setContentTypeId(id: number) {
     content.value.selectTypeId = id
   }
 
@@ -65,43 +67,44 @@ export const useSnippetsStore = defineStore('snippets', () => {
     snippets.value.typeList = typeList
   }
 
-  function setTypeFlag(flag: boolean){
-    if(flag){
+  function setTypeFlag(flag: boolean) {
+    if (flag) {
       snippets.value.writeFlag = false
       snippets.value.resultFlag = false
     }
     snippets.value.typeFlag = flag
   }
 
-  function setWriteFlag(flag: boolean){
-    if(flag){
+  function setWriteFlag(flag: boolean) {
+    if (flag) {
       snippets.value.typeFlag = false
       snippets.value.resultFlag = false
     }
     snippets.value.writeFlag = flag
   }
 
-  function setResultFlag(flag: boolean){
-    if(flag){
+  function setResultFlag(flag: boolean) {
+    if (flag) {
       snippets.value.typeFlag = false
       snippets.value.writeFlag = false
     }
     snippets.value.resultFlag = flag
   }
 
-  function choiceCategory(id: number){
+  function choiceCategory(id: number) {
     content.value.selectCategoryId = id
   }
 
-  function choiceArticle(id: number){
-    content.value.selectArticleId = id
+  function choiceArticle(artitle: ContentEntity | null) {
+    content.value.selectArticleId = artitle ? artitle.id : 0
+    content.value.selectArticle = artitle
   }
 
   function updateCategoryStart(cid: number) {
     content.value.updateCategoryId = cid
   }
 
-  function updateCategoryEnd(){
+  function updateCategoryEnd() {
     content.value.updateCategoryId = null
   }
 
