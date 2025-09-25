@@ -1,5 +1,3 @@
-import { addCategory } from "../preload/composables/db";
-
 export const ipcEnum = {
   showMainMenu: 'show-main-menu',
   setIgnoreMouseEvent: 'set-ignore-mouse-event',
@@ -7,5 +5,7 @@ export const ipcEnum = {
   getAllType: 'get-all-type',
   getTypeListByIdList: 'get-type-list-by-id-list',
   getAllCategory: 'get-all-category',
-  addCategory: 'add-category'
+  addCategory: 'add-category',
+  editCategory: 'update-category',
+  removeCategory: 'remove-category',
 }

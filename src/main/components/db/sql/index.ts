@@ -17,6 +17,10 @@ export const insert = (sql: string, params: Record<string, string|number>) => {
   return db().prepare(sql).run(params).lastInsertRowid
 }
 
+export const edit = (sql: string, params: Record<string, string|number>) => {
+  return db().prepare(sql).run(params).changes
+}
+
 export const del = (sql: string, params: Record<string, string|number>) => {
   // changes 返回受影响的行数
   return db().prepare(sql).run(params).changes

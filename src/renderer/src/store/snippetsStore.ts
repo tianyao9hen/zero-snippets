@@ -97,7 +97,7 @@ export const useSnippetsStore = defineStore('snippets', () => {
     content.value.selectArticleId = id
   }
 
-  function updateCategory(cid: number) {
+  function updateCategoryStart(cid: number) {
     content.value.updateCategoryId = cid
   }
 
@@ -118,7 +118,7 @@ export const useSnippetsStore = defineStore('snippets', () => {
     setResultFlag,
     choiceCategory,
     choiceArticle,
-    updateCategory,
+    updateCategoryStart,
     updateCategoryEnd
   }
 })

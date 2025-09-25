@@ -35,3 +35,26 @@ export const add = (typeId: number, categoryName: string) => {
     orderNum: orderNum.orderNum + 1
   }) as number
 }
+
+export const edit = (categoryId: number, categoryTitle: string) => {
+  return execute.edit(`
+    update snippets_category
+    set
+      title = $title
+    where
+      id = $id
+    `, {
+      id: categoryId,
+      title: categoryTitle
+    }) as number
+}
+
+export const remove = (categoryId: number) => {
+  return execute.remove(`
+    delete from snippets_category
+    where
+      id = $id
+    `, {
+      id: categoryId
+    }) as number
+}

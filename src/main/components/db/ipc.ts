@@ -1,7 +1,7 @@
 import { ipcMain, IpcMainInvokeEvent } from 'electron'
 import * as execute from './sql'
 import { findAll as findAllType, findListByIdList as findTypeListByIdList } from './sql/typeSql'
-import { findAll as findAllCategory, add as addCategory} from './sql/categorySql'
+import { findAll as findAllCategory, add as addCategory, edit as editCategory, remove as removeCategory } from './sql/categorySql'
 import { ipcEnum } from '../../../enum/ipcEnum'
 
 ipcMain.handle(
@@ -25,4 +25,12 @@ ipcMain.handle(ipcEnum.getAllCategory, () => {
 
 ipcMain.handle(ipcEnum.addCategory, (_event: IpcMainInvokeEvent, typeId: number, categoryName: string) => {
   return addCategory(typeId, categoryName)
+})
+
+ipcMain.handle(ipcEnum.editCategory, (_event: IpcMainInvokeEvent, categoryId: number, categoryTitle: string) => {
+  return editCategory(categoryId, categoryTitle)
+})
+
+ipcMain.handle(ipcEnum.removeCategory, (_event: IpcMainInvokeEvent, categoryId: number) => {
+  return removeCategory(categoryId)
 })

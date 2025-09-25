@@ -3,12 +3,13 @@
     <section class="box-title">类别目录</section>
     <section class="category-list-content box-content" ref="categoryListRef">
       <template v-for="category in categoryList" :key="category.id">
-        <div v-if="category.id !== snippetsStore.content.updateCategoryId"
+        <div
+          v-show="category.id !== snippetsStore.content.updateCategoryId"
           class="category-item box-item"
           :class="{ active: snippetsStore.content.selectCategoryId === category.id }"
           :ref="(el) => setItemRef(category.id, el)"
           @click="choiceCategory(category.id)"
-          @dblclick="updateCategory(category.id)"
+          @dblclick="startUpdateCategory(category.id)"
           @contextmenu="rightClickMenu($event, category.id)"
         >
           <!-- 展示普通按钮 -->
@@ -23,10 +24,19 @@
             {{ category.title }}
           </span>
         </div>
-        <template v-else>
-          <!-- 展示更新输入框 -->
-          <div class="bg-black w-2 h-2"></div>
-        </template>
+        <!-- 展示更新输入框 -->
+        <div
+          v-show="category.id === snippetsStore.content.updateCategoryId"
+          class="h-[30px] w-full px-2">
+          <input
+            type="text"
+            class="w-full h-full rounded-md px-2 border outline-none"
+            :ref="(el) => setItemInputRef(category.id, el)"
+            v-model="category.title"
+            spellcheck="false"
+            @keydown="updateCategory($event, category.id, category.title)"
+          />
+        </div>
       </template>
     </section>
   </main>
@@ -43,6 +53,7 @@ import ContextMenu from '@imengyu/vue3-context-menu'
 
 const categoryListRef = ref<HTMLDivElement>()
 let itemListRef = ref<Map<number, HTMLDivElement>>(new Map())
+let itemInputListRef = ref<Map<number, HTMLInputElement>>(new Map())
 
 const folderIcon = iconMap['folder']
 const deleteIcon = iconMap['delete']
@@ -71,6 +82,7 @@ watch(
   () => route.params.cid,
   async (newCId) => {
     categoryList.value = await getAllCategoryList()
+    snippetsStore.updateCategoryEnd()
     if (newCId) {
       itemListRef = ref<Map<number, HTMLDivElement>>(new Map())
       snippetsStore.choiceCategory(Number(newCId))
@@ -86,13 +98,24 @@ watch(
 )
 
 /**
- * 获取类别的DOM元素
+ * 保存类别的DOM元素Map
  * @param itemId 类别id
  * @param el 类被元素
  */
 function setItemRef(itemId: number, el) {
   if (el) {
     itemListRef.value.set(itemId, el)
+  }
+}
+
+/**
+ * 保存类别的输入框DOM元素Map
+ * @param itemId 类别id
+ * @param el 输入框元素
+ */
+function setItemInputRef(itemId: number, el){
+  if(el){
+    itemInputListRef.value.set(itemId, el)
   }
 }
 
@@ -116,11 +139,39 @@ function choiceCategory(cid: number) {
 }
 
 /**
- * 更新类别
+ * 开始更新类别
  * @param cid 类别id
  */
-function updateCategory(cid: number) {
-  snippetsStore.updateCategory(cid)
+async function startUpdateCategory(cid: number) {
+  snippetsStore.updateCategoryStart(cid)
+  await nextTick()
+  itemInputListRef.value.get(cid)?.focus()
+}
+/**
+ * 更新类别
+ * @param cid 类别id
+ * @param title 类别名称
+ */
+async function updateCategory(e: KeyboardEvent, cid: number, title: string | null) {
+  if (e.key === 'Enter') {
+    console.log('更新类别', cid, title)
+    // TODO 更新类别
+    if(title == null || title.trim() === ''){
+      return
+    }
+    await window.api.editCategory(cid, title)
+    snippetsStore.updateCategoryEnd()
+    router.push({
+      name: 'catelog',
+      params: {
+        tid: snippetsStore.content.selectTypeId,
+        cid,
+      },
+      query: {
+        t: Date.now()
+      }
+    })
+  }
 }
 
 /**
@@ -162,8 +213,10 @@ function getRightMenu(cid: number) {
           height: '12px'
         }
       }),
-      onClick: () => {
+      onClick: async () => {
+        await window.api.removeCategory(cid)
         console.log('删除', cid)
+        categoryList.value = await getAllCategoryList()
       }
     }
   ]
