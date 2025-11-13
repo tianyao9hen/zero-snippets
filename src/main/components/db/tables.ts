@@ -43,12 +43,13 @@ export function initTable() {
 function dbInit() {
   initSnippetsType()
   initSnippetsCategory()
+  initSnippetsArticle()
 }
 
 function initSnippetsType() {
   const isInit = findOne(`select * from snippets_type`, {})
   if (isInit) return
-  const types: typeEntity[] = [
+  const types: TypeEntity[] = [
     {
       id: 1,
       name: 'category',
@@ -87,6 +88,35 @@ function initSnippetsCategory() {
         typeId: 1,
         title: Random.title(2, 10),
         orderNum: i
+      }
+    )
+  }
+}
+
+function initSnippetsArticle() {
+  const isInit = findOne(`select * from snippets_content`, {})
+  if (isInit) return
+  for (let i = 0; i < 50; i++) {
+    insert(
+      `
+      insert into snippets_content(
+        type_id,
+        category_id,
+        title,
+        content
+      )
+      values(
+        $tid,
+        $cid,
+        $title,
+        $content
+      )
+      `,
+      {
+        tid: 1,
+        cid: Math.floor(Math.random() * 3) + 1,
+        title: Random.title(2, 10),
+        content: Random.csentence(10, 50)
       }
     )
   }

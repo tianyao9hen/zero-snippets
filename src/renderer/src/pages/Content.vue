@@ -3,7 +3,7 @@
     <div class="content-type">
       <router-link
         :to="{ name: item.name, params: { tid: item.id } }"
-        class="content-type-item"
+        class="content-type-item unselectable"
         :class="{ active: snippetsStore.content.selectTypeId === item.id }"
         v-for="item in typeList"
         :key="item.id"
@@ -28,7 +28,7 @@ const route = useRoute()
 const router = useRouter()
 const snippetsStore = useSnippetsStore()
 const { getAllTypeList } = useType()
-let typeList = ref<typeEntity[]>([])
+let typeList = ref<TypeEntity[]>([])
 
 onMounted(async () => {
   typeList.value = await getAllTypeList()

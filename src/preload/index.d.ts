@@ -11,12 +11,16 @@ declare global {
         type: SqlActionType,
         params?: Record<string, string | number>
       ) => Promise<T>
-      getAllType: () => Promise<typeEntity[]>
-      getTypeListByIdList: (idList: number[]) => Promise<typeEntity[]>
+      getAllType: () => Promise<TypeEntity[]>
+      getTypeListByIdList: (idList: number[]) => Promise<TypeEntity[]>
       getAllCategory: () => Promise<categoryEntity[]>
       addCategory: (typeId: number, categoryName: string) => number
       editCategory: (cid: number, categoryTitle: string) => number
       removeCategory: (cid: number) => number
+      getArticleById: (aid: number) => Promise<articleEntity>
+      listArticleByTidAndCid: (tid: number,cid: number) => Promise<ContentEntity[]>
+      listAllArticle: () => Promise<articleEntity[]>
+      listAllArticleNoCategory: () => Promise<articleEntity[]>
     }
   }
 }

@@ -10,7 +10,7 @@ export const findAll = () => {
       create_time as createTime
     from snippets_type
     order by order_num
-  `, {}) as typeEntity[]
+  `, {}) as TypeEntity[]
 }
 
 export const findListByIdList = (idList: number[]) => {
@@ -30,5 +30,5 @@ export const findListByIdList = (idList: number[]) => {
     from snippets_type
     where id in (${placeholders})
     order by order_num
-  `, idList) as typeEntity[]
+  `, idList) as TypeEntity[]
 }

@@ -35,7 +35,7 @@ type ContentEntity = {
 }
 
 // 内容类型
-type typeEntity = {
+type TypeEntity = {
   id: number
   name: string
   title: string

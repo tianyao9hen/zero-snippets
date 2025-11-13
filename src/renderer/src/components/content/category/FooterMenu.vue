@@ -1,6 +1,6 @@
 <template>
   <main
-    class="footer-menu"
+    class="footer-menu unselectable"
     :class="{'hover-edit': hoverFlag}"
     @mouseover="choiceAddButton(true)"
     @mouseout="choiceAddButton(false)"

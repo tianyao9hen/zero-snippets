@@ -1,19 +1,19 @@
 <template>
   <main class="quick-nav box">
-    <div class="box-title">快捷操作</div>
+    <div class="box-title unselectable">快捷操作</div>
     <div class="quick-nav-content box-content">
       <div
-        class="quick-nav-item box-item"
+        class="quick-nav-item box-item unselectable"
         :class="{ active: snippetsStore.content.selectCategoryId === 0 }"
         @click="choiceCategory(0)"
       >
         <img :src="snippetsStore.content.selectCategoryId === 0 ? allIcon.url : allIcon.dUrl" />
-        <span class="box-item-content">
+        <span class="box-item-content unselectable">
           所有片段
         </span>
       </div>
       <div
-        class="quick-nav-item box-item"
+        class="quick-nav-item box-item unselectable"
         :class="{ active: snippetsStore.content.selectCategoryId === -1 }"
         @click="choiceCategory(-1)"
       >
@@ -22,7 +22,7 @@
             snippetsStore.content.selectCategoryId === -1 ? noFolderIcon.url : noFolderIcon.dUrl
           "
         />
-        <span class="box-item-content">
+        <span class="box-item-content unselectable">
           未分类
         </span>
       </div>
@@ -42,7 +42,7 @@ const router = useRouter()
 
 function choiceCategory(cid: number) {
   snippetsStore.choiceCategory(cid)
-  console.log(`/content/${snippetsStore.content.selectTypeId}/category/${cid}/catelog`)
+  // console.log(`/content/${snippetsStore.content.selectTypeId}/category/${cid}/catelog`)
   router.push({
     name: 'catelog',
     params: {

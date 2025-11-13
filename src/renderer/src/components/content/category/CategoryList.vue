@@ -1,11 +1,11 @@
 <template>
   <main class="category-list box">
-    <section class="box-title">类别目录</section>
+    <section class="box-title unselectable">类别目录</section>
     <section class="category-list-content box-content" ref="categoryListRef">
       <template v-for="category in categoryList" :key="category.id">
         <div
           v-show="category.id !== snippetsStore.content.updateCategoryId"
-          class="category-item box-item"
+          class="category-item box-item unselectable"
           :class="{ active: snippetsStore.content.selectCategoryId === category.id }"
           :ref="(el) => setItemRef(category.id, el)"
           @click="choiceCategory(category.id)"
@@ -20,7 +20,7 @@
                 : folderIcon.dUrl
             "
           />
-          <span class="box-item-content">
+          <span class="box-item-content unselectable">
             {{ category.title }}
           </span>
         </div>

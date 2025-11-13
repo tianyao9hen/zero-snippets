@@ -32,3 +32,19 @@ export function editCategory(cid: number, categoryTitle: string) {
 export function removeCategory(cid: number) {
   return ipcRenderer.invoke(ipcEnum.removeCategory, cid)
 }
+
+export function getArticleById(aid: number) {
+  return ipcRenderer.invoke(ipcEnum.getArticleById, aid)
+}
+
+export function listArticleByTidAndCid(tid: number, cid: number) {
+  return ipcRenderer.invoke(ipcEnum.listArticleByTidAndCid, tid, cid)
+}
+
+export function listAllArticle() {
+  return ipcRenderer.invoke(ipcEnum.listAllArticle)
+}
+
+export function listAllArticleNoCategory() {
+  return ipcRenderer.invoke(ipcEnum.listAllArticleNoCategory)
+}

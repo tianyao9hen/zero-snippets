@@ -10,7 +10,7 @@ type SnippetsStoreType = {
   typeFlag: boolean // 是否选择类型开关
   resultFlag: boolean // 是否选择结果开关
   selectTypeId: number // 选中的类型id
-  typeList: typeEntity[] // 类型列表
+  typeList: TypeEntity[] // 类型列表
 }
 
 // 内容页面
@@ -63,7 +63,7 @@ export const useSnippetsStore = defineStore('snippets', () => {
     }
   }
 
-  function setTypeList(typeList: typeEntity[]) {
+  function setTypeList(typeList: TypeEntity[]) {
     snippets.value.typeList = typeList
   }
 

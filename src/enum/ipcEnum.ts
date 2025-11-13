@@ -8,4 +8,8 @@ export const ipcEnum = {
   addCategory: 'add-category',
   editCategory: 'update-category',
   removeCategory: 'remove-category',
+  getArticleById: 'get-article-by-id',
+  listArticleByTidAndCid: 'list-article-by-tid-and-cid',
+  listAllArticle: 'list-all-article',
+  listAllArticleNoCategory: 'list-all-article-no-category',
 }

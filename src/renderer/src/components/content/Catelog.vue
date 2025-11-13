@@ -2,7 +2,7 @@
   <main class="catelog-page">
     <section class="catelog">
       <div class="catelog-box box">
-        <div class="box-title">文章目录</div>
+        <div class="box-title unselectable">文章目录</div>
         <div class="box-content catelog-content">
           <div class="catelog-content-box">
             <div
@@ -13,7 +13,7 @@
               @click="choiceArticle(content)"
               @contextmenu="rightClickMenu($event, content.id)"
             >
-              <span class="box-item-content">{{ content.title }}</span>
+              <span class="box-item-content unselectable">{{ content.title }}</span>
             </div>
           </div>
         </div>
@@ -56,7 +56,7 @@ const snippetsStore = useSnippetsStore()
 let contentList = ref<ContentEntity[]>([])
 let hoverFlag = ref(false)
 
-onMounted(() => {
+onMounted(async () => {
   const { tid, cid, aid } = route.params as { tid: string; cid: string; aid: string }
   if (!aid) {
     snippetsStore.choiceArticle(null)
@@ -72,11 +72,11 @@ onMounted(() => {
       }
     })
   } else {
-    contentList.value = getContentList(tid, cid)
+    contentList.value = await getContentList(tid, cid)
   }
 })
 
-onBeforeRouteUpdate((to, _from, next) => {
+onBeforeRouteUpdate(async (to, _from, next) => {
   const { tid, cid, aid } = to.params as { tid: string; cid: string; aid: string }
   if (!aid) {
     snippetsStore.choiceArticle(null)
@@ -92,8 +92,7 @@ onBeforeRouteUpdate((to, _from, next) => {
       }
     })
   } else {
-    contentList.value = getContentList(tid, cid)
-    console.log('onBeforeRouteUpdate', tid, cid)
+    contentList.value = await getContentList(tid, cid)
   }
   next()
 })
@@ -163,7 +162,7 @@ function getRightMenu(aid: number) {
  * @param tid 类别id
  * @param cid 分类id
  */
-function getContentList(tid: string, cid: string): ContentEntity[] {
+async function getContentList(tid: string, cid: string): Promise<ContentEntity[]> {
   if (tid && cid) {
     return getContentListByTypeIdAndCategoryId(Number(tid), Number(cid))
   }

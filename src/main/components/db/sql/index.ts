@@ -4,11 +4,11 @@ export const createTable = (sql: string) => {
   db().exec(sql)
 }
 
-export const findAll = (sql: string, params: Record<string, string|null> | number[]) => {
+export const findAll = (sql: string, params: Record<string, string|number|null> | number[]) => {
   return db().prepare(sql).all(params)
 }
 
-export const findOne = (sql: string, params: Record<string, string|null>) => {
+export const findOne = (sql: string, params: Record<string, string|number|null>) => {
   return db().prepare(sql).get(params)
 }
 

@@ -2,7 +2,19 @@ import { contextBridge } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 import { showMainMenu } from './composables/menu'
 import { setIgnoreMouseEvent } from './composables/setIgnoreMouseEvent'
-import { sql, getAllType, getTypeListByIdList, getAllCategory, addCategory, editCategory, removeCategory } from './composables/db'
+import {
+  sql,
+  getAllType,
+  getTypeListByIdList,
+  getAllCategory,
+  addCategory,
+  editCategory,
+  removeCategory,
+  getArticleById,
+  listArticleByTidAndCid,
+  listAllArticle,
+  listAllArticleNoCategory
+} from './composables/db'
 
 // Custom APIs for renderer
 const api = {
@@ -15,6 +27,10 @@ const api = {
   addCategory,
   editCategory,
   removeCategory,
+  getArticleById,
+  listArticleByTidAndCid,
+  listAllArticle,
+  listAllArticleNoCategory
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to
