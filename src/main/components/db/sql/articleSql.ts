@@ -93,3 +93,33 @@ export const edit = (article: ContentEntity) => {
     article
   )
 }
+
+export const remove = (aid: number) => {
+  return execute.remove(
+    `
+    delete from snippets_content
+    where
+      id = $id
+    `,
+    {
+      id: aid
+    }
+  )
+}
+
+export const add = (article: ContentEntity) => {
+  return execute.insert(
+    `
+    insert into snippets_content(
+      type_id,
+      category_id,
+      title,
+      content
+    ) values (
+      $typeId,
+      $categoryId,
+      $title,
+      $content
+    )
+    `,article)
+}

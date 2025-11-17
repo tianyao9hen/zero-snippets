@@ -22,6 +22,8 @@ declare global {
       listAllArticle: () => Promise<articleEntity[]>
       listAllArticleNoCategory: () => Promise<articleEntity[]>
       editArticle: (article: articleEntity) => number
+      removeArticle: (aid: number) => number
+      addArticle: (article: articleEntity) => number
     }
   }
 }

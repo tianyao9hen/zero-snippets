@@ -1,3 +1,5 @@
+import Article from "@renderer/components/content/Article.vue"
+
 export default () => {
 
   /**
@@ -25,11 +27,22 @@ export default () => {
     return await window.api.editArticle({...article})
   }
 
+  const removeArticle = async (aid: number): Promise<number> => {
+    return await window.api.removeArticle(aid)
+  }
+
+  const addArticle = async (Article: ContentEntity): Promise<number> => {
+    return await window.api.addArticle({...Article})
+  }
+
+
   return {
     getArticleById,
     listArticleByTidAndCid,
     listAllArticle,
     listAllArticleNoCategory,
-    editArticle
+    editArticle,
+    removeArticle,
+    addArticle
   }
 }

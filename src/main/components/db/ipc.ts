@@ -12,7 +12,9 @@ import {
   listByTidAndCid as listArticleByTidAndCid,
   listAll as listAllArticle,
   listAllNoCategory as listAllArticleNoCategory,
-  edit as editArticle
+  edit as editArticle,
+  remove as removeArticle,
+  add as addArticle
 } from './sql/articleSql'
 import { ipcEnum } from '../../../enum/ipcEnum'
 
@@ -74,4 +76,12 @@ ipcMain.handle(ipcEnum.listAllArticleNoCategory, () => {
 
 ipcMain.handle(ipcEnum.editArticle, (_event: IpcMainInvokeEvent, article: ContentEntity) => {
   return editArticle(article)
+})
+
+ipcMain.handle(ipcEnum.removeArticle, (_event: IpcMainInvokeEvent, articleId: number) => {
+  return removeArticle(articleId)
+})
+
+ipcMain.handle(ipcEnum.addArticle, (_event: IpcMainInvokeEvent, article: ContentEntity) => {
+  return addArticle(article)
 })

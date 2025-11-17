@@ -52,3 +52,11 @@ export function listAllArticleNoCategory() {
 export function editArticle(article: ContentEntity) {
   return ipcRenderer.invoke(ipcEnum.editArticle, article)
 }
+
+export function removeArticle(aid: number) {
+  return ipcRenderer.invoke(ipcEnum.removeArticle, aid)
+}
+
+export function addArticle(article: ContentEntity) {
+  return ipcRenderer.invoke(ipcEnum.addArticle, article)
+}

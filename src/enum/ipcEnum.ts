@@ -13,4 +13,6 @@ export const ipcEnum = {
   listAllArticle: 'list-all-article',
   listAllArticleNoCategory: 'list-all-article-no-category',
   editArticle: 'edit-article',
+  removeArticle: 'remove-article',
+  addArticle: 'add-article',
 }

@@ -41,6 +41,7 @@
  * 文章目录组件
  */
 import useSearch from '@renderer/hooks/useSearch'
+import useArticle from '@renderer/hooks/useArticle'
 import { h, onMounted, ref } from 'vue'
 import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router'
 import { useSnippetsStore } from '@renderer/store/snippetsStore'
@@ -50,6 +51,7 @@ import { iconMap } from '@renderer/composables/iconUtils'
 const deleteIcon = iconMap['delete']
 const addIcon = iconMap['add']
 const { getContentListByTypeIdAndCategoryId } = useSearch()
+const { removeArticle, addArticle } = useArticle()
 const route = useRoute()
 const router = useRouter()
 const snippetsStore = useSnippetsStore()
@@ -100,8 +102,16 @@ onBeforeRouteUpdate(async (to, _from, next) => {
 /**
  * 新增文章
  */
-function addCatelog() {
-  console.log('新增文章')
+async function addCatelog() {
+  const { tid, cid } = route.params as { tid: string; cid: string }
+  const id = await addArticle({
+    typeId: Number(tid),
+    categoryId: Number(cid),
+    title: '新建文章',
+    content: ''
+  } as ContentEntity)
+  console.log('新增文章', id)
+  refreshUrl(id, id)
 }
 
 /**
@@ -152,9 +162,55 @@ function getRightMenu(aid: number) {
       }),
       onClick: () => {
         console.log('删除', aid)
+        removeArticle(aid)
+        refreshUrl(aid)
       }
     }
   ]
+}
+
+/**
+ * 刷新页面
+ * @param updAid 进行了调整的文章id
+ */
+function refreshUrl(updAid: number, toAid?: number) {
+  const { tid, cid, aid } = route.params as { tid: string; cid: string; aid: string }
+  if (toAid) {
+    router.push({
+      name: 'article',
+      params: {
+        tid,
+        cid,
+        aid: toAid
+      },
+      query: {
+        t: Date.now()
+      }
+    })
+  }else if (aid && updAid !== Number(aid)) {
+    router.push({
+      name: 'article',
+      params: {
+        tid,
+        cid,
+        aid
+      },
+      query: {
+        t: Date.now()
+      }
+    })
+  } else {
+    router.push({
+      name: 'catelog',
+      params: {
+        tid,
+        cid
+      },
+      query: {
+        t: Date.now()
+      }
+    })
+  }
 }
 
 /**

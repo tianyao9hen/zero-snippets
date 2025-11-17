@@ -5,6 +5,7 @@
       <textarea
         ref="titleTextRef"
         class="w-full overflow-hidden resize-none p-1 outline-none"
+        :class="{'unSave': unSaveFlag}"
         type="text"
         v-model="article.title"
         @input="titleInputEvent"
@@ -56,6 +57,10 @@ let typeList = ref<TypeEntity[]>([])
 let type = ref<TypeEntity>()
 let categoryList = ref<CategoryEntity[]>([])
 let category = ref<CategoryEntity>()
+// 是否修改了文章标题且没有保存
+let unSaveFlag = ref(false)
+// 修改前的文章标题
+let oldArticleTitle = "";
 
 const { getArticleById, editArticle } = useArticle()
 const { getAllTypeList } = useType()
@@ -74,6 +79,7 @@ onMounted(async () => {
   const data = await getArticleById(Number(route.params.aid))
   if (isComponentMounted) {
     article.value = data || normalArticle
+    oldArticleTitle = article.value.title
     snippetsStore.choiceArticle(article.value)
     // 将文章内容同步给bytemd组件
     bytemdRef.value?.setArticleContentEvent(article.value.content)
@@ -104,6 +110,7 @@ onUnmounted(() => {
  * @param content 新文章内容
  */
 function editContent(content: string) {
+  console.log('文章内容修改了')
   article.value.content = content
   editArticle(article.value)
 }
@@ -121,6 +128,7 @@ function titleEnterEvent(e: KeyboardEvent) {
  */
 function titleInputEvent() {
   article.value.title = article.value.title.trim()
+  unSaveFlag.value = article.value.title !== oldArticleTitle
   autoResizeTitleInput()
 }
 
@@ -176,6 +184,12 @@ function autoResizeTitleInput() {
       word-wrap: break-word; /* 单词换行 */
       white-space: pre-wrap; /* 保留空白符，自动换行 */
       word-break: break-all; /* 允许在单词内换行 */
+    }
+    .unSave {
+      // 下滑虚线
+      text-decoration-style: dashed;
+      text-decoration-line: underline;
+      text-underline-offset: 5px;
     }
   }
   .category {

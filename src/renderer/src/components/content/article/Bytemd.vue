@@ -30,6 +30,7 @@ import mermaid from '@bytemd/plugin-mermaid'
 import 'bytemd/dist/index.css'
 import 'juejin-markdown-themes/dist/github.min.css'
 import 'highlight.js/styles/a11y-light.min.css'
+import { debounce } from '@renderer/composables/debounceUtils'
 
 // 编辑器插件
 const mdPlugins = ref([
@@ -51,7 +52,7 @@ const editorStyle = computed(() => {
   // 这里的38像素是编辑器头部快捷按钮的高度和底部的间隔空间的和
   const offsetHeight = props.outSideheaderTop + 38
   return {
-    height: `calc(100vh - ${offsetHeight}px)`,
+    height: `calc(100vh - ${offsetHeight}px)`
   }
 })
 
@@ -60,12 +61,12 @@ const props = defineProps({
   // 外部组件头部的高度,单位:像素
   outSideheaderTop: {
     type: Number,
-    default: 72,
+    default: 72
   },
   // 传入文章内容
   articleContent: {
     type: String,
-    default: '',
+    default: ''
   }
 })
 
@@ -77,14 +78,20 @@ onMounted(() => {
 })
 
 // 设置文章内容事件,由父组件调用
-function setArticleContentEvent(content: string){
+function setArticleContentEvent(content: string) {
   mdValue.value = content
 }
 
+// 定义防抖函数
+const debounceEditEvent = debounce((value: string) => {
+  emits('contentEdit', value)
+}, 500, {
+  leading: true,
+})
 // 文章编辑事件
 function contentEditEvent(value: string) {
   mdValue.value = value
-  emits('contentEdit', value)
+  debounceEditEvent(value)
 }
 
 /**
@@ -116,8 +123,8 @@ defineExpose({
 
 <style lang="scss" scoped>
 .markdown-body ol li {
-    padding-left: 6px;
-    list-style-type: decimal;
+  padding-left: 6px;
+  list-style-type: decimal;
 }
 .markdown-page {
   width: 100%;
