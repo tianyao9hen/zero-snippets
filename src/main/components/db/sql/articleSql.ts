@@ -71,7 +71,7 @@ export const listAllNoCategory = () => {
       content,
       create_time as createTime
     from snippets_content
-    where category_id is null
+    where category_id = -1
     order by create_time desc
     `,
     {}

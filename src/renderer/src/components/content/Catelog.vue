@@ -104,13 +104,17 @@ onBeforeRouteUpdate(async (to, _from, next) => {
  */
 async function addCatelog() {
   const { tid, cid } = route.params as { tid: string; cid: string }
+  const typeId = Number(tid)
+  let categoryId = Number(cid)
+  if(!categoryId) {
+    categoryId = -1
+  }
   const id = await addArticle({
-    typeId: Number(tid),
-    categoryId: Number(cid),
+    typeId,
+    categoryId,
     title: '新建文章',
     content: ''
   } as ContentEntity)
-  console.log('新增文章', id)
   refreshUrl(id, id)
 }
 

@@ -118,7 +118,7 @@ function editContent(content: string) {
 /**
  * title输入框回车事件
  */
-function titleEnterEvent(e: KeyboardEvent) {
+function titleEnterEvent(_e: KeyboardEvent) {
   editArticle(article.value)
   refreshUrl()
 }
@@ -127,7 +127,7 @@ function titleEnterEvent(e: KeyboardEvent) {
  * title输入框输入事件
  */
 function titleInputEvent() {
-  article.value.title = article.value.title.trim()
+  article.value.title = article.value.title.replace(/[\r\n]+/g,  '')
   unSaveFlag.value = article.value.title !== oldArticleTitle
   autoResizeTitleInput()
 }

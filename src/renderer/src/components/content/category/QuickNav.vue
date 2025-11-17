@@ -42,7 +42,6 @@ const router = useRouter()
 
 function choiceCategory(cid: number) {
   snippetsStore.choiceCategory(cid)
-  // console.log(`/content/${snippetsStore.content.selectTypeId}/category/${cid}/catelog`)
   router.push({
     name: 'catelog',
     params: {
