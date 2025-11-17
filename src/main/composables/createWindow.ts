@@ -1,5 +1,5 @@
 import { is } from '@electron-toolkit/utils'
-import { BrowserWindow, shell } from 'electron'
+import { BrowserWindow, shell, session } from 'electron'
 import icon from '../../../resources/icon.png?asset'
 import { join } from 'path'
 
@@ -16,7 +16,7 @@ export function createWindow(options: OptionsClass): BrowserWindow {
         ...(process.platform === 'linux' ? { icon } : {}),
         webPreferences: {
           preload: join(__dirname, '../preload/index.js'),
-          sandbox: false,
+          sandbox: false
         }
       },
       options
@@ -28,8 +28,8 @@ export function createWindow(options: OptionsClass): BrowserWindow {
   }
 
   window.on('ready-to-show', () => {
-    window.setOpacity(0.99);  // 触发重绘
-    setTimeout(() => window.setOpacity(1),  100);
+    window.setOpacity(0.99) // 触发重绘
+    setTimeout(() => window.setOpacity(1), 100)
     options.initShow && window.show()
   })
 
@@ -39,7 +39,7 @@ export function createWindow(options: OptionsClass): BrowserWindow {
   })
 
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
-    window.loadURL(process.env['ELECTRON_RENDERER_URL'] +'/#'+ options.path)
+    window.loadURL(process.env['ELECTRON_RENDERER_URL'] + '/#' + options.path)
   } else {
     // TODO 打包后加载本地文件
     window.loadFile(join(__dirname, '../renderer/index.html'))

@@ -77,3 +77,19 @@ export const listAllNoCategory = () => {
     {}
   ) as ContentEntity[]
 }
+
+export const edit = (article: ContentEntity) => {
+  return execute.edit(
+    `
+    update snippets_content
+    set
+      type_id = $typeId,
+      category_id = $categoryId,
+      title = $title,
+      content = $content
+    where
+      id = $id
+    `,
+    article
+  )
+}

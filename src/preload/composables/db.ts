@@ -48,3 +48,7 @@ export function listAllArticle() {
 export function listAllArticleNoCategory() {
   return ipcRenderer.invoke(ipcEnum.listAllArticleNoCategory)
 }
+
+export function editArticle(article: ContentEntity) {
+  return ipcRenderer.invoke(ipcEnum.editArticle, article)
+}

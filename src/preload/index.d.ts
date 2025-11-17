@@ -21,6 +21,7 @@ declare global {
       listArticleByTidAndCid: (tid: number,cid: number) => Promise<ContentEntity[]>
       listAllArticle: () => Promise<articleEntity[]>
       listAllArticleNoCategory: () => Promise<articleEntity[]>
+      editArticle: (article: articleEntity) => number
     }
   }
 }

@@ -9,6 +9,7 @@
     "src/enum/*"
   ],
   "compilerOptions": {
+    "ignoreDeprecations": "6.0",
     "composite": true,
     "baseUrl": ".",
     "paths": {

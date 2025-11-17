@@ -12,4 +12,5 @@ export const ipcEnum = {
   listArticleByTidAndCid: 'list-article-by-tid-and-cid',
   listAllArticle: 'list-all-article',
   listAllArticleNoCategory: 'list-all-article-no-category',
+  editArticle: 'edit-article',
 }

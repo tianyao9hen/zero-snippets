@@ -21,10 +21,15 @@ export default () => {
     return await window.api.listAllArticleNoCategory()
   }
 
+  const editArticle = async (article: ContentEntity): Promise<number> => {
+    return await window.api.editArticle({...article})
+  }
+
   return {
     getArticleById,
     listArticleByTidAndCid,
     listAllArticle,
-    listAllArticleNoCategory
+    listAllArticleNoCategory,
+    editArticle
   }
 }

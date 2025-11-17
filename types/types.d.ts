@@ -51,3 +51,8 @@ type CategoryEntity = {
   orderNum: number
   createTime?: string
 }
+
+declare module '@bytemd/vue-next' {
+  export const Editor: any;
+  export const Viewer: any;
+}

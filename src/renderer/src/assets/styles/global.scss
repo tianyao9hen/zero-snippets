@@ -1,6 +1,9 @@
+html,
 body {
-  width: 100vw;
-  height: 100vh;
+  // width: 100vw;
+  // height: 100vh;
+  width: 100%;
+  height: 100%;
 }
 
 * {
@@ -25,4 +28,25 @@ option {
   -moz-user-select: none; /* Firefox */
   -ms-user-select: none; /* IE 10+ */
   user-select: none; /* 标准语法 */
+}
+// markdown编辑器样式
+.markdown-body {
+  p,ol {
+    margin-bottom: 10px;
+  }
+  ol li {
+    list-style-type: decimal;
+    > p {
+      margin: 5px 0 !important;
+    }
+  }
+  li+li {
+    margin-top: 0px;
+  }
+  ul li {
+    list-style-type: disc;
+    > p {
+      margin: 5px 0 !important;
+    }
+  }
 }

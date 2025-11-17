@@ -13,7 +13,8 @@ import {
   getArticleById,
   listArticleByTidAndCid,
   listAllArticle,
-  listAllArticleNoCategory
+  listAllArticleNoCategory,
+  editArticle
 } from './composables/db'
 
 // Custom APIs for renderer
@@ -30,7 +31,8 @@ const api = {
   getArticleById,
   listArticleByTidAndCid,
   listAllArticle,
-  listAllArticleNoCategory
+  listAllArticleNoCategory,
+  editArticle
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to
