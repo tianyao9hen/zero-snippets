@@ -5,7 +5,7 @@
       <textarea
         ref="titleTextRef"
         class="w-full overflow-hidden resize-none p-1 outline-none"
-        :class="{'unSave': unSaveFlag}"
+        :class="{ unSave: unSaveFlag }"
         type="text"
         v-model="article.title"
         @input="titleInputEvent"
@@ -14,8 +14,13 @@
       />
     </div>
     <div class="category p-1 px-3 unselectable" ref="categoryRef">
-      {{ type?.title }} /
-      <select v-model="article.categoryId" class="outline-none" @change="categorySelectEvent">
+      {{ type?.title }} >
+      <select
+        v-model="article.categoryId"
+        class="outline-none"
+        :class="{ nocategory: article.categoryId == -1 }"
+        @change="categorySelectEvent"
+      >
         <option v-for="item in categoryList" :value="item.id">{{ item.title }}</option>
       </select>
     </div>
@@ -60,7 +65,7 @@ let category = ref<CategoryEntity>()
 // 是否修改了文章标题且没有保存
 let unSaveFlag = ref(false)
 // 修改前的文章标题
-let oldArticleTitle = "";
+let oldArticleTitle = ''
 
 const { getArticleById, editArticle } = useArticle()
 const { getAllTypeList } = useType()
@@ -127,7 +132,7 @@ function titleEnterEvent(_e: KeyboardEvent) {
  * title输入框输入事件
  */
 function titleInputEvent() {
-  article.value.title = article.value.title.replace(/[\r\n]+/g,  '')
+  article.value.title = article.value.title.replace(/[\r\n]+/g, '')
   unSaveFlag.value = article.value.title !== oldArticleTitle
   autoResizeTitleInput()
 }
@@ -199,6 +204,10 @@ function autoResizeTitleInput() {
       -moz-appearance: none;
       appearance: none; /*去掉下拉箭头*/
       cursor: pointer;
+    }
+    .nocategory {
+      border-bottom: 2px dashed #ccc;
+      @apply border-slate-300;
     }
   }
   .content {
