@@ -30,9 +30,9 @@ export const window: Record<WindowNameType, WindowClass> = {
       transparent: false,
       openDevTools: true,
       initShow: true,
-      path: '/content'
+      // path: '/content'
       // path: '/content/1/category/0/catelog'
-      // path: '/content/2/web'
+      path: '/content/2/web/0/folder'
     }
   }
 }

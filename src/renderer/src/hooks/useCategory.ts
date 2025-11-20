@@ -9,6 +9,15 @@ export default () => {
   }
 
   /**
+   * 根据tid查询所有分类
+   * @param tid typeId
+   * @returns
+   */
+  const getCategoryListByTid = async (tid: number): Promise<CategoryEntity[]> => {
+    return await window.api.getCategoryListByTid(tid)
+  }
+
+  /**
    * 新增类别
    * @param typeId 大类id
    * @param categoryName 类别名称
@@ -20,6 +29,7 @@ export default () => {
 
   return {
     getAllCategoryList,
-    addCategoryItem
+    getCategoryListByTid,
+    addCategoryItem,
   }
 }

@@ -5,6 +5,7 @@ export const ipcEnum = {
   getAllType: 'get-all-type',
   getTypeListByIdList: 'get-type-list-by-id-list',
   getAllCategory: 'get-all-category',
+  listCategoryByTid: 'list-category-by-tid',
   addCategory: 'add-category',
   editCategory: 'update-category',
   removeCategory: 'remove-category',

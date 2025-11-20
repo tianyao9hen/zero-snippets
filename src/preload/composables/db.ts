@@ -21,6 +21,10 @@ export function getAllCategory() {
   return ipcRenderer.invoke(ipcEnum.getAllCategory)
 }
 
+export function getCategoryListByTid(tid: number){
+  return ipcRenderer.invoke(ipcEnum.listCategoryByTid, tid)
+}
+
 export function addCategory(typeId: number, categoryName: string) {
   return ipcRenderer.invoke(ipcEnum.addCategory, typeId, categoryName)
 }

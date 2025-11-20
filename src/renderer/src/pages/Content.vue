@@ -35,12 +35,8 @@ onMounted(async () => {
   if (typeList.value.length > 0) {
     if (route.params.tid) {
       let typeId = typeList.value[0].id
-      let typeActive = typeList.value[0]
       if (route.params.tid) {
         typeId = Number(route.params.tid)
-        typeActive = typeList.value.filter((item) => {
-          return item.id === typeId
-        })[0]
       }
       choiceType(typeId)
     } else {

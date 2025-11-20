@@ -3,6 +3,7 @@ import * as execute from './sql'
 import { findAll as findAllType, findListByIdList as findTypeListByIdList } from './sql/typeSql'
 import {
   findAll as findAllCategory,
+  listByTid as listCategoryByTid,
   add as addCategory,
   edit as editCategory,
   remove as removeCategory
@@ -35,6 +36,10 @@ ipcMain.handle(ipcEnum.getTypeListByIdList, (_event: IpcMainInvokeEvent, idList:
 
 ipcMain.handle(ipcEnum.getAllCategory, () => {
   return findAllCategory()
+})
+
+ipcMain.handle(ipcEnum.listCategoryByTid, (_event: IpcMainInvokeEvent, tid: number) => {
+  return listCategoryByTid(tid)
 })
 
 ipcMain.handle(

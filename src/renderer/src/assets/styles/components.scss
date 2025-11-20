@@ -207,21 +207,6 @@
   }
 }
 
-.category-page {
-  @apply w-full h-full;
-  display: grid;
-  grid-template: 'category content' 100% / 120px auto;
-
-  .category-box {
-    grid-area: category;
-    @apply flex flex-col;
-  }
-
-  .category-content {
-    grid-area: content;
-  }
-}
-
 .box {
   @apply w-full h-auto p-1 rounded-lg shadow-md;
   @include contentNormalBgColor;

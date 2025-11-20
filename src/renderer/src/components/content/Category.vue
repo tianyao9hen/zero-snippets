@@ -1,6 +1,6 @@
 <template>
   <main class="category-page">
-    <section class="category-box">
+    <section class="category-category">
       <quick-nav />
       <category-list />
       <footer-menu />
@@ -51,4 +51,19 @@ function choiceCategory(tid: number, cid: number) {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.category-page {
+  @apply w-full h-full;
+  display: grid;
+  grid-template: 'category content' 100% / 120px auto;
+
+  .category-category {
+    grid-area: category;
+    @apply flex flex-col;
+  }
+
+  .category-content {
+    grid-area: content;
+  }
+}
+</style>

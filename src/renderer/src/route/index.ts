@@ -6,6 +6,7 @@ import Web from "@renderer/components/content/Web.vue";
 import NativeApp from "@renderer/components/content/NativeApp.vue";
 import Catelog from "@renderer/components/content/Catelog.vue";
 import Article from "@renderer/components/content/Article.vue";
+import Folder from "@renderer/components/content/Folder.vue";
 
 const routes: RouteRecordRaw[] = [
   {
@@ -39,9 +40,16 @@ const routes: RouteRecordRaw[] = [
           }
         ]
       },{
-        path: 'web',
+        path: 'web/:cid?',
         name: 'web',
-        component: Web
+        component: Web,
+        children: [
+          {
+            path: 'folder',
+            name: 'folder',
+            component: Folder
+          }
+        ]
       },{
         path: 'native-app',
         name: 'nativeApp',

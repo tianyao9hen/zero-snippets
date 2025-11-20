@@ -1,6 +1,6 @@
 <template>
   <main class="category-list box">
-    <section class="box-title unselectable">类别目录</section>
+    <section class="box-title unselectable">页面目录</section>
     <section class="category-list-content box-content" ref="categoryListRef">
       <template v-for="category in categoryList" :key="category.id">
         <div
@@ -82,8 +82,7 @@ onMounted(async () => {
 watch(
   () => route.params.cid,
   async (newCId) => {
-    const { tid } = route.params
-    categoryList.value = await getCategoryListByTid(Number(tid))
+    categoryList.value = await getCategoryListByTid(Number(route.params.tid))
     snippetsStore.updateCategoryEnd()
     if (newCId) {
       itemListRef = ref<Map<number, HTMLDivElement>>(new Map())
@@ -127,9 +126,8 @@ function setItemInputRef(itemId: number, el) {
  */
 function choiceCategory(cid: number) {
   snippetsStore.choiceCategory(cid)
-  console.log(`/content/${snippetsStore.content.selectTypeId}/category/${cid}/catelog`)
   router.push({
-    name: 'catelog',
+    name: 'folder',
     params: {
       tid: snippetsStore.content.selectTypeId,
       cid
@@ -163,7 +161,7 @@ async function updateCategory(e: KeyboardEvent, cid: number, title: string | nul
     await window.api.editCategory(cid, title)
     snippetsStore.updateCategoryEnd()
     router.push({
-      name: 'catelog',
+      name: 'folder',
       params: {
         tid: snippetsStore.content.selectTypeId,
         cid
@@ -216,8 +214,7 @@ function getRightMenu(cid: number) {
       }),
       onClick: async () => {
         await window.api.removeCategory(cid)
-        const { tid } = route.params
-        categoryList.value = await getCategoryListByTid(Number(tid))
+        categoryList.value = await getCategoryListByTid(Number(route.params.tid))
       }
     }
   ]
