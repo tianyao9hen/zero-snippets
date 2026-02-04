@@ -16,4 +16,15 @@ export const ipcEnum = {
   editArticle: 'edit-article',
   removeArticle: 'remove-article',
   addArticle: 'add-article',
+  // 网页树相关 IPC 事件
+  getWebTreeByTypeId: 'get-web-tree-by-type-id',
+  getWebTreeNodeById: 'get-web-tree-node-by-id',
+  addWebTreeNode: 'add-web-tree-node',
+  updateWebTreeNode: 'update-web-tree-node',
+  removeWebTreeNode: 'remove-web-tree-node',
+  moveWebTreeNode: 'move-web-tree-node',
+  searchWebTree: 'search-web-tree',
+  reorderWebTreeNodes: 'reorder-web-tree-nodes',
+  // 图标获取 IPC 事件
+  fetchFavicon: 'fetch-favicon'
 }

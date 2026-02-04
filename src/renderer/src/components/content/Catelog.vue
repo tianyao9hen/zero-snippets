@@ -6,10 +6,10 @@
         <div class="box-content catelog-content">
           <div class="catelog-content-box">
             <div
-              class="box-item"
-              :class="{ active: snippetsStore.content.selectArticleId === content.id }"
               v-for="content in contentList"
               :key="content.id"
+              class="box-item"
+              :class="{ active: snippetsStore.content.selectArticleId === content.id }"
               @click="choiceArticle(content)"
               @contextmenu="rightClickMenu($event, content.id)"
             >
@@ -55,8 +55,8 @@ const { removeArticle, addArticle } = useArticle()
 const route = useRoute()
 const router = useRouter()
 const snippetsStore = useSnippetsStore()
-let contentList = ref<ContentEntity[]>([])
-let hoverFlag = ref(false)
+const contentList = ref<ContentEntity[]>([])
+const hoverFlag = ref(false)
 
 onMounted(async () => {
   const { tid, cid, aid } = route.params as { tid: string; cid: string; aid: string }
@@ -106,7 +106,7 @@ async function addCatelog() {
   const { tid, cid } = route.params as { tid: string; cid: string }
   const typeId = Number(tid)
   let categoryId = Number(cid)
-  if(!categoryId) {
+  if (!categoryId) {
     categoryId = -1
   }
   const id = await addArticle({
@@ -191,7 +191,7 @@ function refreshUrl(updAid: number, toAid?: number) {
         t: Date.now()
       }
     })
-  }else if (aid && updAid !== Number(aid)) {
+  } else if (aid && updAid !== Number(aid)) {
     router.push({
       name: 'article',
       params: {

@@ -3,7 +3,7 @@
     class="result rounded-br-xl rounded-bl-xl h-full pb-3 pt-1 box-border -mt-[11px] flex flex-col"
   >
     <TypeList />
-    <result-list/>
+    <result-list />
   </main>
 </template>
 

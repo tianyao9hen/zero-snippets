@@ -8,7 +8,12 @@ import folderIcon from '@renderer/assets/icons/folder.svg'
 import folderDIcon from '@renderer/assets/icons/folder_d.svg'
 import addArticleIcon from '@renderer/assets/icons/addArticle.svg'
 import deleteIcon from '@renderer/assets/icons/delete.svg'
-export const iconMap: {[key: string]: IconClass} = {
+import openIcon from '@renderer/assets/icons/open.svg'
+import openDIcon from '@renderer/assets/icons/open_d.svg'
+import webIcon from '@renderer/assets/icons/web.svg'
+import webDIcon from '@renderer/assets/icons/web_d.svg'
+
+export const iconMap: { [key: string]: IconClass } = {
   all: {
     id: 'all',
     url: allIcon,
@@ -38,5 +43,15 @@ export const iconMap: {[key: string]: IconClass} = {
     id: 'delete',
     url: deleteIcon,
     dUrl: deleteIcon
+  },
+  open: {
+    id: 'open',
+    url: openIcon,
+    dUrl: openDIcon
+  },
+  web: {
+    id: 'web',
+    url: webIcon,
+    dUrl: webDIcon
   }
 }

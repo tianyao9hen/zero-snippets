@@ -1,13 +1,13 @@
 <template>
-  <div class="markdown-page" ref="markdownPage">
+  <div ref="markdownPage" class="markdown-page">
     <Editor
       class="editos"
       :value="mdValue"
       :plugins="mdPlugins"
       :style="editorStyle"
       :locale="zhHans"
-      @change="contentEditEvent"
       :upload-images="handleUploadImages"
+      @change="contentEditEvent"
     />
   </div>
 </template>
@@ -83,11 +83,15 @@ function setArticleContentEvent(content: string) {
 }
 
 // 定义防抖函数
-const debounceEditEvent = debounce((value: string) => {
-  emits('contentEdit', value)
-}, 500, {
-  leading: true,
-})
+const debounceEditEvent = debounce(
+  (value: string) => {
+    emits('contentEdit', value)
+  },
+  500,
+  {
+    leading: true
+  }
+)
 // 文章编辑事件
 function contentEditEvent(value: string) {
   mdValue.value = value
@@ -99,13 +103,13 @@ function contentEditEvent(value: string) {
  * @param files 文件
  */
 async function handleUploadImages(files: any) {
-  let imgs: any = []
+  const imgs: any = []
   for (let index = 0; index < files.length; index++) {
     const item = files[index]
-    let fromData = new FormData()
+    const fromData = new FormData()
     fromData.append('file', item)
     // let res = await uploadImage(fromData);  // 上传到阿里云
-    let res = {
+    const res = {
       url: 'https://parkossv2.sdtwxx.com/parkv2/pc/box/20250522/202552294530_%E9%B2%81Q18F3V_1747877659036.jpg'
     }
     imgs.push({

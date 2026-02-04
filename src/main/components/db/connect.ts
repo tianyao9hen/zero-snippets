@@ -2,8 +2,7 @@ import Database, * as BetterSqlist3 from 'better-sqlite3'
 import { app } from 'electron'
 import { join } from 'path'
 
-
-const db = ():BetterSqlist3.Database => {
+const db = (): BetterSqlist3.Database => {
   // 默认在电脑用户个人目录
   // C:\Users\39886\AppData\Roaming\snippets\zero-snippets.db
   const file = 'zero-snippets.db'

@@ -9,7 +9,7 @@ import '@renderer/assets/styles/components.scss'
 import '@imengyu/vue3-context-menu/lib/vue3-context-menu.css'
 
 const app = createApp(App)
-const pinia = createPinia();
+const pinia = createPinia()
 app.use(router)
 app.use(pinia)
 app.use(ContextMenu)

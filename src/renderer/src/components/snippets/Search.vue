@@ -3,10 +3,20 @@
     <div class="drag absolute top-1 w-[94%] h-3"></div>
 
     <section class="p-1 rounded-md flax items-center grap-1">
-      <Input ref="search" type="text" v-model:value="snippetsStore.snippets.search" autofocus @change="changeInput()"
-        @focus="getFocus()" />
-      <div class="absolute top-6 right-7 text-white pointer-events-none tracking-widest"
-        v-show="snippetsStore.snippets.writeFlag=== false">Tab</div>
+      <Input
+        ref="search"
+        v-model:value="snippetsStore.snippets.search"
+        type="text"
+        autofocus
+        @change="changeInput()"
+        @focus="getFocus()"
+      />
+      <div
+        v-show="snippetsStore.snippets.writeFlag === false"
+        class="absolute top-6 right-7 text-white pointer-events-none tracking-widest"
+      >
+        Tab
+      </div>
     </section>
   </main>
 </template>

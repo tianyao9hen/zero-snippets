@@ -15,11 +15,11 @@ export function debounce<T, A extends any[], R>(
   }
 ) {
   let timer: ReturnType<typeof setTimeout> | null = null
-  const { leading = false, result = null } = option || {};
+  const { leading = false, result = null } = option || {}
   // 可执行防抖函数
-  const handleFn = function (this:T, ...args: A) {
+  const handleFn = function (this: T, ...args: A) {
     if (timer) clearTimeout(timer)
-    let _this = this
+    const _this = this
     if (leading) {
       // 通过一个变量来记录是否立即执行
       let isInvoke = false

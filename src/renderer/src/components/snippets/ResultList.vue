@@ -4,8 +4,8 @@
     class="result-list relative rounded-br-xl rounded-bl-xl px-3 w-full max-h-[379px]"
   >
     <div
-      :ref="(el) => setItemRef(el, item.id)"
       v-for="item in snippetsStore.snippets.resultList"
+      :ref="(el) => setItemRef(el, item.id)"
       :key="item.id"
       class="result-item rounded-md p-1 h-8 leading-6 flex items-center"
       :class="{

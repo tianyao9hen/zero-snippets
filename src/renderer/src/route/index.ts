@@ -1,22 +1,24 @@
-import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
-import Snippets from "@renderer/pages/Snippets.vue";
-import Content from "@renderer/pages/Content.vue";
-import Category from "@renderer/components/content/Category.vue";
-import Web from "@renderer/components/content/Web.vue";
-import NativeApp from "@renderer/components/content/NativeApp.vue";
-import Catelog from "@renderer/components/content/Catelog.vue";
-import Article from "@renderer/components/content/Article.vue";
-import Folder from "@renderer/components/content/Folder.vue";
+import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
+import Snippets from '@renderer/pages/Snippets.vue'
+import Content from '@renderer/pages/Content.vue'
+import Category from '@renderer/components/content/Category.vue'
+import Web from '@renderer/components/content/Web.vue'
+import NativeApp from '@renderer/components/content/NativeApp.vue'
+import Catelog from '@renderer/components/content/Catelog.vue'
+import Article from '@renderer/components/content/Article.vue'
+import Folder from '@renderer/components/content/Folder.vue'
 
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
     redirect: '/snippets'
-  },{
+  },
+  {
     path: '/snippets',
     name: 'snippets',
     component: Snippets
-  },{
+  },
+  {
     path: '/content/:tid?',
     name: 'content',
     component: Content,
@@ -39,7 +41,8 @@ const routes: RouteRecordRaw[] = [
             ]
           }
         ]
-      },{
+      },
+      {
         path: 'web/:cid?',
         name: 'web',
         component: Web,
@@ -50,7 +53,8 @@ const routes: RouteRecordRaw[] = [
             component: Folder
           }
         ]
-      },{
+      },
+      {
         path: 'native-app',
         name: 'nativeApp',
         component: NativeApp

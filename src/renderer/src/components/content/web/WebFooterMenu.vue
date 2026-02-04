@@ -1,7 +1,7 @@
 <template>
   <main
     class="footer-menu unselectable"
-    :class="{'hover-edit': hoverFlag}"
+    :class="{ 'hover-edit': hoverFlag }"
     @mouseover="choiceAddButton(true)"
     @mouseout="choiceAddButton(false)"
     @click="addCategory()"
@@ -21,7 +21,7 @@ const { addCategoryItem } = useCategory()
 const snippetsStore = useSnippetsStore()
 const addIcon = iconMap['add']
 const router = useRouter()
-let hoverFlag = ref(false)
+const hoverFlag = ref(false)
 
 /**
  * 鼠标移入移出
@@ -34,8 +34,8 @@ function choiceAddButton(flag: boolean) {
 /**
  * 新增类别
  */
-async function addCategory () {
-  const categoryId = await addCategoryItem(snippetsStore.content.selectTypeId, "新建类别")
+async function addCategory() {
+  const categoryId = await addCategoryItem(snippetsStore.content.selectTypeId, '新建类别')
   router.push({
     name: 'web',
     params: {

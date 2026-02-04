@@ -1,5 +1,4 @@
 export default () => {
-
   /**
    * 获取全部分类列表
    * @returns Promise<CategoryEntity[]> 分类列表
@@ -30,6 +29,6 @@ export default () => {
   return {
     getAllCategoryList,
     getCategoryListByTid,
-    addCategoryItem,
+    addCategoryItem
   }
 }

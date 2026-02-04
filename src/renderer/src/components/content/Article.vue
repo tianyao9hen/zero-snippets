@@ -1,7 +1,7 @@
 <template>
   <main class="w-full h-full">
     <blank v-if="blankFlag" />
-    <article-entity v-else/>
+    <article-entity v-else />
   </main>
 </template>
 
@@ -16,7 +16,7 @@ import ArticleEntity from '@renderer/components/content/article/ArticleEntity.vu
 import { useSnippetsStore } from '@renderer/store/snippetsStore'
 
 const route = useRoute()
-let blankFlag = ref(false)
+const blankFlag = ref(false)
 const snippetsStore = useSnippetsStore()
 
 onMounted(() => {

@@ -1,13 +1,13 @@
 <template>
   <main class="category-list box">
     <section class="box-title unselectable">页面目录</section>
-    <section class="category-list-content box-content" ref="categoryListRef">
+    <section ref="categoryListRef" class="category-list-content box-content">
       <template v-for="category in categoryList" :key="category.id">
         <div
           v-show="category.id !== snippetsStore.content.updateCategoryId"
+          :ref="(el) => setItemRef(category.id, el)"
           class="category-item box-item unselectable"
           :class="{ active: snippetsStore.content.selectCategoryId === category.id }"
-          :ref="(el) => setItemRef(category.id, el)"
           @click="choiceCategory(category.id)"
           @dblclick="startUpdateCategory(category.id)"
           @contextmenu="rightClickMenu($event, category.id)"
@@ -30,10 +30,10 @@
           class="h-[30px] w-full px-2"
         >
           <input
-            type="text"
-            class="w-full h-full rounded-md px-2 border outline-none"
             :ref="(el) => setItemInputRef(category.id, el)"
             v-model="category.title"
+            type="text"
+            class="w-full h-full rounded-md px-2 border outline-none"
             spellcheck="false"
             @keydown="updateCategory($event, category.id, category.title)"
           />
@@ -54,7 +54,7 @@ import ContextMenu from '@imengyu/vue3-context-menu'
 
 const categoryListRef = ref<HTMLDivElement>()
 let itemListRef = ref<Map<number, HTMLDivElement>>(new Map())
-let itemInputListRef = ref<Map<number, HTMLInputElement>>(new Map())
+const itemInputListRef = ref<Map<number, HTMLInputElement>>(new Map())
 
 const folderIcon = iconMap['folder']
 const deleteIcon = iconMap['delete']

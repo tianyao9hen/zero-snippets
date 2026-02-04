@@ -1,19 +1,19 @@
 <template>
   <main class="article box">
     <div hidden>{{ snippetsStore.content.selectArticleId }}</div>
-    <div class="title px-2" ref="titleRef">
+    <div ref="titleRef" class="title px-2">
       <textarea
         ref="titleTextRef"
+        v-model="article.title"
         class="w-full overflow-hidden resize-none p-1 outline-none"
         :class="{ unSave: unSaveFlag }"
         type="text"
-        v-model="article.title"
+        spellcheck="false"
         @input="titleInputEvent"
         @keyup.enter.prevent="titleEnterEvent"
-        spellcheck="false"
       />
     </div>
-    <div class="category p-1 px-3 unselectable" ref="categoryRef">
+    <div ref="categoryRef" class="category p-1 px-3 unselectable">
       {{ type?.title }} >
       <select
         v-model="article.categoryId"
@@ -49,7 +49,7 @@ import { useRoute, useRouter } from 'vue-router'
 import Bytemd from './Bytemd.vue'
 
 let isComponentMounted = true
-let normalArticle: ContentEntity = {
+const normalArticle: ContentEntity = {
   id: 0,
   typeId: 0,
   categoryId: 0,
@@ -57,13 +57,13 @@ let normalArticle: ContentEntity = {
   content: ''
 }
 
-let article = ref<ContentEntity>(normalArticle)
-let typeList = ref<TypeEntity[]>([])
-let type = ref<TypeEntity>()
-let categoryList = ref<CategoryEntity[]>([])
-let category = ref<CategoryEntity>()
+const article = ref<ContentEntity>(normalArticle)
+const typeList = ref<TypeEntity[]>([])
+const type = ref<TypeEntity>()
+const categoryList = ref<CategoryEntity[]>([])
+const category = ref<CategoryEntity>()
 // 是否修改了文章标题且没有保存
-let unSaveFlag = ref(false)
+const unSaveFlag = ref(false)
 // 修改前的文章标题
 let oldArticleTitle = ''
 

@@ -23,7 +23,7 @@ async function addCatelog() {
   const { tid, cid } = route.params as { tid: string; cid: string }
   const typeId = Number(tid)
   let categoryId = Number(cid)
-  if(!categoryId) {
+  if (!categoryId) {
     categoryId = -1
   }
   const id = await addArticle({
@@ -54,7 +54,7 @@ function refreshUrl(updAid: number, toAid?: number) {
         t: Date.now()
       }
     })
-  }else if (aid && updAid !== Number(aid)) {
+  } else if (aid && updAid !== Number(aid)) {
     router.push({
       name: 'article',
       params: {

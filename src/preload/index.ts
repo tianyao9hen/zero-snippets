@@ -17,7 +17,16 @@ import {
   listAllArticleNoCategory,
   editArticle,
   removeArticle,
-  addArticle
+  addArticle,
+  getWebTreeByTypeId,
+  getWebTreeNodeById,
+  addWebTreeNode,
+  updateWebTreeNode,
+  removeWebTreeNode,
+  moveWebTreeNode,
+  searchWebTree,
+  reorderWebTreeNodes,
+  fetchFavicon
 } from './composables/db'
 
 // Custom APIs for renderer
@@ -38,7 +47,16 @@ const api = {
   listAllArticleNoCategory,
   editArticle,
   removeArticle,
-  addArticle
+  addArticle,
+  getWebTreeByTypeId,
+  getWebTreeNodeById,
+  addWebTreeNode,
+  updateWebTreeNode,
+  removeWebTreeNode,
+  moveWebTreeNode,
+  searchWebTree,
+  reorderWebTreeNodes,
+  fetchFavicon
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

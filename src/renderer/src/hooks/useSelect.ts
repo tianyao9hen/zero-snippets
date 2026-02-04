@@ -67,12 +67,12 @@ export default () => {
       }
       case 'ArrowDown': {
         // 如果当前焦点在输入框
-        if(snippetsStore.snippets.writeFlag){
+        if (snippetsStore.snippets.writeFlag) {
           snippetsStore.setTypeFlag(true)
           return
         }
         // 如果当前焦点在类型列表
-        if(snippetsStore.snippets.typeFlag){
+        if (snippetsStore.snippets.typeFlag) {
           snippetsStore.setResultFlag(true)
           return
         }
@@ -91,7 +91,7 @@ export default () => {
         break
       }
       case 'ArrowRight': {
-        if(snippetsStore.snippets.writeFlag){
+        if (snippetsStore.snippets.writeFlag) {
           return
         }
         snippetsStore.setTypeFlag(true)
@@ -102,14 +102,14 @@ export default () => {
           return
         }
         let id = snippetsStore.snippets.selectTypeId
-        let index = data.findIndex((item) => item.id === id)
+        const index = data.findIndex((item) => item.id === id)
         id = data[index + 1]?.id || 0
         snippetsStore.setTypeId(id)
         handleSearch()
         break
       }
       case 'ArrowLeft': {
-        if(snippetsStore.snippets.writeFlag){
+        if (snippetsStore.snippets.writeFlag) {
           return
         }
         snippetsStore.setTypeFlag(true)

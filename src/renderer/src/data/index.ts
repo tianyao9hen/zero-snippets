@@ -3,8 +3,7 @@ export const data = [
     id: 1,
     typeId: 3,
     categoryId: 1,
-    title:
-      'Velit nulla voluptate ullamco elit laborum dolor cupidatat cillum proident anim culpa.',
+    title: 'Velit nulla voluptate ullamco elit laborum dolor cupidatat cillum proident anim culpa.',
     content:
       'Velit nulla voluptate ullamco elit laborum dolor cupidatat cillum proident anim culpa.'
   },
@@ -118,7 +117,8 @@ export const data = [
     id: 21,
     typeId: 1,
     categoryId: 1,
-    title: 't1Velit nulla voluptate ullamco elit laborum dolor cupidatat cillum proident anim culpa.',
+    title:
+      't1Velit nulla voluptate ullamco elit laborum dolor cupidatat cillum proident anim culpa.',
     content:
       't1Velit nulla voluptate ullamco elit laborum dolor cupidatat cillum proident anim culpa.'
   },
@@ -184,7 +184,8 @@ export const data = [
     id: 121,
     typeId: 1,
     categoryId: 1,
-    title: '00t1Velit nulla voluptate ullamco elit laborum dolor cupidatat cillum proident anim culpa.',
+    title:
+      '00t1Velit nulla voluptate ullamco elit laborum dolor cupidatat cillum proident anim culpa.',
     content:
       't1Velit nulla voluptate ullamco elit laborum dolor cupidatat cillum proident anim culpa.'
   },
@@ -250,7 +251,8 @@ export const data = [
     id: 221,
     typeId: 1,
     categoryId: 1,
-    title: '22t1Velit nulla voluptate ullamco elit laborum dolor cupidatat cillum proident anim culpa.',
+    title:
+      '22t1Velit nulla voluptate ullamco elit laborum dolor cupidatat cillum proident anim culpa.',
     content:
       't1Velit nulla voluptate ullamco elit laborum dolor cupidatat cillum proident anim culpa.'
   },
@@ -316,7 +318,8 @@ export const data = [
     id: 2121,
     typeId: 1,
     categoryId: 1,
-    title: '2200t1Velit nulla voluptate ullamco elit laborum dolor cupidatat cillum proident anim culpa.',
+    title:
+      '2200t1Velit nulla voluptate ullamco elit laborum dolor cupidatat cillum proident anim culpa.',
     content:
       't1Velit nulla voluptate ullamco elit laborum dolor cupidatat cillum proident anim culpa.'
   },
@@ -382,7 +385,8 @@ export const data = [
     id: 31,
     typeId: 2,
     categoryId: 3,
-    title: 't2Velit nulla voluptate ullamco elit laborum dolor cupidatat cillum proident anim culpa.',
+    title:
+      't2Velit nulla voluptate ullamco elit laborum dolor cupidatat cillum proident anim culpa.',
     content:
       't2Velit nulla voluptate ullamco elit laborum dolor cupidatat cillum proident anim culpa.'
   },
@@ -533,4 +537,61 @@ export const categoryList = [
   }
 ] as CategoryEntity[]
 
-
+export const treeList = [
+  {
+    id: '1',
+    children: [
+      {
+        id: '1-1'
+      },
+      {
+        id: '1-2'
+      },
+      {
+        id: '1-3',
+        children: [
+          {
+            id: '1-3-1'
+          },
+          {
+            id: '1-3-2'
+          },
+          {
+            id: '1-3-3'
+          },
+          {
+            id: '1-3-4'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: '2',
+    children: [
+      {
+        id: '2-1'
+      },
+      {
+        id: '2-2'
+      },
+      {
+        id: '2-3',
+        children: [
+          {
+            id: '2-3-1'
+          },
+          {
+            id: '2-3-2'
+          },
+          {
+            id: '2-3-3'
+          },
+          {
+            id: '2-3-4'
+          }
+        ]
+      }
+    ]
+  }
+]

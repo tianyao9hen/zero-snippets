@@ -121,5 +121,7 @@ export const add = (article: ContentEntity) => {
       $title,
       $content
     )
-    `,article)
+    `,
+    article
+  )
 }

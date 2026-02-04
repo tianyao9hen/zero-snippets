@@ -1,7 +1,4 @@
-import Article from "@renderer/components/content/Article.vue"
-
 export default () => {
-
   /**
    * 根据文章id获取文章
    * @param aid 文章id
@@ -11,7 +8,7 @@ export default () => {
     return await window.api.getArticleById(aid)
   }
 
-  const listArticleByTidAndCid = async(tid: number, cid: number): Promise<ContentEntity[]> => {
+  const listArticleByTidAndCid = async (tid: number, cid: number): Promise<ContentEntity[]> => {
     return await window.api.listArticleByTidAndCid(tid, cid)
   }
 
@@ -24,7 +21,7 @@ export default () => {
   }
 
   const editArticle = async (article: ContentEntity): Promise<number> => {
-    return await window.api.editArticle({...article})
+    return await window.api.editArticle({ ...article })
   }
 
   const removeArticle = async (aid: number): Promise<number> => {
@@ -32,9 +29,8 @@ export default () => {
   }
 
   const addArticle = async (Article: ContentEntity): Promise<number> => {
-    return await window.api.addArticle({...Article})
+    return await window.api.addArticle({ ...Article })
   }
-
 
   return {
     getArticleById,

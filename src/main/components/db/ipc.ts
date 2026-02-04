@@ -17,6 +17,17 @@ import {
   remove as removeArticle,
   add as addArticle
 } from './sql/articleSql'
+import {
+  findAllByTypeId as findWebTreeByTypeId,
+  findById as findWebTreeNodeById,
+  add as addWebTreeNode,
+  update as updateWebTreeNode,
+  remove as removeWebTreeNode,
+  moveNode as moveWebTreeNode,
+  search as searchWebTree,
+  updateOrders as updateWebTreeOrders
+} from './sql/webTreeSql'
+import { fetchFavicon } from '../favicon'
 import { ipcEnum } from '../../../enum/ipcEnum'
 
 ipcMain.handle(
@@ -89,4 +100,88 @@ ipcMain.handle(ipcEnum.removeArticle, (_event: IpcMainInvokeEvent, articleId: nu
 
 ipcMain.handle(ipcEnum.addArticle, (_event: IpcMainInvokeEvent, article: ContentEntity) => {
   return addArticle(article)
+})
+
+// ==================== 网页树相关 IPC 处理 ====================
+
+/**
+ * 获取指定类型的所有网页树节点
+ */
+ipcMain.handle(ipcEnum.getWebTreeByTypeId, (_event: IpcMainInvokeEvent, typeId: number) => {
+  return findWebTreeByTypeId(typeId)
+})
+
+/**
+ * 根据ID获取网页树节点
+ */
+ipcMain.handle(ipcEnum.getWebTreeNodeById, (_event: IpcMainInvokeEvent, id: number) => {
+  return findWebTreeNodeById(id)
+})
+
+/**
+ * 添加网页树节点
+ */
+ipcMain.handle(
+  ipcEnum.addWebTreeNode,
+  (_event: IpcMainInvokeEvent, node: Omit<WebTreeNode, 'id' | 'createTime'>) => {
+    return addWebTreeNode(node)
+  }
+)
+
+/**
+ * 更新网页树节点
+ */
+ipcMain.handle(
+  ipcEnum.updateWebTreeNode,
+  (
+    _event: IpcMainInvokeEvent,
+    id: number,
+    updates: Partial<Omit<WebTreeNode, 'id' | 'createTime'>>
+  ) => {
+    return updateWebTreeNode(id, updates)
+  }
+)
+
+/**
+ * 删除网页树节点（级联删除子节点）
+ */
+ipcMain.handle(ipcEnum.removeWebTreeNode, (_event: IpcMainInvokeEvent, id: number) => {
+  return removeWebTreeNode(id)
+})
+
+/**
+ * 移动网页树节点到新的父节点
+ */
+ipcMain.handle(
+  ipcEnum.moveWebTreeNode,
+  (_event: IpcMainInvokeEvent, id: number, newParentId: number) => {
+    return moveWebTreeNode(id, newParentId)
+  }
+)
+
+/**
+ * 搜索网页树节点
+ */
+ipcMain.handle(
+  ipcEnum.searchWebTree,
+  (_event: IpcMainInvokeEvent, keyword: string, typeId: number) => {
+    return searchWebTree(keyword, typeId)
+  }
+)
+
+/**
+ * 批量更新网页树节点排序
+ */
+ipcMain.handle(
+  ipcEnum.reorderWebTreeNodes,
+  (_event: IpcMainInvokeEvent, orders: { id: number; orderNum: number }[]) => {
+    return updateWebTreeOrders(orders)
+  }
+)
+
+/**
+ * 获取网站图标
+ */
+ipcMain.handle(ipcEnum.fetchFavicon, (_event: IpcMainInvokeEvent, url: string) => {
+  return fetchFavicon(url)
 })

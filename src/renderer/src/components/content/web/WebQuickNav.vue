@@ -8,9 +8,7 @@
         @click="choiceCategory(0)"
       >
         <img :src="snippetsStore.content.selectCategoryId === 0 ? allIcon.url : allIcon.dUrl" />
-        <span class="box-item-content unselectable">
-          所有片段
-        </span>
+        <span class="box-item-content unselectable"> 所有片段 </span>
       </div>
       <div
         class="quick-nav-item box-item unselectable"
@@ -22,9 +20,7 @@
             snippetsStore.content.selectCategoryId === -1 ? noFolderIcon.url : noFolderIcon.dUrl
           "
         />
-        <span class="box-item-content unselectable">
-          未分类
-        </span>
+        <span class="box-item-content unselectable"> 未分类 </span>
       </div>
     </div>
   </main>

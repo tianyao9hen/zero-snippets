@@ -1,7 +1,8 @@
 import * as execute from '../sql'
 
 export const findAll = () => {
-  return execute.findAll(`
+  return execute.findAll(
+    `
     select
       id,
       name,
@@ -10,17 +11,20 @@ export const findAll = () => {
       create_time as createTime
     from snippets_type
     order by order_num
-  `, {}) as TypeEntity[]
+  `,
+    {}
+  ) as TypeEntity[]
 }
 
 export const findListByIdList = (idList: number[]) => {
-  if(!idList || idList.length === 0) {
+  if (!idList || idList.length === 0) {
     return Promise.resolve([])
   }
 
   const placeholders = idList.map(() => '?').join(',')
 
-  return execute.findAll(`
+  return execute.findAll(
+    `
     select
       id,
       name,
@@ -30,5 +34,7 @@ export const findListByIdList = (idList: number[]) => {
     from snippets_type
     where id in (${placeholders})
     order by order_num
-  `, idList) as TypeEntity[]
+  `,
+    idList
+  ) as TypeEntity[]
 }
