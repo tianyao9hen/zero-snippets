@@ -2,6 +2,7 @@ import { ElectronAPI } from '@electron-toolkit/preload'
 
 type FaviconFetchResult = {
   url: string | null
+  title: string | null
   success: boolean
   error?: string
 }
@@ -12,6 +13,7 @@ declare global {
     api: {
       showMainMenu: () => void
       setIgnoreMouseEvent: (ignore: boolean, options?: { forward: boolean }) => void
+      readClipboardText: () => string
       sql: <T>(
         sql: string,
         type: SqlActionType,
@@ -33,6 +35,11 @@ declare global {
       addArticle: (article: articleEntity) => number
       // 网页树相关 API
       getWebTreeByTypeId: (typeId: number) => Promise<WebTreeNode[]>
+      getWebTreeByTypeIdAndCategoryId: (
+        typeId: number,
+        categoryId: number
+      ) => Promise<WebTreeNode[]>
+      getWebTreeByTypeIdAndNullCategory: (typeId: number) => Promise<WebTreeNode[]>
       getWebTreeNodeById: (id: number) => Promise<WebTreeNode | undefined>
       addWebTreeNode: (node: Omit<WebTreeNode, 'id' | 'createTime'>) => Promise<number>
       updateWebTreeNode: (
@@ -43,6 +50,12 @@ declare global {
       moveWebTreeNode: (id: number, newParentId: number) => Promise<number>
       searchWebTree: (keyword: string, typeId: number) => Promise<WebTreeNode[]>
       reorderWebTreeNodes: (orders: { id: number; orderNum: number }[]) => Promise<number>
+      updateWebTreeNodeCategoryId: (id: number, categoryId: number) => Promise<number>
+      updateWebTreeNodeCategoryIdRecursive: (
+        id: number,
+        categoryId: number,
+        typeId: number
+      ) => Promise<number>
       // 图标获取 API
       fetchFavicon: (url: string) => Promise<FaviconFetchResult>
     }

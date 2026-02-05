@@ -8,6 +8,20 @@ import {
 } from '../composables/faviconUtils'
 
 /**
+ * 从HTML中解析标题
+ * @param html HTML内容
+ * @returns 标题文本或null
+ */
+function parseTitle(html: string): string | null {
+  const titleMatch = html.match(/<title[^>]*>([^<]*)<\/title>/i)
+  if (titleMatch && titleMatch[1]) {
+    const title = titleMatch[1].trim()
+    return title || null
+  }
+  return null
+}
+
+/**
  * 请求超时时间（毫秒）
  */
 const REQUEST_TIMEOUT = 5000
@@ -87,7 +101,7 @@ async function tryFetchFavicon(url: string): Promise<string | null> {
 }
 
 /**
- * 获取网站图标
+ * 获取网站图标和标题
  * @param websiteUrl 网站URL
  * @returns 图标获取结果
  */
@@ -96,18 +110,23 @@ export async function fetchFavicon(websiteUrl: string): Promise<FaviconFetchResu
   if (!isValidUrl(websiteUrl)) {
     return {
       url: null,
+      title: null,
       success: false,
       error: '无效的URL格式'
     }
   }
 
   const cleanWebsiteUrl = cleanUrl(websiteUrl)
+  let pageTitle: string | null = null
 
   try {
-    // 1. 首先尝试获取HTML并解析图标链接
+    // 1. 首先尝试获取HTML并解析图标链接和标题
     const html = await fetchHtml(cleanWebsiteUrl)
 
     if (html) {
+      // 解析网页标题
+      pageTitle = parseTitle(html)
+
       // 解析HTML中的图标链接
       const candidates = parseFaviconLinks(html, cleanWebsiteUrl)
       const sortedCandidates = sortFaviconCandidates(candidates)
@@ -118,6 +137,7 @@ export async function fetchFavicon(websiteUrl: string): Promise<FaviconFetchResu
         if (result) {
           return {
             url: result,
+            title: pageTitle,
             success: true
           }
         }
@@ -131,19 +151,22 @@ export async function fetchFavicon(websiteUrl: string): Promise<FaviconFetchResu
     if (standardResult) {
       return {
         url: standardResult,
+        title: pageTitle,
         success: true
       }
     }
 
-    // 3. 所有尝试都失败
+    // 3. 所有尝试都失败，但可能获取到了标题
     return {
       url: null,
+      title: pageTitle,
       success: false,
       error: '无法获取网站图标'
     }
   } catch (error) {
     return {
       url: null,
+      title: pageTitle,
       success: false,
       error: error instanceof Error ? error.message : '获取图标时发生错误'
     }

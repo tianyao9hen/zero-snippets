@@ -18,7 +18,11 @@ export const ipcEnum = {
   addArticle: 'add-article',
   // 网页树相关 IPC 事件
   getWebTreeByTypeId: 'get-web-tree-by-type-id',
+  getWebTreeByTypeIdAndCategoryId: 'get-web-tree-by-type-id-and-category-id',
+  getWebTreeByTypeIdAndNullCategory: 'get-web-tree-by-type-id-and-null-category',
   getWebTreeNodeById: 'get-web-tree-node-by-id',
+  updateWebTreeNodeCategoryId: 'update-web-tree-node-category-id',
+  updateWebTreeNodeCategoryIdRecursive: 'update-web-tree-node-category-id-recursive',
   addWebTreeNode: 'add-web-tree-node',
   updateWebTreeNode: 'update-web-tree-node',
   removeWebTreeNode: 'remove-web-tree-node',

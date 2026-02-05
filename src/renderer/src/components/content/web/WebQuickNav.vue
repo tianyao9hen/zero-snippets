@@ -39,12 +39,17 @@ const router = useRouter()
 
 function choiceCategory(cid: number) {
   snippetsStore.choiceCategory(cid)
+  // 根据 cid 决定路由参数
+  // cid 为 0 时表示"所有片段"，携带 cid=0 参数
+  // cid 为 -1 时表示"未分类"，携带 cid=-1 参数
+  // 其他值携带对应的 cid 参数
+  const params: Record<string, string> = {
+    tid: route.params.tid as string
+  }
+  params.cid = cid.toString()
   router.push({
     name: 'folder',
-    params: {
-      tid: route.params.tid,
-      cid
-    },
+    params,
     query: {
       t: Date.now()
     }

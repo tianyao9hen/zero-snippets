@@ -205,6 +205,46 @@ export default function useWebTree() {
   }
 
   /**
+   * 获取指定类型和类别的所有网页树节点
+   * @function getWebTreeByTypeIdAndCategoryId
+   * @description 从主进程API获取指定类型和类别的所有节点数据
+   *
+   * @param {number} typeId - 类型ID
+   * @param {number} categoryId - 类别ID
+   * @returns {Promise<WebTreeNode[]>} 节点列表
+   * @throws {Error} 当API调用失败时抛出错误
+   */
+  const getWebTreeByTypeIdAndCategoryId = async (
+    typeId: number,
+    categoryId: number
+  ): Promise<WebTreeNode[]> => {
+    try {
+      return await window.api.getWebTreeByTypeIdAndCategoryId(typeId, categoryId)
+    } catch (error) {
+      console.error('获取网页树失败:', error)
+      throw new Error('获取网页树数据失败')
+    }
+  }
+
+  /**
+   * 获取指定类型的未分类网页树节点（category_id 为 null）
+   * @function getWebTreeByTypeIdAndNullCategory
+   * @description 从主进程API获取指定类型的未分类节点数据
+   *
+   * @param {number} typeId - 类型ID
+   * @returns {Promise<WebTreeNode[]>} 节点列表
+   * @throws {Error} 当API调用失败时抛出错误
+   */
+  const getWebTreeByTypeIdAndNullCategory = async (typeId: number): Promise<WebTreeNode[]> => {
+    try {
+      return await window.api.getWebTreeByTypeIdAndNullCategory(typeId)
+    } catch (error) {
+      console.error('获取网页树失败:', error)
+      throw new Error('获取网页树数据失败')
+    }
+  }
+
+  /**
    * 根据ID获取单个节点
    * @function getWebTreeNodeById
    * @description 获取指定ID的节点详细信息
@@ -306,6 +346,114 @@ export default function useWebTree() {
       console.error('更新节点失败:', error)
       throw new Error('更新节点失败')
     }
+  }
+
+  /**
+   * 更新节点的 category_id
+   * @function updateWebTreeNodeCategoryId
+   * @description 更新指定节点的 category_id
+   *
+   * @param {number} id - 节点ID
+   * @param {number} categoryId - 新的类别ID
+   * @returns {Promise<number>} 受影响的行数
+   * @throws {Error} 当API调用失败时抛出错误
+   */
+  const updateWebTreeNodeCategoryId = async (id: number, categoryId: number): Promise<number> => {
+    try {
+      return await window.api.updateWebTreeNodeCategoryId(id, categoryId)
+    } catch (error) {
+      console.error('更新节点分类失败:', error)
+      throw new Error('更新节点分类失败')
+    }
+  }
+
+  /**
+   * 递归更新节点及其所有子节点的 category_id
+   * @function updateWebTreeNodeCategoryIdRecursive
+   * @description 更新指定节点及其所有层级子节点的 category_id，确保分类一致性
+   *
+   * @param {number} id - 节点ID
+   * @param {number} categoryId - 新的类别ID
+   * @param {number} typeId - 类型ID
+   * @returns {Promise<number>} 受影响的行数总数
+   * @throws {Error} 当API调用失败时抛出错误
+   */
+  const updateWebTreeNodeCategoryIdRecursive = async (
+    id: number,
+    categoryId: number,
+    typeId: number
+  ): Promise<number> => {
+    try {
+      return await window.api.updateWebTreeNodeCategoryIdRecursive(id, categoryId, typeId)
+    } catch (error) {
+      console.error('递归更新节点分类失败:', error)
+      throw new Error('递归更新节点分类失败')
+    }
+  }
+
+  /**
+   * 递归更新树中节点及其所有子节点的 category_id（前端状态更新）
+   * @function updateNodeCategoryInTreeRecursive
+   * @description 在前端树形结构中递归更新节点及其子节点的 categoryId
+   *
+   * @param {WebTreeNodeView[]} tree - 树形结构
+   * @param {WebTreeNode[]} flatNodeList - 扁平节点列表
+   * @param {number} nodeId - 节点ID
+   * @param {number} categoryId - 新的类别ID
+   * @returns {boolean} 是否更新成功
+   */
+  const updateNodeCategoryInTreeRecursive = (
+    tree: WebTreeNodeView[],
+    flatNodeList: WebTreeNode[],
+    nodeId: number,
+    categoryId: number
+  ): boolean => {
+    // 1. 在扁平列表中更新节点及其所有子节点的 categoryId
+    const updateInFlatList = (parentId: number): number => {
+      let count = 0
+      const children = flatNodeList.filter((n) => n.parentId === parentId)
+      for (const child of children) {
+        child.categoryId = categoryId
+        count++
+        count += updateInFlatList(child.id)
+      }
+      return count
+    }
+
+    // 2. 更新目标节点本身
+    const targetNode = flatNodeList.find((n) => n.id === nodeId)
+    if (targetNode) {
+      targetNode.categoryId = categoryId
+    }
+
+    // 3. 递归更新所有子节点
+    updateInFlatList(nodeId)
+
+    // 4. 在树形结构中更新
+    const updateInTree = (nodes: WebTreeNodeView[]): boolean => {
+      for (const node of nodes) {
+        if (node.id === nodeId) {
+          // 找到目标节点，更新其 categoryId
+          node.categoryId = categoryId
+          // 递归更新其子节点
+          const updateChildren = (children: WebTreeNodeView[] | undefined): void => {
+            if (!children) return
+            for (const child of children) {
+              child.categoryId = categoryId
+              updateChildren(child.children)
+            }
+          }
+          updateChildren(node.children)
+          return true
+        }
+        if (node.children) {
+          if (updateInTree(node.children)) return true
+        }
+      }
+      return false
+    }
+
+    return updateInTree(tree)
   }
 
   /**
@@ -745,6 +893,7 @@ export default function useWebTree() {
    * @param {number} nodeId - 要移动的节点ID
    * @param {number} newParentId - 新的父节点ID（0表示根级别）
    * @param {number} newOrderNum - 新的排序号
+   * @param {number} [newCategoryId] - 新的类别ID（可选）
    * @returns {boolean} 是否移动成功
    */
   const moveNodeInTree = (
@@ -752,7 +901,8 @@ export default function useWebTree() {
     flatNodeList: WebTreeNode[],
     nodeId: number,
     newParentId: number,
-    newOrderNum: number
+    newOrderNum: number,
+    newCategoryId?: number
   ): boolean => {
     // 1. 在扁平列表中更新 parentId 和 orderNum
     const flatNode = flatNodeList.find((n) => n.id === nodeId)
@@ -762,6 +912,10 @@ export default function useWebTree() {
     }
     flatNode.parentId = newParentId
     flatNode.orderNum = newOrderNum
+    // 如果提供了新的 categoryId，同步更新
+    if (newCategoryId !== undefined) {
+      flatNode.categoryId = newCategoryId
+    }
 
     // 2. 在树中找到节点及其当前父节点
     const result = findNodeWithParentInternal(tree, nodeId)
@@ -777,6 +931,10 @@ export default function useWebTree() {
     // 4. 更新节点的 parentId 和 orderNum
     movedNode.parentId = newParentId
     movedNode.orderNum = newOrderNum
+    // 如果提供了新的 categoryId，同步更新树中的节点
+    if (newCategoryId !== undefined) {
+      movedNode.categoryId = newCategoryId
+    }
 
     // 5. 插入到新位置
     if (newParentId === 0) {
@@ -812,9 +970,14 @@ export default function useWebTree() {
   return {
     buildTree,
     getWebTreeByTypeId,
+    getWebTreeByTypeIdAndCategoryId,
+    getWebTreeByTypeIdAndNullCategory,
     getWebTreeNodeById,
     addWebTreeNode,
     updateWebTreeNode,
+    updateWebTreeNodeCategoryId,
+    updateWebTreeNodeCategoryIdRecursive,
+    updateNodeCategoryInTreeRecursive,
     removeWebTreeNode,
     moveWebTreeNode,
     searchWebTree,

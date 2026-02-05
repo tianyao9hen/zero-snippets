@@ -61,13 +61,14 @@ enum WebTreeNodeType {
 // 网页树节点实体
 type WebTreeNode = {
   id: number
-  parentId: number | null // 父节点ID，0表示根节点
+  parentId: number // 父节点ID，0表示根节点
   typeId: number // 类型ID
   title: string // 节点名称
   url?: string | null // 网页地址（仅网页节点）
   shortcut?: string | null // 快捷键
   description?: string | null // 节点描述
   icon?: string | null // 网页图标地址（favicon）
+  categoryId?: number | null // 分类ID（null表示未分类）
   nodeType: WebTreeNodeType // 节点类型
   orderNum: number // 排序号
   createTime?: string // 创建时间

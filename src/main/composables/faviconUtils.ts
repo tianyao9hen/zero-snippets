@@ -15,6 +15,7 @@ export interface FaviconCandidate {
  */
 export interface FaviconFetchResult {
   url: string | null
+  title: string | null
   success: boolean
   error?: string
 }

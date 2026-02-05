@@ -13,6 +13,7 @@ export enum FaviconFetchStatus {
  */
 export interface FaviconFetchResult {
   url: string | null
+  title: string | null
   status: FaviconFetchStatus
   error?: string
 }
@@ -40,7 +41,7 @@ export function debounce<T extends (...args: any[]) => any>(
 }
 
 /**
- * 获取网站图标
+ * 获取网站图标和标题
  * @param url 网站URL
  * @returns 图标获取结果
  */
@@ -51,18 +52,21 @@ export async function fetchWebsiteFavicon(url: string): Promise<FaviconFetchResu
     if (result.success && result.url) {
       return {
         url: result.url,
+        title: result.title,
         status: FaviconFetchStatus.SUCCESS
       }
     }
 
     return {
       url: null,
+      title: result.title,
       status: FaviconFetchStatus.ERROR,
       error: result.error || '无法获取网站图标'
     }
   } catch (error) {
     return {
       url: null,
+      title: null,
       status: FaviconFetchStatus.ERROR,
       error: error instanceof Error ? error.message : '获取图标时发生错误'
     }
@@ -124,6 +128,7 @@ export function createDebouncedFaviconFetcher(
     // 通知开始加载
     callback({
       url: null,
+      title: null,
       status: FaviconFetchStatus.LOADING
     })
 
@@ -144,6 +149,7 @@ export function createDebouncedFaviconFetcher(
 
       callback({
         url: null,
+        title: null,
         status: FaviconFetchStatus.ERROR,
         error: '获取图标失败'
       })

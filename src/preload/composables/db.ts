@@ -78,6 +78,25 @@ export function getWebTreeByTypeId(typeId: number) {
 }
 
 /**
+ * 获取指定类型和类别的所有网页树节点
+ * @param typeId 类型ID
+ * @param categoryId 类别ID
+ * @returns Promise<WebTreeNode[]> 节点列表
+ */
+export function getWebTreeByTypeIdAndCategoryId(typeId: number, categoryId: number) {
+  return ipcRenderer.invoke(ipcEnum.getWebTreeByTypeIdAndCategoryId, typeId, categoryId)
+}
+
+/**
+ * 获取指定类型的未分类网页树节点（category_id 为 null）
+ * @param typeId 类型ID
+ * @returns Promise<WebTreeNode[]> 节点列表
+ */
+export function getWebTreeByTypeIdAndNullCategory(typeId: number) {
+  return ipcRenderer.invoke(ipcEnum.getWebTreeByTypeIdAndNullCategory, typeId)
+}
+
+/**
  * 根据ID获取网页树节点
  * @param id 节点ID
  * @returns Promise<WebTreeNode | undefined> 节点实体
@@ -144,6 +163,31 @@ export function searchWebTree(keyword: string, typeId: number) {
  */
 export function reorderWebTreeNodes(orders: { id: number; orderNum: number }[]) {
   return ipcRenderer.invoke(ipcEnum.reorderWebTreeNodes, orders)
+}
+
+/**
+ * 更新网页树节点的 category_id
+ * @param id 节点ID
+ * @param categoryId 类别ID
+ * @returns Promise<number> 受影响的行数
+ */
+export function updateWebTreeNodeCategoryId(id: number, categoryId: number) {
+  return ipcRenderer.invoke(ipcEnum.updateWebTreeNodeCategoryId, id, categoryId)
+}
+
+/**
+ * 递归更新网页树节点及其所有子节点的 category_id
+ * @param id 节点ID
+ * @param categoryId 类别ID
+ * @param typeId 类型ID
+ * @returns Promise<number> 受影响的行数
+ */
+export function updateWebTreeNodeCategoryIdRecursive(
+  id: number,
+  categoryId: number,
+  typeId: number
+) {
+  return ipcRenderer.invoke(ipcEnum.updateWebTreeNodeCategoryIdRecursive, id, categoryId, typeId)
 }
 
 /**

@@ -1,4 +1,4 @@
-import { contextBridge } from 'electron'
+import { contextBridge, clipboard } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 import { showMainMenu } from './composables/menu'
 import { setIgnoreMouseEvent } from './composables/setIgnoreMouseEvent'
@@ -19,6 +19,8 @@ import {
   removeArticle,
   addArticle,
   getWebTreeByTypeId,
+  getWebTreeByTypeIdAndCategoryId,
+  getWebTreeByTypeIdAndNullCategory,
   getWebTreeNodeById,
   addWebTreeNode,
   updateWebTreeNode,
@@ -26,6 +28,8 @@ import {
   moveWebTreeNode,
   searchWebTree,
   reorderWebTreeNodes,
+  updateWebTreeNodeCategoryId,
+  updateWebTreeNodeCategoryIdRecursive,
   fetchFavicon
 } from './composables/db'
 
@@ -33,6 +37,7 @@ import {
 const api = {
   showMainMenu,
   setIgnoreMouseEvent,
+  readClipboardText: () => clipboard.readText(),
   sql,
   getAllType,
   getTypeListByIdList,
@@ -49,6 +54,8 @@ const api = {
   removeArticle,
   addArticle,
   getWebTreeByTypeId,
+  getWebTreeByTypeIdAndCategoryId,
+  getWebTreeByTypeIdAndNullCategory,
   getWebTreeNodeById,
   addWebTreeNode,
   updateWebTreeNode,
@@ -56,6 +63,8 @@ const api = {
   moveWebTreeNode,
   searchWebTree,
   reorderWebTreeNodes,
+  updateWebTreeNodeCategoryId,
+  updateWebTreeNodeCategoryIdRecursive,
   fetchFavicon
 }
 

@@ -75,17 +75,26 @@
 
       <!-- 节点标题 - 展示模式 -->
       <div v-else class="flex-1 flex items-center min-w-0 gap-1" :title="nodeTooltip">
-        <!-- 节点名称 -->
-        <span
-          class="w-[140px] text-xs leading-[18px] truncate"
-          :class="{ 'text-white': isSelected }"
-        >
-          <HighlightText
-            :text="node.title"
-            :keyword="highlightInfo?.keyword"
-            :is-selected="isSelected"
-          />
-        </span>
+        <!-- 节点名称和未分类标识容器 -->
+        <div class="flex items-center gap-1 max-w-[140px]">
+          <!-- 节点名称 -->
+          <span class="text-xs leading-[18px] truncate" :class="{ 'text-white': isSelected }">
+            <HighlightText
+              :text="node.title"
+              :keyword="highlightInfo?.keyword"
+              :is-selected="isSelected"
+            />
+          </span>
+
+          <!-- 未分类标识 -->
+          <span
+            v-if="node.categoryId === -1"
+            class="text-[10px] px-1 py-0.5 rounded flex-shrink-0"
+            :class="isSelected ? 'bg-gray-500/50 text-gray-200' : 'bg-gray-100 text-gray-500'"
+          >
+            未分类
+          </span>
+        </div>
 
         <!-- 网页节点额外信息 - 表格样式右对齐 -->
         <div v-if="isWebNode" class="flex-1 flex items-center justify-end pr-3">
@@ -176,7 +185,7 @@
  *   @toggle="handleToggle"
  * />
  */
-import { ref, computed, nextTick, watch, inject, h, defineComponent, provide, onMounted } from 'vue'
+import { ref, computed, nextTick, watch, inject, h, defineComponent, provide } from 'vue'
 import { iconMap } from '@renderer/composables/iconUtils'
 import { WebTreeNodeType } from '@renderer/enums'
 import {
@@ -351,22 +360,21 @@ const currentDropPosition = ref<DropPosition>(null)
 /** 标记鼠标是否悬停在当前节点上 */
 const isHovered = ref(false)
 
-/** 标记是否为新添加的节点（用于显示动画） */
+/** 标记是否为新添加的节点（用于显示动画）- 已禁用动画 */
 const isNewNode = ref(false)
 
-// 组件挂载时检查是否为新节点（挂载后3秒内认为是新节点）
-onMounted(() => {
-  // 如果节点创建时间在3秒内，标记为新节点
-  const createTime = props.node.createTime ? new Date(props.node.createTime).getTime() : 0
-  const now = Date.now()
-  if (createTime > 0 && now - createTime < 3000) {
-    isNewNode.value = true
-    // 3秒后移除新节点标记
-    setTimeout(() => {
-      isNewNode.value = false
-    }, 3000)
-  }
-})
+// 新节点动画已禁用，直接显示，不做特殊处理
+// 如需恢复动画，取消下面代码的注释：
+// onMounted(() => {
+//   const createTime = props.node.createTime ? new Date(props.node.createTime).getTime() : 0
+//   const now = Date.now()
+//   if (createTime > 0 && now - createTime < 3000) {
+//     isNewNode.value = true
+//     setTimeout(() => {
+//       isNewNode.value = false
+//     }, 3000)
+//   }
+// })
 
 // ==================== 注入状态 ====================
 
@@ -433,12 +441,17 @@ const nodeIconSrc = computed(() => {
   }
 
   // Web节点图标逻辑
-  // 1. 如果有自定义图标且加载成功且未悬停，显示自定义图标
-  if (props.node.icon && !iconLoadError.value && !isIconHovered.value) {
+  // 1. 如果有自定义图标且加载成功，显示自定义图标（选中时也不变）
+  if (props.node.icon && !iconLoadError.value) {
     return props.node.icon
   }
 
-  // 2. 显示默认Web图标（dUrl或url取决于悬停状态）
+  // 2. 如果节点被选中，显示高亮图标
+  if (isSelected.value) {
+    return iconMap.web.url
+  }
+
+  // 3. 显示默认Web图标（dUrl或url取决于悬停状态）
   return isIconHovered.value ? iconMap.web.url : iconMap.web.dUrl
 })
 

@@ -10,7 +10,7 @@
 
 <script setup lang="ts">
 import { onMounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import WebTree from '@renderer/components/content/web/WebTree.vue'
 
 const route = useRoute()

@@ -19,13 +19,17 @@ import {
 } from './sql/articleSql'
 import {
   findAllByTypeId as findWebTreeByTypeId,
+  findAllByTypeIdAndCategoryId as findWebTreeByTypeIdAndCategoryId,
+  findAllByTypeIdAndNullCategory as findWebTreeByTypeIdAndNullCategory,
   findById as findWebTreeNodeById,
   add as addWebTreeNode,
   update as updateWebTreeNode,
   remove as removeWebTreeNode,
   moveNode as moveWebTreeNode,
   search as searchWebTree,
-  updateOrders as updateWebTreeOrders
+  updateOrders as updateWebTreeOrders,
+  updateCategoryId as updateWebTreeNodeCategoryId,
+  updateCategoryIdRecursive as updateWebTreeNodeCategoryIdRecursive
 } from './sql/webTreeSql'
 import { fetchFavicon } from '../favicon'
 import { ipcEnum } from '../../../enum/ipcEnum'
@@ -112,6 +116,26 @@ ipcMain.handle(ipcEnum.getWebTreeByTypeId, (_event: IpcMainInvokeEvent, typeId: 
 })
 
 /**
+ * 获取指定类型和类别的所有网页树节点
+ */
+ipcMain.handle(
+  ipcEnum.getWebTreeByTypeIdAndCategoryId,
+  (_event: IpcMainInvokeEvent, typeId: number, categoryId: number) => {
+    return findWebTreeByTypeIdAndCategoryId(typeId, categoryId)
+  }
+)
+
+/**
+ * 获取指定类型的未分类网页树节点（category_id 为 null）
+ */
+ipcMain.handle(
+  ipcEnum.getWebTreeByTypeIdAndNullCategory,
+  (_event: IpcMainInvokeEvent, typeId: number) => {
+    return findWebTreeByTypeIdAndNullCategory(typeId)
+  }
+)
+
+/**
  * 根据ID获取网页树节点
  */
 ipcMain.handle(ipcEnum.getWebTreeNodeById, (_event: IpcMainInvokeEvent, id: number) => {
@@ -156,6 +180,26 @@ ipcMain.handle(
   ipcEnum.moveWebTreeNode,
   (_event: IpcMainInvokeEvent, id: number, newParentId: number) => {
     return moveWebTreeNode(id, newParentId)
+  }
+)
+
+/**
+ * 更新网页树节点的 category_id
+ */
+ipcMain.handle(
+  ipcEnum.updateWebTreeNodeCategoryId,
+  (_event: IpcMainInvokeEvent, id: number, categoryId: number) => {
+    return updateWebTreeNodeCategoryId(id, categoryId)
+  }
+)
+
+/**
+ * 递归更新网页树节点及其所有子节点的 category_id
+ */
+ipcMain.handle(
+  ipcEnum.updateWebTreeNodeCategoryIdRecursive,
+  (_event: IpcMainInvokeEvent, id: number, categoryId: number, typeId: number) => {
+    return updateWebTreeNodeCategoryIdRecursive(id, categoryId, typeId)
   }
 )
 

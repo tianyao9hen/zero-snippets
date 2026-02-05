@@ -13,7 +13,7 @@ interface WebTreeNodeEntity {
   shortcut?: string | null
   description?: string | null
   icon?: string | null
-  categoryId: number
+  categoryId?: number | null
   nodeType: number // 0-文件夹, 1-网页
   orderNum: number
   createTime?: string
@@ -164,7 +164,7 @@ export const add = (node: Omit<WebTreeNodeEntity, 'id' | 'createTime'>): number 
       shortcut: node.shortcut ?? null,
       description: node.description ?? null,
       icon: node.icon ?? null,
-      categoryId: node.categoryId ?? 64,
+      categoryId: node.categoryId ?? -1,
       nodeType: node.nodeType,
       orderNum: maxOrderNum + 1
     }
@@ -274,6 +274,74 @@ export const updateOrder = (id: number, orderNum: number): number => {
 }
 
 /**
+ * 更新节点的 category_id
+ * @param id 节点ID
+ * @param categoryId 新的类别ID
+ * @returns number 受影响的行数
+ */
+export const updateCategoryId = (id: number, categoryId: number): number => {
+  return execute.edit(
+    `
+    update snippets_web_tree
+    set category_id = $categoryId
+    where id = $id
+  `,
+    { id, categoryId }
+  ) as number
+}
+
+/**
+ * 递归更新节点及其所有子节点的 category_id
+ * @param id 节点ID
+ * @param categoryId 新的类别ID
+ * @param typeId 类型ID（用于查询子节点）
+ * @returns number 受影响的行数总数
+ */
+export const updateCategoryIdRecursive = (
+  id: number,
+  categoryId: number,
+  typeId: number
+): number => {
+  let affectedRows = 0
+
+  // 更新当前节点的 category_id
+  affectedRows += updateCategoryId(id, categoryId)
+
+  // 递归获取并更新所有子节点
+  const children = findChildrenByParentId(id, typeId)
+  for (const child of children) {
+    affectedRows += updateCategoryIdRecursive(child.id, categoryId, typeId)
+  }
+
+  return affectedRows
+}
+
+/**
+ * 批量更新节点的 category_id
+ * @param ids 节点ID数组
+ * @param categoryId 新的类别ID
+ * @returns number 受影响的行数
+ */
+export const updateCategoryIdBatch = (ids: number[], categoryId: number): number => {
+  if (ids.length === 0) return 0
+
+  const placeholders = ids.map((_, index) => `$id${index}`).join(', ')
+  const params: Record<string, number> = { categoryId }
+  ids.forEach((id, index) => {
+    params[`id${index}`] = id
+  })
+
+  return execute.edit(
+    `
+    update snippets_web_tree
+    set category_id = $categoryId
+    where id in (${placeholders})
+  `,
+    params
+  ) as number
+}
+
+/**
  * 移动节点到新的父节点
  * @param id 节点ID
  * @param newParentId 新的父节点ID
@@ -331,6 +399,70 @@ export const findChildrenByParentId = (parentId: number, typeId: number): WebTre
     order by order_num
   `,
     { parentId, typeId }
+  ) as WebTreeNodeEntity[]
+}
+
+/**
+ * 根据类型ID和类别ID获取节点列表
+ * @param typeId 类型ID
+ * @param categoryId 类别ID
+ * @returns WebTreeNodeEntity[] 节点列表
+ */
+export const findAllByTypeIdAndCategoryId = (
+  typeId: number,
+  categoryId: number
+): WebTreeNodeEntity[] => {
+  return execute.findAll(
+    `
+    select
+      id,
+      parent_id as parentId,
+      type_id as typeId,
+      title,
+      url,
+      shortcut,
+      description,
+      icon,
+      category_id as categoryId,
+      node_type as nodeType,
+      order_num as orderNum,
+      create_time as createTime
+    from snippets_web_tree
+    where type_id = $typeId
+      and category_id = $categoryId
+    order by order_num
+  `,
+    { typeId, categoryId }
+  ) as WebTreeNodeEntity[]
+}
+
+/**
+ * 根据类型ID获取未分类节点（category_id 为 -1）
+ * @param typeId 类型ID
+ * @returns WebTreeNodeEntity[] 节点列表
+ */
+export const findAllByTypeIdAndNullCategory = (typeId: number): WebTreeNodeEntity[] => {
+  return execute.findAll(
+    `
+    select
+      id,
+      parent_id as parentId,
+      type_id as typeId,
+      title,
+      url,
+      shortcut,
+      description,
+      icon,
+      category_id as categoryId,
+      node_type as nodeType,
+      order_num as orderNum,
+      create_time as createTime
+    from snippets_web_tree
+    where type_id = $typeId
+      and category_id = -1
+    order by order_num
+  `,
+    { typeId }
   ) as WebTreeNodeEntity[]
 }
 

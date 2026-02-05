@@ -85,6 +85,7 @@
       class="flex-1 overflow-y-auto py-2 scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-transparent"
       :class="{ 'bg-[rgba(64,150,255,0.1)] shadow-[inset_0_0_0_2px_#4096ff]': isRootDropTarget }"
       @click="handleTreeContentClick"
+      @contextmenu="handleTreeContextMenu"
       @dragover="handleRootDragOver"
       @dragleave="handleRootDragLeave"
       @drop="handleRootDrop"
@@ -170,6 +171,7 @@
       :node-type="typeIdForAdd"
       :node-data="editNodeData"
       :flat-node-list="flatNodeList"
+      :category-id="categoryId"
       @success="handleDialogSuccess"
     />
   </main>
@@ -195,7 +197,7 @@
  * @example
  * <WebTree />
  */
-import { ref, computed, onMounted, onUnmounted, provide, readonly, h } from 'vue'
+import { ref, computed, onMounted, onUnmounted, provide, readonly, h, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import useWebTree from '@renderer/hooks/useWebTree'
 import { iconMap } from '@renderer/composables/iconUtils'
@@ -234,11 +236,23 @@ const route = useRoute()
 /** 类型ID */
 const typeId = computed(() => Number(route.params.tid) || 2)
 
+/** 类别ID（从路由参数获取） */
+const categoryId = computed(() => {
+  const cid = route.params.cid
+  if (cid === undefined || cid === '') return undefined
+  return Number(cid)
+})
+
 /** WebTree hooks，包含树操作的相关方法 */
 const {
   buildTree,
   getWebTreeByTypeId,
+  getWebTreeByTypeIdAndCategoryId,
+  getWebTreeByTypeIdAndNullCategory,
   updateWebTreeNode,
+  updateWebTreeNodeCategoryId,
+  updateWebTreeNodeCategoryIdRecursive,
+  updateNodeCategoryInTreeRecursive,
   removeWebTreeNode,
   moveWebTreeNode,
   expandAll,
@@ -379,6 +393,16 @@ onMounted(async () => {
 })
 
 /**
+ * 监听路由参数 cid 的变化，当变化时重新加载数据
+ */
+watch(
+  () => route.params.cid,
+  async () => {
+    await loadTreeData()
+  }
+)
+
+/**
  * 组件卸载时移除键盘事件监听
  */
 onUnmounted(() => {
@@ -390,12 +414,26 @@ onUnmounted(() => {
 /**
  * 加载树数据
  * 从API获取数据并构建树形结构
+ * 根据 categoryId 决定获取全部数据还是按类别筛选
  */
 const loadTreeData = async () => {
   loading.value = true
   try {
-    // 获取扁平列表数据
-    flatNodeList.value = await getWebTreeByTypeId(typeId.value)
+    // 根据 categoryId 决定获取数据的方式
+    // categoryId 为 undefined 或 0 或 null 时获取全部数据
+    // categoryId 为 -1 时表示未分类（查询 category_id 为 null 的数据）
+    // categoryId 为其他正整数时按对应类别筛选
+    const cid = categoryId.value
+    if (cid === undefined || cid === 0 || cid === null) {
+      // 获取全部数据
+      flatNodeList.value = await getWebTreeByTypeId(typeId.value)
+    } else if (cid === -1) {
+      // 获取未分类数据（category_id 为 null）
+      flatNodeList.value = await getWebTreeByTypeIdAndNullCategory(typeId.value)
+    } else {
+      // 按类别筛选
+      flatNodeList.value = await getWebTreeByTypeIdAndCategoryId(typeId.value, cid)
+    }
     // 构建树形结构
     treeData.value = buildTree(flatNodeList.value)
     // 默认展开所有节点
@@ -427,6 +465,48 @@ const handleTreeContentClick = (event: MouseEvent) => {
   if (event.target === treeContentRef.value) {
     selectedNodeId.value = 0
   }
+}
+
+/**
+ * 处理树形内容区域右键菜单
+ * 在空白区域右键显示添加文件夹和添加网页的菜单
+ * 添加的节点 category_id 规则：cid=0 时 category_id=-1，否则使用 cid
+ */
+const handleTreeContextMenu = (event: MouseEvent) => {
+  // 如果点击的是树节点，不处理（由 TreeNode 组件处理）
+  const target = event.target as HTMLElement
+  if (target.closest('.tree-node')) {
+    return
+  }
+
+  event.preventDefault()
+  event.stopPropagation()
+
+  // 取消选中节点
+  selectedNodeId.value = 0
+
+  // 计算 category_id：cid=0 时使用 -1，否则使用 cid
+  const cid = categoryId.value
+  const targetCategoryId = cid === 0 ? -1 : (cid ?? -1)
+
+  // 显示右键菜单
+  ContextMenu.showContextMenu({
+    x: event.x,
+    y: event.y,
+    theme: 'flat',
+    items: [
+      {
+        label: h('div', { style: { fontSize: '12px', color: '#64748b' } }, '添加文件夹'),
+        icon: h('img', { src: folderIcon.url, style: { width: '12px', height: '12px' } }),
+        onClick: () => openAddDialogWithCategory(WebTreeNodeType.FOLDER, targetCategoryId)
+      },
+      {
+        label: h('div', { style: { fontSize: '12px', color: '#64748b' } }, '添加网页'),
+        icon: h('img', { src: linkIcon.url, style: { width: '12px', height: '12px' } }),
+        onClick: () => openAddDialogWithCategory(WebTreeNodeType.WEBSITE, targetCategoryId)
+      }
+    ]
+  })
 }
 
 /**
@@ -492,39 +572,50 @@ const handleEditCancel = (node: WebTreeNodeView) => {
  * 注意：添加子节点使用与工具栏按钮相同的统一逻辑
  * - 右键点击的节点会被设为选中状态
  * - 然后根据节点类型自动计算新节点的父节点
+ * - 只有文件夹类型节点才显示添加子节点选项
  */
 const handleContextMenu = (payload: { node: WebTreeNodeView; event: MouseEvent }) => {
   const { node, event } = payload
   // 选中当前节点（这是与工具栏按钮的主要区别：右键会自动选中点击的节点）
   selectedNodeId.value = node.id
 
+  // 构建菜单项：只有文件夹类型才显示添加选项
+  const menuItems: any[] = []
+
+  if (node.nodeType === WebTreeNodeType.FOLDER) {
+    menuItems.push(
+      {
+        label: h('div', { style: { fontSize: '12px', color: '#64748b' } }, '添加文件夹'),
+        icon: h('img', { src: folderIcon.url, style: { width: '12px', height: '12px' } }),
+        onClick: () => openAddDialog(WebTreeNodeType.FOLDER)
+      },
+      {
+        label: h('div', { style: { fontSize: '12px', color: '#64748b' } }, '添加网页'),
+        icon: h('img', { src: linkIcon.url, style: { width: '12px', height: '12px' } }),
+        onClick: () => openAddDialog(WebTreeNodeType.WEBSITE)
+      }
+    )
+  }
+
+  menuItems.push(
+    {
+      label: h('div', { style: { fontSize: '12px', color: '#64748b' } }, '编辑'),
+      divided: true,
+      onClick: () => openEditDialog(node)
+    },
+    {
+      label: h('div', { style: { fontSize: '12px', color: '#ef4444' } }, '删除'),
+      icon: h('img', { src: deleteIcon.url, style: { width: '12px', height: '12px' } }),
+      onClick: () => handleDeleteNode(node)
+    }
+  )
+
   // 显示右键菜单
   ContextMenu.showContextMenu({
     x: event.x,
     y: event.y,
     theme: 'flat',
-    items: [
-      {
-        label: h('div', { style: { fontSize: '12px', color: '#64748b' } }, '添加子文件夹'),
-        icon: h('img', { src: folderIcon.url, style: { width: '12px', height: '12px' } }),
-        onClick: () => openAddDialog(WebTreeNodeType.FOLDER)
-      },
-      {
-        label: h('div', { style: { fontSize: '12px', color: '#64748b' } }, '添加子网页'),
-        icon: h('img', { src: linkIcon.url, style: { width: '12px', height: '12px' } }),
-        onClick: () => openAddDialog(WebTreeNodeType.WEBSITE)
-      },
-      {
-        label: h('div', { style: { fontSize: '12px', color: '#64748b' } }, '编辑'),
-        divided: true,
-        onClick: () => openEditDialog(node)
-      },
-      {
-        label: h('div', { style: { fontSize: '12px', color: '#ef4444' } }, '删除'),
-        icon: h('img', { src: deleteIcon.url, style: { width: '12px', height: '12px' } }),
-        onClick: () => handleDeleteNode(node)
-      }
-    ]
+    items: menuItems
   })
 }
 
@@ -573,11 +664,26 @@ const handleDropNode = async (payload: {
     const maxOrderNum = targetSiblings.reduce((max, node) => Math.max(max, node.orderNum), -1)
     const newOrderNum = maxOrderNum + 1
 
+    // 获取目标文件夹的 category_id
+    const targetCategoryId = targetNode.categoryId ?? -1
+
+    // 获取被拖动节点的原始 category_id
+    const draggedNodeInFlat = flatNodeList.value.find((n) => n.id === draggedNode.id)
+    const originalCategoryId = draggedNodeInFlat?.categoryId ?? -1
+
+    // 检查是否需要更新分类（只有当分类发生变化时才更新）
+    const needUpdateCategory = targetCategoryId !== originalCategoryId
+
     // 调用API移动节点
     await moveWebTreeNode(draggedNode.id, targetNode.id)
 
     // 更新排序号
     await reorderWebTreeNodes([{ id: draggedNode.id, orderNum: newOrderNum }])
+
+    // 如果需要更新分类，递归更新被拖动节点及其所有子节点的 category_id
+    if (needUpdateCategory) {
+      await updateWebTreeNodeCategoryIdRecursive(draggedNode.id, targetCategoryId, typeId.value)
+    }
 
     // 局部更新：在树中移动节点到新位置
     const success = moveNodeInTree(
@@ -585,14 +691,29 @@ const handleDropNode = async (payload: {
       flatNodeList.value,
       draggedNode.id,
       targetNode.id,
-      newOrderNum
+      newOrderNum,
+      targetCategoryId
     )
+
+    // 如果分类发生变化，递归更新前端状态中所有子节点的 category_id
+    if (success && needUpdateCategory) {
+      updateNodeCategoryInTreeRecursive(
+        treeData.value,
+        flatNodeList.value,
+        draggedNode.id,
+        targetCategoryId
+      )
+    }
+
     if (!success) {
       console.warn('局部移动更新失败，执行全量刷新')
       await loadTreeData()
     }
   } catch (error) {
+    console.error('节点移动失败:', error)
     alert(error instanceof Error ? error.message : '移动失败')
+    // 发生错误时重新加载数据以确保状态一致性
+    await loadTreeData()
   }
 }
 
@@ -675,11 +796,41 @@ const handleMoveAndReorder = async (payload: {
     // 计算新的排序号
     const newOrderNum = calculateNewOrderNumForMove(targetSiblings, targetNode, position)
 
+    // 确定新的 category_id
+    let newCategoryId: number
+    const draggedNodeInFlat = flatNodeList.value.find((n) => n.id === draggedNode.id)
+    const originalCategoryId = draggedNodeInFlat?.categoryId ?? -1
+    if (newParentId === 0) {
+      // 根节点：根据当前路由 cid 决定
+      // cid=0（所有片段）时保持原有 category_id 不变
+      // cid=-1 或未定义时，设置为 -1
+      const cid = categoryId.value
+      if (cid === undefined || cid === -1) {
+        newCategoryId = -1
+      } else if (cid === 0) {
+        newCategoryId = originalCategoryId
+      } else {
+        newCategoryId = cid
+      }
+    } else {
+      // 有父节点：继承父节点的 category_id
+      const parentNode = flatNodeList.value.find((n) => n.id === newParentId)
+      newCategoryId = parentNode?.categoryId ?? -1
+    }
+
+    // 检查是否需要更新分类
+    const needUpdateCategory = newCategoryId !== originalCategoryId
+
     // 先移动节点到新的父节点
     await moveWebTreeNode(draggedNode.id, newParentId)
 
     // 再更新排序号
     await reorderWebTreeNodes([{ id: draggedNode.id, orderNum: newOrderNum }])
+
+    // 如果需要更新分类，递归更新被拖动节点及其所有子节点的 category_id
+    if (needUpdateCategory) {
+      await updateWebTreeNodeCategoryIdRecursive(draggedNode.id, newCategoryId, typeId.value)
+    }
 
     // 局部更新：在树中移动节点到新位置
     const success = moveNodeInTree(
@@ -687,8 +838,20 @@ const handleMoveAndReorder = async (payload: {
       flatNodeList.value,
       draggedNode.id,
       newParentId,
-      newOrderNum
+      newOrderNum,
+      newCategoryId
     )
+
+    // 如果分类发生变化，递归更新前端状态中所有子节点的 category_id
+    if (success && needUpdateCategory) {
+      updateNodeCategoryInTreeRecursive(
+        treeData.value,
+        flatNodeList.value,
+        draggedNode.id,
+        newCategoryId
+      )
+    }
+
     if (!success) {
       console.warn('局部移动更新失败，执行全量刷新')
       await loadTreeData()
@@ -696,6 +859,8 @@ const handleMoveAndReorder = async (payload: {
   } catch (error) {
     console.error('节点移动并排序失败:', error)
     alert(error instanceof Error ? error.message : '移动失败')
+    // 发生错误时重新加载数据以确保状态一致性
+    await loadTreeData()
   }
 }
 
@@ -741,11 +906,32 @@ const handleRootDrop = async (event: DragEvent) => {
       const maxOrderNum = rootSiblings.reduce((max, node) => Math.max(max, node.orderNum), -1)
       const newOrderNum = maxOrderNum + 1
 
+      // 确定根节点的 category_id
+      // cid=0（所有片段）时保持原有 category_id 不变
+      // cid=-1 或未定义时，设置为 -1
+      const cid = categoryId.value
+      const draggedNodeInFlat = flatNodeList.value.find((n) => n.id === draggingNode.value!.id)
+      const originalCategoryId = draggedNodeInFlat?.categoryId ?? -1
+      const rootCategoryId =
+        cid === undefined || cid === -1 ? -1 : cid === 0 ? originalCategoryId : cid
+
+      // 检查是否需要更新分类
+      const needUpdateCategory = rootCategoryId !== originalCategoryId
+
       // 移动到根级别（parentId = 0）
       await moveWebTreeNode(draggingNode.value.id, 0)
 
       // 更新排序号
       await reorderWebTreeNodes([{ id: draggingNode.value.id, orderNum: newOrderNum }])
+
+      // 如果需要更新分类，递归更新被拖动节点及其所有子节点的 category_id
+      if (needUpdateCategory) {
+        await updateWebTreeNodeCategoryIdRecursive(
+          draggingNode.value.id,
+          rootCategoryId,
+          typeId.value
+        )
+      }
 
       // 局部更新：在树中移动节点到根级别
       const success = moveNodeInTree(
@@ -753,8 +939,20 @@ const handleRootDrop = async (event: DragEvent) => {
         flatNodeList.value,
         draggingNode.value.id,
         0,
-        newOrderNum
+        newOrderNum,
+        rootCategoryId
       )
+
+      // 如果分类发生变化，递归更新前端状态中所有子节点的 category_id
+      if (success && needUpdateCategory) {
+        updateNodeCategoryInTreeRecursive(
+          treeData.value,
+          flatNodeList.value,
+          draggingNode.value.id,
+          rootCategoryId
+        )
+      }
+
       if (!success) {
         console.warn('局部移动更新失败，执行全量刷新')
         await loadTreeData()
@@ -762,6 +960,8 @@ const handleRootDrop = async (event: DragEvent) => {
     } catch (error) {
       console.error('移动到根级别失败:', error)
       alert(error instanceof Error ? error.message : '移动失败')
+      // 发生错误时重新加载数据以确保状态一致性
+      await loadTreeData()
     } finally {
       // 清除拖拽节点状态
       draggingNode.value = null
@@ -803,6 +1003,31 @@ const openAddDialog = (nodeType: WebTreeNodeType, event?: MouseEvent) => {
   editNodeData.value = undefined
   dialogMode.value = 'add'
   typeIdForAdd.value = nodeType
+  showDialog.value = true
+}
+
+/**
+ * 打开添加节点对话框（指定 category_id）
+ * 用于空白区域右键菜单添加节点
+ * @param nodeType 节点类型（文件夹或网页）
+ * @param targetCategoryId 指定的 category_id
+ */
+const openAddDialogWithCategory = (nodeType: WebTreeNodeType, targetCategoryId: number) => {
+  // 空白区域添加节点，父节点ID为0（根级别）
+  addParentId.value = 0
+
+  // 重置编辑数据，设置节点类型和模式
+  editNodeData.value = undefined
+  dialogMode.value = 'add'
+  typeIdForAdd.value = nodeType
+
+  // 临时修改 categoryId 以影响对话框中的 category_id 选择
+  // 通过设置一个特殊的标记，让对话框使用指定的 category_id
+  // 这里我们通过 editNodeData 传递 category_id 信息
+  editNodeData.value = {
+    categoryId: targetCategoryId
+  }
+
   showDialog.value = true
 }
 

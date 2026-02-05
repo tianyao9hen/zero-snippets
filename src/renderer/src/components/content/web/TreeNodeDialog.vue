@@ -192,16 +192,18 @@ import {
   FaviconFetchStatus,
   createDebouncedFaviconFetcher
 } from '@renderer/composables/faviconUtils'
+import { readClipboardText, isValidUrlForClipboard } from '@renderer/composables/clipboardUtils'
 import { WebTreeNodeType } from '@renderer/enums'
 
 export interface NodeData {
-  id: number
-  nodeType: WebTreeNodeType
-  title: string
+  id?: number
+  nodeType?: WebTreeNodeType
+  title?: string
   url?: string
   shortcut?: string
   description?: string
   icon?: string
+  categoryId?: number
 }
 
 const props = defineProps<{
@@ -212,6 +214,7 @@ const props = defineProps<{
   nodeType?: WebTreeNodeType
   nodeData?: NodeData
   flatNodeList?: WebTreeNode[]
+  categoryId?: number
 }>()
 
 const emit = defineEmits<{
@@ -321,9 +324,17 @@ const debouncedFetchFavicon = createDebouncedFaviconFetcher((result) => {
     faviconUrl.value = result.url
     dialogForm.value.icon = result.url
     faviconError.value = ''
+    // 如果名称字段为空，自动填充网页标题
+    if (!dialogForm.value.title.trim() && result.title) {
+      dialogForm.value.title = result.title
+    }
   } else if (result.status === FaviconFetchStatus.ERROR) {
     faviconError.value = result.error || '获取失败'
     // 不重置已存在的图标，允许保留旧值
+    // 即使图标获取失败，如果获取到了标题且名称为空，也填充标题
+    if (!dialogForm.value.title.trim() && result.title) {
+      dialogForm.value.title = result.title
+    }
   }
 }, 500)
 
@@ -396,11 +407,37 @@ watch(
         faviconUrl.value = ''
         // 添加模式下初始化父节点选择
         selectedParentId.value = props.parentId ?? 0
+
+        // 如果是添加网页节点，尝试从剪贴板自动填充URL
+        if (props.nodeType === WebTreeNodeType.WEBSITE) {
+          autoFillUrlFromClipboard()
+        }
       }
     }
   },
   { immediate: true }
 )
+
+/**
+ * 从剪贴板自动填充URL
+ * 当添加网页节点时，自动读取剪贴板内容，如果是有效URL则填充到输入框
+ */
+const autoFillUrlFromClipboard = () => {
+  try {
+    const clipboardText = readClipboardText()
+    if (clipboardText && isValidUrlForClipboard(clipboardText)) {
+      // 处理URL，添加协议前缀
+      const result = processUrl(clipboardText)
+      if (result.isValid) {
+        dialogForm.value.url = result.url
+        // 触发图标获取
+        debouncedFetchFavicon(result.url)
+      }
+    }
+  } catch (error) {
+    console.error('从剪贴板自动填充URL失败:', error)
+  }
+}
 
 const closeDialog = () => {
   emit('update:visible', false)
@@ -440,6 +477,28 @@ const confirmDialog = async () => {
         })
       }
     } else {
+      // 计算 categoryId
+      // 优先级：1. nodeData中传递的categoryId（空白区域右键添加）
+      //         2. 如果有父节点，继承父节点的 category_id
+      //         3. 如果是根节点，根据当前 cid 决定：cid 为正整数时使用该值，否则为 -1
+      let finalCategoryId: number
+      if (props.nodeData?.categoryId !== undefined) {
+        // 优先使用 nodeData 中传递的 categoryId（空白区域右键添加时使用）
+        finalCategoryId = props.nodeData.categoryId
+      } else if (selectedParentId.value === 0) {
+        // 根节点
+        const cid = props.categoryId
+        if (cid === undefined || cid === 0 || cid === -1) {
+          finalCategoryId = -1
+        } else {
+          finalCategoryId = cid
+        }
+      } else {
+        // 有父节点，继承父节点的 category_id
+        const parentNode = props.flatNodeList?.find((n) => n.id === selectedParentId.value)
+        finalCategoryId = parentNode?.categoryId ?? -1
+      }
+
       await addWebTreeNode({
         parentId: selectedParentId.value,
         typeId: props.typeId ?? 2,
@@ -448,6 +507,7 @@ const confirmDialog = async () => {
         shortcut: dialogForm.value.shortcut.trim() || undefined,
         description: dialogForm.value.description.trim() || undefined,
         icon: dialogForm.value.icon.trim() || undefined,
+        categoryId: finalCategoryId,
         nodeType: dialogForm.value.nodeType,
         orderNum: 0
       })
