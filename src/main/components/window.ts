@@ -14,7 +14,7 @@ export const window: Record<WindowNameType, WindowClass> = {
       transparent: true, // 透明
       autoHideMenuBar: true,
       alwaysOnTop: true,
-      openDevTools: false,
+      openDevTools: true,
       initShow: true,
       path: ''
     }

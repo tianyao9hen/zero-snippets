@@ -126,12 +126,12 @@ function decodeHtmlEntities(text: string): string {
  */
 export function isValidBookmarkHtml(htmlContent: string): boolean {
   // 检查DOCTYPE
-  const hasDoctype = htmlContent.includes('<!DOCTYPE NETSCAPE-Bookmark-file-1>') ||
-                     htmlContent.includes('<!DOCTYPE html>')
+  const hasDoctype =
+    htmlContent.includes('<!DOCTYPE NETSCAPE-Bookmark-file-1>') ||
+    htmlContent.includes('<!DOCTYPE html>')
 
   // 检查基本结构
-  const hasBookmarksStructure = htmlContent.includes('<DL>') &&
-                                 htmlContent.includes('</DL>')
+  const hasBookmarksStructure = htmlContent.includes('<DL>') && htmlContent.includes('</DL>')
 
   return hasDoctype && hasBookmarksStructure
 }

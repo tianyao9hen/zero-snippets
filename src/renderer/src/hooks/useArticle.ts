@@ -32,6 +32,15 @@ export default () => {
     return await window.api.addArticle({ ...Article })
   }
 
+  /**
+   * 搜索文章
+   * @param keyword 搜索关键词
+   * @returns Promise<ContentEntity[]> 匹配的文章列表
+   */
+  const searchArticle = async (keyword: string): Promise<ContentEntity[]> => {
+    return await window.api.searchArticle(keyword)
+  }
+
   return {
     getArticleById,
     listArticleByTidAndCid,
@@ -39,6 +48,7 @@ export default () => {
     listAllArticleNoCategory,
     editArticle,
     removeArticle,
-    addArticle
+    addArticle,
+    searchArticle
   }
 }

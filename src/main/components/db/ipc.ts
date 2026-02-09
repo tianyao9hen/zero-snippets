@@ -15,7 +15,8 @@ import {
   listAllNoCategory as listAllArticleNoCategory,
   edit as editArticle,
   remove as removeArticle,
-  add as addArticle
+  add as addArticle,
+  search as searchArticle
 } from './sql/articleSql'
 import {
   findAllByTypeId as findWebTreeByTypeId,
@@ -105,6 +106,13 @@ ipcMain.handle(ipcEnum.removeArticle, (_event: IpcMainInvokeEvent, articleId: nu
 
 ipcMain.handle(ipcEnum.addArticle, (_event: IpcMainInvokeEvent, article: ContentEntity) => {
   return addArticle(article)
+})
+
+/**
+ * 搜索文章
+ */
+ipcMain.handle(ipcEnum.searchArticle, (_event: IpcMainInvokeEvent, keyword: string) => {
+  return searchArticle(keyword)
 })
 
 // ==================== 网页树相关 IPC 处理 ====================

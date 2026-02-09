@@ -18,8 +18,8 @@ import editIcon from '@renderer/assets/icons/edit.svg'
 import editDIcon from '@renderer/assets/icons/edit_d.svg'
 import addWebIcon from '@renderer/assets/icons/addWeb.svg'
 import addWebDIcon from '@renderer/assets/icons/addWeb_d.svg'
-
-
+import articleIcon from '@renderer/assets/icons/article.svg'
+import articleDIcon from '@renderer/assets/icons/article_d.svg'
 
 export const iconMap: { [key: string]: IconClass } = {
   all: {
@@ -76,5 +76,10 @@ export const iconMap: { [key: string]: IconClass } = {
     id: 'addWeb',
     url: addWebIcon,
     dUrl: addWebDIcon
-  }
+  },
+  article: {
+    id: 'article',
+    url: articleIcon,
+    dUrl: articleDIcon
+  },
 }

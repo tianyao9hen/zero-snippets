@@ -1,11 +1,7 @@
 <template>
   <div class="bookmark-tree-preview">
     <ul class="tree-list">
-      <li
-        v-for="(node, index) in nodes"
-        :key="index"
-        class="tree-item"
-      >
+      <li v-for="(node, index) in nodes" :key="index" class="tree-item">
         <div class="tree-node" :class="{ 'is-folder': node.children }">
           <!-- 文件夹图标 -->
           <svg
@@ -21,13 +17,7 @@
             />
           </svg>
           <!-- 链接图标 -->
-          <svg
-            v-else
-            viewBox="0 0 24 24"
-            width="14"
-            height="14"
-            class="node-icon link-icon"
-          >
+          <svg v-else viewBox="0 0 24 24" width="14" height="14" class="node-icon link-icon">
             <path
               fill="currentColor"
               d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"
@@ -56,7 +46,7 @@
  * - 区分文件夹和链接节点
  * - 简洁的预览样式
  */
-import type { BookmarkNode } from '@renderer/utils/bookmarkParser'
+import type { BookmarkNode } from '@renderer/composables/bookmarkParserUtils'
 
 defineProps<{
   nodes: BookmarkNode[]

@@ -66,6 +66,15 @@ export function addArticle(article: ContentEntity) {
   return ipcRenderer.invoke(ipcEnum.addArticle, article)
 }
 
+/**
+ * 搜索文章
+ * @param keyword 搜索关键词
+ * @returns Promise<ContentEntity[]> 匹配的文章列表
+ */
+export function searchArticle(keyword: string) {
+  return ipcRenderer.invoke(ipcEnum.searchArticle, keyword)
+}
+
 // ==================== 网页树相关 API ====================
 
 /**

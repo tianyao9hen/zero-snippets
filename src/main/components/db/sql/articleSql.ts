@@ -125,3 +125,27 @@ export const add = (article: ContentEntity) => {
     article
   )
 }
+
+/**
+ * 搜索文章（根据标题模糊查询）
+ * @param keyword 搜索关键词
+ * @returns ContentEntity[] 匹配的文章列表
+ */
+export const search = (keyword: string): ContentEntity[] => {
+  const searchPattern = `%${keyword}%`
+  return execute.findAll(
+    `
+    select
+      id,
+      type_id as typeId,
+      category_id as categoryId,
+      title,
+      content,
+      create_time as createTime
+    from snippets_content
+    where title like $searchPattern
+    order by create_time desc
+    `,
+    { searchPattern }
+  ) as ContentEntity[]
+}

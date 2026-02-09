@@ -1,8 +1,6 @@
 <template>
   <div class="w-full h-full pr-2">
-    <div class="software box">
-      TODO
-    </div>
+    <div class="software box">TODO</div>
   </div>
 </template>
 

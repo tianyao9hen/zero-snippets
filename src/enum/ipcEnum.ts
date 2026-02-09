@@ -16,6 +16,7 @@ export const ipcEnum = {
   editArticle: 'edit-article',
   removeArticle: 'remove-article',
   addArticle: 'add-article',
+  searchArticle: 'search-article',
   // 网页树相关 IPC 事件
   getWebTreeByTypeId: 'get-web-tree-by-type-id',
   getWebTreeByTypeIdAndCategoryId: 'get-web-tree-by-type-id-and-category-id',

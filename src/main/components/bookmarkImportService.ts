@@ -63,14 +63,16 @@ export async function importBookmarks(params: ImportBookmarksParams): Promise<Im
 
   try {
     // 创建新的分类，名称使用时间戳区分不同导入批次
-    const timestamp = new Date().toLocaleString('zh-CN', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit'
-    }).replace(/[/:]/g, '-')
+    const timestamp = new Date()
+      .toLocaleString('zh-CN', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      })
+      .replace(/[/:]/g, '-')
     const categoryName = `导入书签 ${timestamp}`
     const categoryId = addCategory(typeId, categoryName)
 

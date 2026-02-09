@@ -33,6 +33,7 @@ declare global {
       editArticle: (article: articleEntity) => number
       removeArticle: (aid: number) => number
       addArticle: (article: articleEntity) => number
+      searchArticle: (keyword: string) => Promise<ContentEntity[]>
       // 网页树相关 API
       getWebTreeByTypeId: (typeId: number) => Promise<WebTreeNode[]>
       getWebTreeByTypeIdAndCategoryId: (
@@ -59,10 +60,12 @@ declare global {
       // 图标获取 API
       fetchFavicon: (url: string) => Promise<FaviconFetchResult>
       // 书签导入 API
-      importBookmarks: (params: {
-        typeId: number
-        nodes: any[]
-      }) => Promise<{ success: boolean; importedCount: number; categoryId?: number; error?: string }>
+      importBookmarks: (params: { typeId: number; nodes: any[] }) => Promise<{
+        success: boolean
+        importedCount: number
+        categoryId?: number
+        error?: string
+      }>
     }
   }
 }

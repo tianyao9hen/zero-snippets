@@ -7,7 +7,9 @@
   >
     <div class="w-[480px] max-w-[90vw] bg-white rounded-lg shadow-lg max-h-[90vh] flex flex-col">
       <!-- 标题栏 -->
-      <h3 class="px-4 py-3 text-sm font-semibold text-slate-800 border-b border-slate-200 flex-shrink-0">
+      <h3
+        class="px-4 py-3 text-sm font-semibold text-slate-800 border-b border-slate-200 flex-shrink-0"
+      >
         导入Chrome书签
       </h3>
 
@@ -32,10 +34,7 @@
             />
             <div v-if="!selectedFile" class="upload-placeholder">
               <svg viewBox="0 0 24 24" width="48" height="48" class="upload-icon">
-                <path
-                  fill="currentColor"
-                  d="M9 16h6v-6h4l-7-7-7 7h4v6zm-4 2h14v2H5v-2z"
-                />
+                <path fill="currentColor" d="M9 16h6v-6h4l-7-7-7 7h4v6zm-4 2h14v2H5v-2z" />
               </svg>
               <p class="upload-text">点击或拖拽上传Bookmark HTML文件</p>
               <p class="upload-hint">支持Chrome导出的书签文件</p>
@@ -53,7 +52,10 @@
               </div>
               <button class="remove-file-btn" @click.stop="removeFile">
                 <svg viewBox="0 0 24 24" width="16" height="16">
-                  <path fill="currentColor" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+                  <path
+                    fill="currentColor"
+                    d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+                  />
                 </svg>
               </button>
             </div>
@@ -130,7 +132,7 @@ import {
   isValidBookmarkHtml,
   countBookmarks,
   type BookmarkNode
-} from '@renderer/utils/bookmarkParser'
+} from '@renderer/composables/bookmarkParserUtils'
 import BookmarkTreePreview from './BookmarkTreePreview.vue'
 
 defineOptions({
@@ -274,7 +276,9 @@ const processFile = async (file: File) => {
     parsedNodes.value = parseBookmarkHtml(content)
     parseResult.value = countBookmarks(parsedNodes.value)
 
-    showMessage(`成功解析 ${parseResult.value.folders} 个文件夹和 ${parseResult.value.bookmarks} 个书签`)
+    showMessage(
+      `成功解析 ${parseResult.value.folders} 个文件夹和 ${parseResult.value.bookmarks} 个书签`
+    )
   } catch (error) {
     console.error('解析文件失败:', error)
     showMessage('解析文件失败：' + (error instanceof Error ? error.message : '未知错误'), 'error')
