@@ -20,7 +20,7 @@
                 : folderIcon.dUrl
             "
           />
-          <span class="box-item-content unselectable">
+          <span class="box-item-content unselectable" :title="category.title">
             {{ category.title }}
           </span>
         </div>

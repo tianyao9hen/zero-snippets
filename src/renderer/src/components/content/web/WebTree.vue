@@ -214,13 +214,13 @@
  * <WebTree />
  */
 import { ref, computed, onMounted, onUnmounted, provide, readonly, h, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import useWebTree from '@renderer/hooks/useWebTree'
 import { iconMap } from '@renderer/composables/iconUtils'
 import TreeNode from './TreeNode.vue'
 import TreeNodeDialog, { type NodeData } from './TreeNodeDialog.vue'
 import BookmarkImportDialog from './BookmarkImportDialog.vue'
-import ContextMenu from '@imengyu/vue3-context-menu'
+import ContextMenu, { type MenuItem } from '@imengyu/vue3-context-menu'
 import { WebTreeNodeType } from '@renderer/enums'
 import {
   DraggingNodeKey,
@@ -235,9 +235,6 @@ import {
 
 /** 文件夹图标 */
 const folderIcon = iconMap['folder']
-
-/** 链接图标 */
-const linkIcon = iconMap['addArticle']
 
 /** 删除图标 */
 const deleteIcon = iconMap['delete']
@@ -259,6 +256,9 @@ const addWebIcon = iconMap['addWeb']
 /** 路由实例，用于获取URL参数 */
 const route = useRoute()
 
+/** 路由器实例，用于导航 */
+const router = useRouter()
+
 /** 类型ID */
 const typeId = computed(() => Number(route.params.tid) || 2)
 
@@ -276,7 +276,6 @@ const {
   getWebTreeByTypeIdAndCategoryId,
   getWebTreeByTypeIdAndNullCategory,
   updateWebTreeNode,
-  updateWebTreeNodeCategoryId,
   updateWebTreeNodeCategoryIdRecursive,
   updateNodeCategoryInTreeRecursive,
   removeWebTreeNode,
@@ -609,7 +608,7 @@ const handleContextMenu = (payload: { node: WebTreeNodeView; event: MouseEvent }
   selectedNodeId.value = node.id
 
   // 构建菜单项：只有文件夹类型才显示添加选项
-  const menuItems: any[] = []
+  const menuItems: MenuItem[] = []
 
   if (node.nodeType === WebTreeNodeType.FOLDER) {
     menuItems.push(
@@ -1496,13 +1495,30 @@ const handleDeleteNode = async (node: WebTreeNodeView) => {
  * 打开导入对话框
  */
 const handleOpenImportDialog = () => {
+  // 关闭新增菜单
+  showAddMenu.value = false
   showImportDialog.value = true
 }
 
 /**
  * 导入成功处理
+ * @param result 导入结果，包含 categoryId 和 importedCount
  */
-const handleImportSuccess = async () => {
+const handleImportSuccess = async (result: { categoryId: number; importedCount: number }) => {
+  // 先通过路由跳转到新导入的 category，触发分类列表刷新和选中
+  if (result.categoryId) {
+    router.push({
+      name: 'folder',
+      params: {
+        tid: typeId.value,
+        cid: result.categoryId
+      },
+      query: {
+        t: Date.now()
+      }
+    })
+  }
+
   // 重新加载树数据
   await loadTreeData()
 }

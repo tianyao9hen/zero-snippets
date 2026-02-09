@@ -10,7 +10,7 @@
  * - 事务处理确保数据一致性
  */
 
-import { findByTitle, add as addCategory } from './db/sql/categorySql'
+import { add as addCategory } from './db/sql/categorySql'
 import { add as addWebTreeNode } from './db/sql/webTreeSql'
 
 /**
@@ -47,6 +47,8 @@ interface ImportResult {
   success: boolean
   /** 导入的节点数量 */
   importedCount: number
+  /** 分类ID */
+  categoryId?: number
   /** 错误信息 */
   error?: string
 }
@@ -60,22 +62,17 @@ export async function importBookmarks(params: ImportBookmarksParams): Promise<Im
   const { typeId, nodes } = params
 
   try {
-    // 查找或创建"chrome书签"分类
-    const categoryName = 'chrome书签'
-    let category = findByTitle(typeId, categoryName)
-
-    if (!category) {
-      const categoryId = addCategory(typeId, categoryName)
-      category = {
-        id: categoryId,
-        typeId,
-        title: categoryName,
-        orderNum: 0,
-        createTime: new Date().toISOString()
-      }
-    }
-
-    const categoryId = category.id
+    // 创建新的分类，名称使用时间戳区分不同导入批次
+    const timestamp = new Date().toLocaleString('zh-CN', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    }).replace(/[/:]/g, '-')
+    const categoryName = `导入书签 ${timestamp}`
+    const categoryId = addCategory(typeId, categoryName)
 
     // 递归导入节点
     let importedCount = 0
@@ -86,7 +83,8 @@ export async function importBookmarks(params: ImportBookmarksParams): Promise<Im
 
     return {
       success: true,
-      importedCount
+      importedCount,
+      categoryId
     }
   } catch (error) {
     console.error('导入书签失败:', error)

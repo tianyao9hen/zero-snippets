@@ -62,7 +62,7 @@ declare global {
       importBookmarks: (params: {
         typeId: number
         nodes: any[]
-      }) => Promise<{ success: boolean; importedCount: number; error?: string }>
+      }) => Promise<{ success: boolean; importedCount: number; categoryId?: number; error?: string }>
     }
   }
 }

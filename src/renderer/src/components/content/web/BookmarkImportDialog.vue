@@ -146,7 +146,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   'update:visible': [value: boolean]
-  success: []
+  success: [{ categoryId: number; importedCount: number }]
 }>()
 
 // ==================== 响应式状态 ====================
@@ -376,7 +376,7 @@ const handleImport = async () => {
       setTimeout(() => {
         emit('update:visible', false)
         resetState()
-        emit('success')
+        emit('success', { categoryId: result.categoryId!, importedCount: result.importedCount })
       }, 1500)
     } else {
       throw new Error(result.error || '导入失败')
