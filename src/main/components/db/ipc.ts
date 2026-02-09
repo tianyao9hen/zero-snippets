@@ -32,6 +32,7 @@ import {
   updateCategoryIdRecursive as updateWebTreeNodeCategoryIdRecursive
 } from './sql/webTreeSql'
 import { fetchFavicon } from '../favicon'
+import { importBookmarks } from '../bookmarkImportService'
 import { ipcEnum } from '../../../enum/ipcEnum'
 
 ipcMain.handle(
@@ -229,3 +230,13 @@ ipcMain.handle(
 ipcMain.handle(ipcEnum.fetchFavicon, (_event: IpcMainInvokeEvent, url: string) => {
   return fetchFavicon(url)
 })
+
+/**
+ * 导入Chrome书签
+ */
+ipcMain.handle(
+  ipcEnum.importBookmarks,
+  (_event: IpcMainInvokeEvent, params: { typeId: number; nodes: any[] }) => {
+    return importBookmarks(params)
+  }
+)

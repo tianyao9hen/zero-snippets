@@ -58,6 +58,11 @@ declare global {
       ) => Promise<number>
       // 图标获取 API
       fetchFavicon: (url: string) => Promise<FaviconFetchResult>
+      // 书签导入 API
+      importBookmarks: (params: {
+        typeId: number
+        nodes: any[]
+      }) => Promise<{ success: boolean; importedCount: number; error?: string }>
     }
   }
 }

@@ -2,7 +2,7 @@
   <!-- 网页树组件 - 用于管理网页地址的层级结构 -->
   <main class="flex flex-col h-full bg-white rounded-lg overflow-hidden">
     <!-- 工具栏 -->
-    <header class="flex items-center gap-2 px-3 py-2 border-b border-slate-200 bg-slate-50">
+    <header class="flex items-center gap-2 px-3 py-2 border-b border-slate-200">
       <!-- 搜索框 -->
       <div class="relative flex-1" @click="handleSearchBoxClick">
         <input
@@ -43,21 +43,29 @@
         <!-- 新增菜单 -->
         <div
           v-if="showAddMenu"
-          class="absolute right-0 top-full mt-1 bg-white border border-slate-200 rounded shadow-lg z-10 min-w-[100px]"
+          class="absolute right-0 top-full mt-1 bg-white border border-slate-200 rounded shadow-lg z-10 min-w-[140px]"
         >
           <button
             class="flex items-center gap-2 w-full px-3 py-2 text-xs text-slate-600 hover:bg-slate-50 cursor-pointer transition-colors"
             @click.stop="openAddDialog(WebTreeNodeType.FOLDER, $event)"
           >
             <img :src="folderIcon.dUrl" alt="文件夹" class="w-3.5 h-3.5" />
-            <span>文件夹</span>
+            <span>添加文件夹</span>
           </button>
           <button
             class="flex items-center gap-2 w-full px-3 py-2 text-xs text-slate-600 hover:bg-slate-50 cursor-pointer transition-colors"
             @click.stop="openAddDialog(WebTreeNodeType.WEBSITE, $event)"
           >
-            <img :src="linkIcon.url" alt="网页" class="w-3.5 h-3.5" />
-            <span>网页</span>
+            <img :src="addWebIcon.dUrl" alt="网页" class="w-4 h-4" />
+            <span>添加网页</span>
+          </button>
+          <div class="border-t border-slate-200 my-1"></div>
+          <button
+            class="flex items-center gap-2 w-full px-3 py-2 text-xs text-slate-600 hover:bg-slate-50 cursor-pointer transition-colors"
+            @click.stop="handleOpenImportDialog"
+          >
+            <img :src="importIcon.dUrl" alt="导入" class="w-4 h-4" />
+            <span>导入书签</span>
           </button>
         </div>
       </div>
@@ -77,6 +85,7 @@
           class="transition-transform duration-200"
         />
       </button>
+
     </header>
 
     <!-- 树形内容区域 -->
@@ -174,6 +183,13 @@
       :category-id="categoryId"
       @success="handleDialogSuccess"
     />
+
+    <!-- 书签导入对话框 -->
+    <BookmarkImportDialog
+      v-model:visible="showImportDialog"
+      :type-id="typeId"
+      @success="handleImportSuccess"
+    />
   </main>
 </template>
 
@@ -203,6 +219,7 @@ import useWebTree from '@renderer/hooks/useWebTree'
 import { iconMap } from '@renderer/composables/iconUtils'
 import TreeNode from './TreeNode.vue'
 import TreeNodeDialog, { type NodeData } from './TreeNodeDialog.vue'
+import BookmarkImportDialog from './BookmarkImportDialog.vue'
 import ContextMenu from '@imengyu/vue3-context-menu'
 import { WebTreeNodeType } from '@renderer/enums'
 import {
@@ -227,6 +244,15 @@ const deleteIcon = iconMap['delete']
 
 /** 展开/收起图标 */
 const openIcon = iconMap['open']
+
+/** 导入图标 */
+const importIcon = iconMap['import']
+
+/** 编辑图标 */
+const editIcon = iconMap['edit']
+
+/** 添加网页图标 */
+const addWebIcon = iconMap['addWeb']
 
 // ==================== 响应式状态 ====================
 
@@ -312,6 +338,9 @@ const typeIdForAdd = ref<WebTreeNodeType>(WebTreeNodeType.FOLDER)
 
 /** 添加节点时的父节点ID（不覆盖 selectedNodeId） */
 const addParentId = ref<number>(0)
+
+/** 是否显示导入对话框 */
+const showImportDialog = ref(false)
 
 /** 搜索防抖定时器，用于减少搜索请求频率 */
 let searchDebounceTimer: NodeJS.Timeout | null = null
@@ -497,12 +526,12 @@ const handleTreeContextMenu = (event: MouseEvent) => {
     items: [
       {
         label: h('div', { style: { fontSize: '12px', color: '#64748b' } }, '添加文件夹'),
-        icon: h('img', { src: folderIcon.url, style: { width: '12px', height: '12px' } }),
+        icon: h('img', { src: folderIcon.dUrl, style: { width: '12px', height: '12px' } }),
         onClick: () => openAddDialogWithCategory(WebTreeNodeType.FOLDER, targetCategoryId)
       },
       {
         label: h('div', { style: { fontSize: '12px', color: '#64748b' } }, '添加网页'),
-        icon: h('img', { src: linkIcon.url, style: { width: '12px', height: '12px' } }),
+        icon: h('img', { src: addWebIcon.dUrl, style: { width: '14px', height: '14px' } }),
         onClick: () => openAddDialogWithCategory(WebTreeNodeType.WEBSITE, targetCategoryId)
       }
     ]
@@ -586,12 +615,12 @@ const handleContextMenu = (payload: { node: WebTreeNodeView; event: MouseEvent }
     menuItems.push(
       {
         label: h('div', { style: { fontSize: '12px', color: '#64748b' } }, '添加文件夹'),
-        icon: h('img', { src: folderIcon.url, style: { width: '12px', height: '12px' } }),
+        icon: h('img', { src: folderIcon.dUrl, style: { width: '12px', height: '12px' } }),
         onClick: () => openAddDialog(WebTreeNodeType.FOLDER)
       },
       {
         label: h('div', { style: { fontSize: '12px', color: '#64748b' } }, '添加网页'),
-        icon: h('img', { src: linkIcon.url, style: { width: '12px', height: '12px' } }),
+        icon: h('img', { src: addWebIcon.dUrl, style: { width: '14px', height: '14px' } }),
         onClick: () => openAddDialog(WebTreeNodeType.WEBSITE)
       }
     )
@@ -600,6 +629,7 @@ const handleContextMenu = (payload: { node: WebTreeNodeView; event: MouseEvent }
   menuItems.push(
     {
       label: h('div', { style: { fontSize: '12px', color: '#64748b' } }, '编辑'),
+      icon: h('img', { src: editIcon.dUrl, style: { width: '14px', height: '14px' } }),
       divided: true,
       onClick: () => openEditDialog(node)
     },
@@ -1458,6 +1488,23 @@ const handleDeleteNode = async (node: WebTreeNodeView) => {
   } catch (error) {
     alert(error instanceof Error ? error.message : '删除失败')
   }
+}
+
+// ==================== 导入功能 ====================
+
+/**
+ * 打开导入对话框
+ */
+const handleOpenImportDialog = () => {
+  showImportDialog.value = true
+}
+
+/**
+ * 导入成功处理
+ */
+const handleImportSuccess = async () => {
+  // 重新加载树数据
+  await loadTreeData()
 }
 </script>
 

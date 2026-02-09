@@ -30,5 +30,7 @@ export const ipcEnum = {
   searchWebTree: 'search-web-tree',
   reorderWebTreeNodes: 'reorder-web-tree-nodes',
   // 图标获取 IPC 事件
-  fetchFavicon: 'fetch-favicon'
+  fetchFavicon: 'fetch-favicon',
+  // 书签导入 IPC 事件
+  importBookmarks: 'import-bookmarks'
 }

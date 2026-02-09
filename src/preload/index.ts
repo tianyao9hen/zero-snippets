@@ -30,7 +30,8 @@ import {
   reorderWebTreeNodes,
   updateWebTreeNodeCategoryId,
   updateWebTreeNodeCategoryIdRecursive,
-  fetchFavicon
+  fetchFavicon,
+  importBookmarks
 } from './composables/db'
 
 // Custom APIs for renderer
@@ -65,7 +66,8 @@ const api = {
   reorderWebTreeNodes,
   updateWebTreeNodeCategoryId,
   updateWebTreeNodeCategoryIdRecursive,
-  fetchFavicon
+  fetchFavicon,
+  importBookmarks
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

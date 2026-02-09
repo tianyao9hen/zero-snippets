@@ -16,6 +16,25 @@ export const findAll = () => {
   ) as CategoryEntity[]
 }
 
+export const findByTitle = (typeId: number, title: string) => {
+  return execute.findOne(
+    `
+    select
+      id,
+      type_id as typeId,
+      title,
+      order_num as orderNum,
+      create_time as createTime
+    from snippets_category
+    where type_id = $typeId and title = $title
+  `,
+    {
+      typeId,
+      title
+    }
+  ) as CategoryEntity | undefined
+}
+
 export const listByTid = (tid: number) => {
   return execute.findAll(
     `

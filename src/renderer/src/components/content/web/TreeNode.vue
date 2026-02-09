@@ -434,8 +434,18 @@ const iconLoadError = ref(false)
 /** 图标悬停状态（用于默认图标悬停切换） */
 const isIconHovered = ref(false)
 
+/** 判断是否为data:image开头的base64图标 */
+const isDataImageIcon = (icon?: string): boolean => {
+  return !!icon && icon.startsWith('data:image')
+}
+
 /** 节点图标源地址 */
 const nodeIconSrc = computed(() => {
+  // 如果是data:image开头的base64图标，始终显示该图标，不受选中或悬停影响
+  if (isDataImageIcon(props.node.icon) && !iconLoadError.value) {
+    return props.node.icon
+  }
+
   if (isFolder.value) {
     return isSelected.value ? ICON_CONFIG.folder.url : ICON_CONFIG.folder.dUrl
   }
@@ -561,6 +571,10 @@ const handleIconError = () => {
  * 当显示默认图标时，悬停切换到高亮图标
  */
 const handleIconMouseEnter = () => {
+  // 当显示data:image图标或自定义图标时，不启用悬停切换
+  if (isDataImageIcon(props.node.icon) || (props.node.icon && !iconLoadError.value)) {
+    return
+  }
   // 只有当显示默认图标时才启用悬停切换
   if (!props.node.icon || iconLoadError.value) {
     isIconHovered.value = true

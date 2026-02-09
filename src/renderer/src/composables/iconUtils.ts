@@ -12,6 +12,14 @@ import openIcon from '@renderer/assets/icons/open.svg'
 import openDIcon from '@renderer/assets/icons/open_d.svg'
 import webIcon from '@renderer/assets/icons/web.svg'
 import webDIcon from '@renderer/assets/icons/web_d.svg'
+import importIcon from '@renderer/assets/icons/import.svg'
+import importDIcon from '@renderer/assets/icons/import_d.svg'
+import editIcon from '@renderer/assets/icons/edit.svg'
+import editDIcon from '@renderer/assets/icons/edit_d.svg'
+import addWebIcon from '@renderer/assets/icons/addWeb.svg'
+import addWebDIcon from '@renderer/assets/icons/addWeb_d.svg'
+
+
 
 export const iconMap: { [key: string]: IconClass } = {
   all: {
@@ -53,5 +61,20 @@ export const iconMap: { [key: string]: IconClass } = {
     id: 'web',
     url: webIcon,
     dUrl: webDIcon
+  },
+  import: {
+    id: 'import',
+    url: importIcon,
+    dUrl: importDIcon
+  },
+  edit: {
+    id: 'edit',
+    url: editIcon,
+    dUrl: editDIcon
+  },
+  addWeb: {
+    id: 'addWeb',
+    url: addWebIcon,
+    dUrl: addWebDIcon
   }
 }

@@ -198,3 +198,16 @@ export function updateWebTreeNodeCategoryIdRecursive(
 export function fetchFavicon(url: string): Promise<FaviconFetchResult> {
   return ipcRenderer.invoke(ipcEnum.fetchFavicon, url)
 }
+
+/**
+ * 导入Chrome书签
+ * @param params 导入参数
+ * @returns Promise<ImportResult> 导入结果
+ */
+export function importBookmarks(params: { typeId: number; nodes: any[] }): Promise<{
+  success: boolean
+  importedCount: number
+  error?: string
+}> {
+  return ipcRenderer.invoke(ipcEnum.importBookmarks, params)
+}
