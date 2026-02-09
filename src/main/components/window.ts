@@ -30,9 +30,9 @@ export const window: Record<WindowNameType, WindowClass> = {
       transparent: false,
       openDevTools: true,
       initShow: true,
-      // path: '/content'
+      path: '/content'
       // path: '/content/1/category/0/catelog'
-      path: '/content/2/web/0/folder'
+      // path: '/content/2/web/0/folder'
     }
   }
 }
@@ -46,7 +46,7 @@ export const getWindowByName = (name: WindowNameType): BrowserWindow => {
     window[name].id = win.id
     createMenu(name, win)
   }
-  win.hookWindowMessage(278, function (_e) {
+  win.hookWindowMessage(278, function () {
     win.setEnabled(false) //窗口禁用
     setTimeout(() => {
       win!.setEnabled(true) //窗口启用
@@ -61,6 +61,6 @@ export const getWindowByEvent = (event: IpcMainEvent | IpcMainInvokeEvent) => {
 }
 
 app.whenReady().then(() => {
-  // getWindowByName('search')
-  getWindowByName('content')
+  getWindowByName('search')
+  // getWindowByName('content')
 })

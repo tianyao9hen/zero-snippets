@@ -3,7 +3,7 @@ import Snippets from '@renderer/pages/Snippets.vue'
 import Content from '@renderer/pages/Content.vue'
 import Category from '@renderer/components/content/Category.vue'
 import Web from '@renderer/components/content/Web.vue'
-import NativeApp from '@renderer/components/content/NativeApp.vue'
+import Software from '@renderer/components/content/Software.vue'
 import Catelog from '@renderer/components/content/Catelog.vue'
 import Article from '@renderer/components/content/Article.vue'
 import Folder from '@renderer/components/content/Folder.vue'
@@ -55,9 +55,9 @@ const routes: RouteRecordRaw[] = [
         ]
       },
       {
-        path: 'native-app',
-        name: 'nativeApp',
-        component: NativeApp
+        path: 'software',
+        name: 'software',
+        component: Software
       }
     ]
   }
