@@ -197,7 +197,7 @@ import {
   type HighlightMapState,
   type DropPosition,
   calculateDropPosition
-} from '@renderer/composables/useTreeDrag'
+} from '@renderer/hooks/useWebTree'
 
 // ==================== 常量定义 ====================
 

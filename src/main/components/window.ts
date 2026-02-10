@@ -132,6 +132,6 @@ export const showWindowExclusive = async (
 }
 
 app.whenReady().then(() => {
-  showWindow('search', '')
-  // getWindowByName('content')
+  // showWindow('search')
+  showWindowExclusive('content')
 })

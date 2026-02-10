@@ -1,4 +1,4 @@
-import { contextBridge, clipboard } from 'electron'
+import { contextBridge, clipboard, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 import { showMainMenu } from './composables/menu'
 import { setIgnoreMouseEvent } from './composables/setIgnoreMouseEvent'
@@ -71,7 +71,8 @@ const api = {
   updateWebTreeNodeCategoryIdRecursive,
   fetchFavicon,
   importBookmarks,
-  showWindowExclusive
+  showWindowExclusive,
+  openExternal: (url: string) => ipcRenderer.send('open-external', url)
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

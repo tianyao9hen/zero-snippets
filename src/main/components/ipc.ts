@@ -1,4 +1,4 @@
-import { ipcMain, IpcMainEvent } from 'electron'
+import { ipcMain, IpcMainEvent, shell } from 'electron'
 import { ipcEnum } from '../../enum/ipcEnum'
 import { getWindowByEvent, showWindowExclusive } from './window'
 import './db/ipc'
@@ -16,3 +16,7 @@ ipcMain.on(
     showWindowExclusive(name, path)
   }
 )
+
+ipcMain.on(ipcEnum.openExternal, (_event: IpcMainEvent, url: string) => {
+  shell.openExternal(url)
+})

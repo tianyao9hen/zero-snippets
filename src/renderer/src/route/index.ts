@@ -7,6 +7,7 @@ import Software from '@renderer/components/content/Software.vue'
 import Catelog from '@renderer/components/content/Catelog.vue'
 import Article from '@renderer/components/content/Article.vue'
 import Folder from '@renderer/components/content/Folder.vue'
+import Setting from '@renderer/components/content/Setting.vue'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -58,6 +59,11 @@ const routes: RouteRecordRaw[] = [
         path: 'software',
         name: 'software',
         component: Software
+      },
+      {
+        path: 'setting',
+        name: 'setting',
+        component: Setting
       }
     ]
   }

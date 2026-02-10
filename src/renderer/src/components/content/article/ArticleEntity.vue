@@ -118,7 +118,6 @@ onUnmounted(() => {
  * @param content 新文章内容
  */
 function editContent(content: string) {
-  console.log('文章内容修改了')
   article.value.content = content
   editArticle(article.value)
 }

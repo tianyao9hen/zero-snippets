@@ -178,7 +178,19 @@ export default () => {
         break
       }
       case 'Enter': {
-        // TODO
+        const data = snippetsStore.snippets.resultList
+        const uniqueId = snippetsStore.snippets.selectId
+        const selectedItem = data.find((item) => item.uniqueId === uniqueId)
+        if (selectedItem) {
+          if (selectedItem.typeId === 1) {
+            // 文章类型，打开 content 窗口
+            const path = `/content/1/category/${selectedItem.categoryId}/catelog/${selectedItem.id}/article`
+            window.api.showWindowExclusive('content', path)
+          } else if (selectedItem.typeId === 2 && selectedItem.url) {
+            // 网页类型，使用浏览器打开 URL
+            window.api.openExternal(selectedItem.url)
+          }
+        }
         break
       }
     }

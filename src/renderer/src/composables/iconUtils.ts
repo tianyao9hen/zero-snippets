@@ -20,6 +20,10 @@ import addWebIcon from '@renderer/assets/icons/addWeb.svg'
 import addWebDIcon from '@renderer/assets/icons/addWeb_d.svg'
 import articleIcon from '@renderer/assets/icons/article.svg'
 import articleDIcon from '@renderer/assets/icons/article_d.svg'
+import settingIcon from '@renderer/assets/icons/setting.svg'
+import settingDIcon from '@renderer/assets/icons/setting_d.svg'
+
+
 
 export const iconMap: { [key: string]: IconClass } = {
   all: {
@@ -81,5 +85,10 @@ export const iconMap: { [key: string]: IconClass } = {
     id: 'article',
     url: articleIcon,
     dUrl: articleDIcon
+  },
+  setting: {
+    id: 'setting',
+    url: settingIcon,
+    dUrl: settingDIcon
   }
 }

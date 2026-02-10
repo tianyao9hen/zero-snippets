@@ -1,6 +1,16 @@
 import { URL } from 'url'
 
 /**
+ * 图标候选信息
+ */
+export interface FaviconCandidate {
+  url: string
+  sizes?: string
+  type?: string
+  priority: number
+}
+
+/**
  * 从基础URL构建完整的图标URL
  * @param baseUrl 基础URL
  * @param faviconPath 图标路径（可能是相对或绝对路径）

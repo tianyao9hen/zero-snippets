@@ -68,6 +68,8 @@ declare global {
       }>
       // 窗口管理 API
       showWindowExclusive: (name: WindowNameType, path?: string) => void
+      // 外部链接 API
+      openExternal: (url: string) => void
     }
   }
 }

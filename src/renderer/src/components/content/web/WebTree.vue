@@ -228,7 +228,7 @@ import {
   type DropPosition,
   calculateNewOrderNum,
   calculateNewOrderNumForMove
-} from '@renderer/composables/useTreeDrag'
+} from '@renderer/hooks/useWebTree'
 
 // ==================== 图标引用 ====================
 
@@ -822,7 +822,10 @@ const handleMoveAndReorder = async (payload: {
     )
 
     // 计算新的排序号
-    const newOrderNum = calculateNewOrderNumForMove(targetSiblings, targetNode, position)
+    // 当拖到网页节点上（inside）时，实际应该排在目标节点之后（after）
+    const effectivePosition =
+      position === 'inside' && targetNode.nodeType !== WebTreeNodeType.FOLDER ? 'after' : position
+    const newOrderNum = calculateNewOrderNumForMove(targetSiblings, targetNode, effectivePosition)
 
     // 确定新的 category_id
     let newCategoryId: number

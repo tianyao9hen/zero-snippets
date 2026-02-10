@@ -11,6 +11,18 @@
       >
         {{ item.title }}
       </router-link>
+      <router-link
+        :to="{ name: 'setting', params: { tid: -1 } }"
+        class="content-type-item unselectable"
+        :class="{ active: snippetsStore.content.selectTypeId === -1 }"
+        @click="choiceType(-1)"
+      >
+        <img
+          class="w-3 h-3 inline-block align-middle mr-1"
+          :src="snippetsStore.content.selectTypeId === -1 ? settingIcon.url : settingIcon.dUrl"
+        />
+        设 置
+      </router-link>
     </div>
     <div class="content-content">
       <router-view />
@@ -19,10 +31,13 @@
 </template>
 
 <script setup lang="ts">
+import { iconMap } from '@renderer/composables/iconUtils'
 import useType from '@renderer/hooks/useType'
 import { useSnippetsStore } from '@renderer/store/snippetsStore'
 import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+
+const settingIcon = iconMap['setting']
 
 const route = useRoute()
 const router = useRouter()
