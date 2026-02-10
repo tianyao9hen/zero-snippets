@@ -2,6 +2,7 @@ import { contextBridge, clipboard } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 import { showMainMenu } from './composables/menu'
 import { setIgnoreMouseEvent } from './composables/setIgnoreMouseEvent'
+import { showWindowExclusive } from './composables/window'
 import {
   sql,
   getAllType,
@@ -69,7 +70,8 @@ const api = {
   updateWebTreeNodeCategoryId,
   updateWebTreeNodeCategoryIdRecursive,
   fetchFavicon,
-  importBookmarks
+  importBookmarks,
+  showWindowExclusive
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

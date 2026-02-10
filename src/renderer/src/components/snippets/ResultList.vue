@@ -9,8 +9,8 @@
       :key="item.uniqueId"
       class="result-item rounded-md p-1 h-8 leading-6 flex items-center"
       :class="{
-        'item_active': item.uniqueId == selectId,
-        'item_focus': item.uniqueId == selectId && resultFlag
+        item_active: item.uniqueId == selectId,
+        item_focus: item.uniqueId == selectId && resultFlag
       }"
       @click="selectItemByUniqueId(item.uniqueId)"
     >

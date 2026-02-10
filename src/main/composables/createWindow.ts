@@ -3,6 +3,14 @@ import { BrowserWindow, shell } from 'electron'
 import icon from '../../../resources/icon.png?asset'
 import { join } from 'path'
 
+// 统一构建目标 URL
+export const getTargetUrl = (path: string): string => {
+  if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
+    return process.env['ELECTRON_RENDERER_URL'] + '/#' + path
+  }
+  return `file://${join(__dirname, '../renderer/index.html')}#${path}`
+}
+
 export function createWindow(options: OptionsClass): BrowserWindow {
   const window = new BrowserWindow(
     Object.assign(
@@ -38,11 +46,8 @@ export function createWindow(options: OptionsClass): BrowserWindow {
     return { action: 'deny' }
   })
 
-  if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
-    window.loadURL(process.env['ELECTRON_RENDERER_URL'] + '/#' + options.path)
-  } else {
-    // TODO 打包后加载本地文件
-    window.loadFile(join(__dirname, '../renderer/index.html'))
-  }
+  // 使用统一的 URL 构建方法
+  window.loadURL(getTargetUrl(options.path || ''))
+
   return window
 }

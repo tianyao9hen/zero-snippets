@@ -81,5 +81,5 @@ export const iconMap: { [key: string]: IconClass } = {
     id: 'article',
     url: articleIcon,
     dUrl: articleDIcon
-  },
+  }
 }

@@ -33,5 +33,6 @@ export const ipcEnum = {
   // 图标获取 IPC 事件
   fetchFavicon: 'fetch-favicon',
   // 书签导入 IPC 事件
-  importBookmarks: 'import-bookmarks'
+  importBookmarks: 'import-bookmarks',
+  showWindowExclusive: 'show-window-exclusive'
 }

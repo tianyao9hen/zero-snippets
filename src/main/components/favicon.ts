@@ -3,8 +3,7 @@ import {
   getStandardFaviconUrl,
   sortFaviconCandidates,
   cleanUrl,
-  isValidUrl,
-  type FaviconFetchResult
+  isValidUrl
 } from '../composables/faviconUtils'
 
 /**

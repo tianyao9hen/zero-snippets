@@ -9,7 +9,11 @@ export default () => {
    * @param nodeType 节点类型
    * @returns Promise<WebTreeNode[]> 匹配的节点列表
    */
-  const searchWebTreeNodes = async (keyword: string, typeId: number, nodeType: number): Promise<WebTreeNode[]> => {
+  const searchWebTreeNodes = async (
+    keyword: string,
+    typeId: number,
+    nodeType: number
+  ): Promise<WebTreeNode[]> => {
     return await window.api.searchWebTree(keyword, typeId, nodeType)
   }
 

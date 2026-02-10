@@ -66,6 +66,8 @@ declare global {
         categoryId?: number
         error?: string
       }>
+      // 窗口管理 API
+      showWindowExclusive: (name: WindowNameType, path?: string) => void
     }
   }
 }
