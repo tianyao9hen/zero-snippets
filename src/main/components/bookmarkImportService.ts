@@ -14,46 +14,6 @@ import { add as addCategory } from './db/sql/categorySql'
 import { add as addWebTreeNode } from './db/sql/webTreeSql'
 
 /**
- * 书签导入参数
- */
-interface ImportBookmarksParams {
-  /** 类型ID */
-  typeId: number
-  /** 书签节点数组 */
-  nodes: BookmarkImportNode[]
-}
-
-/**
- * 书签导入节点
- */
-interface BookmarkImportNode {
-  /** 节点标题 */
-  title: string
-  /** 网页URL */
-  url?: string
-  /** 图标数据 */
-  icon?: string
-  /** 添加日期 */
-  addDate?: string
-  /** 子节点 */
-  children?: BookmarkImportNode[]
-}
-
-/**
- * 导入结果
- */
-interface ImportResult {
-  /** 是否成功 */
-  success: boolean
-  /** 导入的节点数量 */
-  importedCount: number
-  /** 分类ID */
-  categoryId?: number
-  /** 错误信息 */
-  error?: string
-}
-
-/**
  * 导入书签
  * @param params 导入参数
  * @returns 导入结果
@@ -127,7 +87,8 @@ async function importNodeRecursive(
     description: null,
     icon: node.icon || null,
     categoryId,
-    nodeType
+    nodeType,
+    orderNum: 0
   }
 
   // 插入节点

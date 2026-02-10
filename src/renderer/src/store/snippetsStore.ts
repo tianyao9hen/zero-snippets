@@ -5,7 +5,7 @@ import { ref } from 'vue'
 type SnippetsStoreType = {
   search: string // 检索文字列
   resultList: ContentEntity[] // 検索結果
-  selectId: number // 选中的id
+  selectId: string // 选中的uniqueId
   writeFlag: boolean // 是否输入开关
   typeFlag: boolean // 是否选择类型开关
   resultFlag: boolean // 是否选择结果开关
@@ -26,7 +26,7 @@ export const useSnippetsStore = defineStore('snippets', () => {
   const snippets = ref<SnippetsStoreType>({
     search: '',
     resultList: [],
-    selectId: 0,
+    selectId: '',
     writeFlag: true,
     typeFlag: false,
     resultFlag: false,
@@ -42,7 +42,7 @@ export const useSnippetsStore = defineStore('snippets', () => {
     updateCategoryId: null
   })
 
-  function setId(id: number) {
+  function setId(id: string) {
     snippets.value.selectId = id
   }
 
@@ -57,9 +57,9 @@ export const useSnippetsStore = defineStore('snippets', () => {
   function setResultList(result: ContentEntity[]) {
     snippets.value.resultList = result
     if (result.length > 0) {
-      snippets.value.selectId = result[0].id
+      snippets.value.selectId = result[0].uniqueId
     } else {
-      snippets.value.selectId = 0
+      snippets.value.selectId = ''
     }
   }
 

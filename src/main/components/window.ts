@@ -44,7 +44,9 @@ export const getWindowByName = (name: WindowNameType): BrowserWindow => {
     // 创建窗口
     win = createWindow(window[name].options)
     window[name].id = win.id
-    createMenu(name, win)
+    if (name === 'search') {
+      createMenu(name, win)
+    }
   }
   win.hookWindowMessage(278, function () {
     win.setEnabled(false) //窗口禁用

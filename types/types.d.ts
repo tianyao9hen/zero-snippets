@@ -28,10 +28,16 @@ type IconClass = {
 // 内容
 type ContentEntity = {
   id: number
+  uniqueId: string // 复合唯一标识：typeId_id，用于解决不同表id重复问题
   typeId: number
   categoryId: number
   title: string
   content: string
+  // 扩展字段（搜索结果显示用）
+  categoryName?: string // 分类名称
+  icon?: string // 网页图标
+  url?: string // 网页URL
+  shortcut?: string // 网页快捷键
 }
 
 // 内容类型
@@ -90,7 +96,66 @@ interface HighlightInfo {
   matchedText: string // 匹配的完整文本
 }
 
+interface FaviconFetchResult {
+  url: string | null
+  title: string | null
+  success: boolean
+  error?: string
+}
+
+/**
+ * 图标候选信息
+ */
+interface FaviconCandidate {
+  url: string
+  sizes?: string
+  type?: string
+  priority: number
+}
+
+/**
+ * 书签导入参数
+ */
+interface ImportBookmarksParams {
+  /** 类型ID */
+  typeId: number
+  /** 书签节点数组 */
+  nodes: BookmarkImportNode[]
+}
+
+/**
+ * 导入结果
+ */
+interface ImportResult {
+  /** 是否成功 */
+  success: boolean
+  /** 导入的节点数量 */
+  importedCount: number
+  /** 分类ID */
+  categoryId?: number
+  /** 错误信息 */
+  error?: string
+}
+
+/**
+ * 书签导入节点
+ */
+interface BookmarkImportNode {
+  /** 节点标题 */
+  title: string
+  /** 网页URL */
+  url?: string
+  /** 图标数据 */
+  icon?: string
+  /** 添加日期 */
+  addDate?: string
+  /** 子节点 */
+  children?: BookmarkImportNode[]
+}
+
 declare module '@bytemd/vue-next' {
+  // eslint-disable-next-line
   export const Editor: any
+  // eslint-disable-next-line
   export const Viewer: any
 }

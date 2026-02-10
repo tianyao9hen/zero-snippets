@@ -217,8 +217,8 @@ ipcMain.handle(
  */
 ipcMain.handle(
   ipcEnum.searchWebTree,
-  (_event: IpcMainInvokeEvent, keyword: string, typeId: number) => {
-    return searchWebTree(keyword, typeId)
+  (_event: IpcMainInvokeEvent, keyword: string, typeId: number, nodeType: number) => {
+    return searchWebTree(keyword, typeId, nodeType)
   }
 )
 
@@ -244,7 +244,7 @@ ipcMain.handle(ipcEnum.fetchFavicon, (_event: IpcMainInvokeEvent, url: string) =
  */
 ipcMain.handle(
   ipcEnum.importBookmarks,
-  (_event: IpcMainInvokeEvent, params: { typeId: number; nodes: any[] }) => {
+  (_event: IpcMainInvokeEvent, params: { typeId: number; nodes: BookmarkImportNode[] }) => {
     return importBookmarks(params)
   }
 )

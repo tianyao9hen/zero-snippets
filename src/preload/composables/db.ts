@@ -1,6 +1,5 @@
 import { ipcRenderer } from 'electron'
 import { ipcEnum } from '../../enum/ipcEnum'
-import type { FaviconFetchResult } from '../../main/composables/faviconUtils'
 
 export function sql(
   sql: string,
@@ -161,8 +160,8 @@ export function moveWebTreeNode(id: number, newParentId: number) {
  * @param typeId 类型ID
  * @returns Promise<WebTreeNode[]> 匹配的节点列表
  */
-export function searchWebTree(keyword: string, typeId: number) {
-  return ipcRenderer.invoke(ipcEnum.searchWebTree, keyword, typeId)
+export function searchWebTree(keyword: string, typeId: number, nodeType: number) {
+  return ipcRenderer.invoke(ipcEnum.searchWebTree, keyword, typeId, nodeType)
 }
 
 /**
@@ -213,7 +212,7 @@ export function fetchFavicon(url: string): Promise<FaviconFetchResult> {
  * @param params 导入参数
  * @returns Promise<ImportResult> 导入结果
  */
-export function importBookmarks(params: { typeId: number; nodes: any[] }): Promise<{
+export function importBookmarks(params: { typeId: number; nodes: BookmarkImportNode[] }): Promise<{
   success: boolean
   importedCount: number
   error?: string

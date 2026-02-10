@@ -49,7 +49,7 @@ declare global {
       ) => Promise<number>
       removeWebTreeNode: (id: number) => Promise<number>
       moveWebTreeNode: (id: number, newParentId: number) => Promise<number>
-      searchWebTree: (keyword: string, typeId: number) => Promise<WebTreeNode[]>
+      searchWebTree: (keyword: string, typeId: number, nodeType: number) => Promise<WebTreeNode[]>
       reorderWebTreeNodes: (orders: { id: number; orderNum: number }[]) => Promise<number>
       updateWebTreeNodeCategoryId: (id: number, categoryId: number) => Promise<number>
       updateWebTreeNodeCategoryIdRecursive: (
@@ -60,7 +60,7 @@ declare global {
       // 图标获取 API
       fetchFavicon: (url: string) => Promise<FaviconFetchResult>
       // 书签导入 API
-      importBookmarks: (params: { typeId: number; nodes: any[] }) => Promise<{
+      importBookmarks: (params: { typeId: number; nodes: BookmarkImportNode[] }) => Promise<{
         success: boolean
         importedCount: number
         categoryId?: number

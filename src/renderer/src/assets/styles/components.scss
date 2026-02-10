@@ -152,7 +152,7 @@
       }
     }
   }
-  .active {
+  .item_active {
     @include activeTextColor;
     @include activeBgColor;
     .result-item-focus {
@@ -168,7 +168,7 @@
       }
     }
   }
-  .focus {
+  .item_focus {
     .result-item-focus {
       @include focusBorderColor;
       @include focusBgColor;
@@ -178,15 +178,75 @@
     display: flex;
     align-items: center;
     gap: 6px;
+    min-width: 0;
+
     .item-type-icon {
       width: 14px;
       height: 14px;
       flex-shrink: 0;
     }
-    .item-title {
-      font-weight: 500;
-      font-size: 14px;
+
+    // 文章类型布局
+    .article-section {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+      min-width: 0;
+
+      .article-title {
+        font-weight: 500;
+        font-size: 14px;
+        flex-shrink: 0;
+        max-width: 200px;
+      }
+
+      .category-tag {
+        font-size: 10px;
+        padding: 1px 6px;
+        border-radius: 3px;
+        background-color: rgba(0, 0, 0, 0.06);
+        color: #666;
+        flex-shrink: 0;
+        white-space: nowrap;
+      }
     }
+
+    // 网页类型布局
+    .web-section {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+      min-width: 0;
+
+      .web-title {
+        font-weight: 500;
+        font-size: 14px;
+        flex-shrink: 0;
+        max-width: 160px;
+      }
+
+      .web-url {
+        font-size: 11px;
+        color: #888;
+        flex: 1;
+        min-width: 0;
+        max-width: 250px;
+      }
+
+      .web-shortcut {
+        font-size: 10px;
+        padding: 1px 6px;
+        border-radius: 3px;
+        background-color: #e3f2fd;
+        color: #1976d2;
+        flex-shrink: 0;
+        white-space: nowrap;
+        font-weight: 500;
+      }
+    }
+
     .highlight {
       background-color: #ffd700;
       color: #000;

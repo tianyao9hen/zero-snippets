@@ -6,6 +6,7 @@
         active: snippetsStore.snippets.selectTypeId === 0,
         focus: snippetsStore.snippets.selectTypeId === 0 && snippetsStore.snippets.typeFlag
       }"
+      @click="selectTypeById(0)"
     >
       <div class="type-item-info">全部结果</div>
     </div>
@@ -17,6 +18,7 @@
         active: item.id === snippetsStore.snippets.selectTypeId,
         focus: item.id === snippetsStore.snippets.selectTypeId && snippetsStore.snippets.typeFlag
       }"
+      @click="selectTypeById(item.id)"
     >
       <div class="type-item-info">
         {{ item.title }}
@@ -27,8 +29,10 @@
 
 <script setup lang="ts">
 import { useSnippetsStore } from '@renderer/store/snippetsStore'
+import useSelect from '@renderer/hooks/useSelect'
 
 const snippetsStore = useSnippetsStore()
+ const { selectTypeById } = useSelect()
 </script>
 
 <style lang="scss" scoped></style>

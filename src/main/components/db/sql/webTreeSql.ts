@@ -472,7 +472,7 @@ export const findAllByTypeIdAndNullCategory = (typeId: number): WebTreeNodeEntit
  * @param typeId 类型ID
  * @returns WebTreeNodeEntity[] 匹配的节点列表
  */
-export const search = (keyword: string, typeId: number): WebTreeNodeEntity[] => {
+export const search = (keyword: string, typeId: number, nodeType: number): WebTreeNodeEntity[] => {
   const searchPattern = `%${keyword}%`
   return execute.findAll(
     `
@@ -497,8 +497,9 @@ export const search = (keyword: string, typeId: number): WebTreeNodeEntity[] => 
         or shortcut like $searchPattern
         or description like $searchPattern
       )
+      and node_type = $nodeType
     order by order_num
   `,
-    { typeId, searchPattern }
+    { typeId, searchPattern, nodeType }
   ) as WebTreeNodeEntity[]
 }

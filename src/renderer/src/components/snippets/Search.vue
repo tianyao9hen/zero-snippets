@@ -33,6 +33,7 @@ const search = ref<HTMLInputElement>()
 
 watch(
   () => snippetsStore.snippets.writeFlag,
+  // eslint-disable-next-line
   async (newValue, _oldValue) => {
     if (newValue) {
       search.value?.focus()

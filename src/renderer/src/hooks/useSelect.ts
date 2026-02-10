@@ -8,18 +8,19 @@ import useSearch from './useSearch'
 export default () => {
   const snippetsStore = useSnippetsStore()
   const { handleSearch } = useSearch()
+  let scrollTopHeightCount = 5
 
   const section = ref<HTMLDivElement>()
-  const items = ref<Map<number, HTMLDivElement>>(new Map())
+  const items = ref<Map<string, HTMLDivElement>>(new Map())
 
-  const setItemRef = (el, itemId) => {
+  const setItemRef = (el, uniqueId: string) => {
     if (el) {
-      items.value.set(itemId, el)
+      items.value.set(uniqueId, el)
     }
   }
 
-  const getItemRef = (id: number): HTMLDivElement | undefined => {
-    return items.value.get(id)
+  const getItemRef = (uniqueId: string): HTMLDivElement | undefined => {
+    return items.value.get(uniqueId)
   }
 
   const setSectionRef = (el) => {
@@ -28,24 +29,70 @@ export default () => {
     }
   }
 
+  const selectTypeById = (tid: number) => {
+    snippetsStore.setTypeFlag(true)
+    section.value?.scrollTo(0, 0)
+    const data = snippetsStore.snippets.typeList
+    if (data.length === 0) {
+      snippetsStore.setTypeId(0)
+      return
+    }
+    snippetsStore.setTypeId(tid)
+    handleSearch()
+  }
+
+  const selectItemByUniqueId = (uniqueId: string) => {
+    const itemRef = getItemRef(uniqueId)
+    if (!itemRef) return
+    const oldUniqueId = snippetsStore.snippets.selectId
+    if (oldUniqueId) {
+      const oldItemRef = getItemRef(oldUniqueId)
+      if (oldItemRef) {
+        console.log(oldItemRef.offsetTop - itemRef.offsetTop, itemRef.offsetHeight)
+        const num = itemRef.offsetTop - oldItemRef.offsetTop
+        if (num > 0) {
+          // 选择了下面的一个选项
+          const scrollNum = Math.ceil(num / itemRef.offsetHeight)
+          scrollTopHeightCount += scrollNum
+          console.log('scrollTopHeightCount', scrollTopHeightCount, scrollNum)
+        } else if (num < 0) {
+          // 选择了下面的一个选项
+          const scrollNum = Math.ceil(num / itemRef.offsetHeight)
+          scrollTopHeightCount += scrollNum
+          console.log('scrollTopHeightCount', scrollTopHeightCount, scrollNum)
+        }
+      }
+    }
+    // 向下选择时，关闭输入框的编辑模式，同时设置结果列表为焦点状态
+    snippetsStore.setResultFlag(true) // 新增：确保焦点在结果列表
+    // 滚动条滚动到指定位置
+    // section.value?.scrollTo(0, itemRef.offsetTop - itemRef.offsetHeight * 5)
+    // itemRef.focus({ preventScroll: true })
+    // 阻止浏览器自动滚动
+    snippetsStore.setId(uniqueId)
+  }
+
   const handleKeyEvent = (e: KeyboardEvent) => {
-    // console.log('keyEvent', e.code)
     switch (e.code) {
       case 'ArrowUp': {
+        e.preventDefault() // 阻止默认行为
         const data = snippetsStore.snippets.resultList
         if (data.length === 0) return
-        let id = snippetsStore.snippets.selectId
-        const index = data.findIndex((item) => item.id === id)
-        id = data[index - 1]?.id || id
+        let uniqueId = snippetsStore.snippets.selectId
+        const index = data.findIndex((item) => item.uniqueId === uniqueId)
+        uniqueId = data[index - 1]?.uniqueId || uniqueId
         // 如果当前焦点在输入框
         if (snippetsStore.snippets.writeFlag) {
           snippetsStore.setResultFlag(true)
-          id = data[data.length - 1].id
-          const itemRef = getItemRef(id)
+          uniqueId = data[data.length - 1].uniqueId
+          const itemRef = getItemRef(uniqueId)
           if (!itemRef) return
           // 滚动条滚动到指定位置
-          section.value?.scrollTo(0, itemRef.offsetTop - itemRef.offsetHeight * 5)
-          snippetsStore.setId(id)
+          section.value?.scrollTo(
+            0,
+            itemRef.offsetTop - itemRef.offsetHeight * scrollTopHeightCount
+          )
+          snippetsStore.setId(uniqueId)
           return
         }
         // 如果当前焦点在类别框
@@ -58,14 +105,15 @@ export default () => {
           snippetsStore.setTypeFlag(true)
           return
         }
-        const itemRef = getItemRef(id)
+        const itemRef = getItemRef(uniqueId)
         if (!itemRef) return
         // 滚动条滚动到指定位置
-        section.value?.scrollTo(0, itemRef.offsetTop - itemRef.offsetHeight * 5)
-        snippetsStore.setId(id)
+        section.value?.scrollTo(0, itemRef.offsetTop - itemRef.offsetHeight * scrollTopHeightCount)
+        snippetsStore.setId(uniqueId)
         break
       }
       case 'ArrowDown': {
+        e.preventDefault() // 阻止默认行为
         // 如果当前焦点在输入框
         if (snippetsStore.snippets.writeFlag) {
           snippetsStore.setTypeFlag(true)
@@ -78,19 +126,16 @@ export default () => {
         }
         const data = snippetsStore.snippets.resultList
         if (data.length === 0) return
-        let id = snippetsStore.snippets.selectId
-        const index = data.findIndex((item) => item.id === id)
-        id = data[index + 1]?.id || data[0].id
-        const itemRef = getItemRef(id)
+        let uniqueId = snippetsStore.snippets.selectId
+        const index = data.findIndex((item) => item.uniqueId === uniqueId)
+        uniqueId = data[index + 1]?.uniqueId || data[0].uniqueId
+        const itemRef = getItemRef(uniqueId)
         if (!itemRef) return
-        // 滚动条滚动到指定位置
-        section.value?.scrollTo(0, itemRef.offsetTop - itemRef.offsetHeight * 5)
-        // 向下选择时，关闭输入框的编辑模式
-        snippetsStore.setWriteFlag(false)
-        snippetsStore.setId(id)
+        snippetsStore.setId(uniqueId)
+        section.value?.scrollTo(0, itemRef.offsetTop - itemRef.offsetHeight * scrollTopHeightCount)
         break
       }
-      case 'ArrowRight': {
+      case 'ArrowLeft': {
         if (snippetsStore.snippets.writeFlag) {
           return
         }
@@ -108,7 +153,7 @@ export default () => {
         handleSearch()
         break
       }
-      case 'ArrowLeft': {
+      case 'ArrowRight': {
         if (snippetsStore.snippets.writeFlag) {
           return
         }
@@ -148,6 +193,8 @@ export default () => {
 
   return {
     setItemRef,
-    setSectionRef
+    setSectionRef,
+    selectTypeById,
+    selectItemByUniqueId
   }
 }

@@ -21,7 +21,9 @@
         :class="{ nocategory: article.categoryId == -1 }"
         @change="categorySelectEvent"
       >
-        <option v-for="item in categoryList" :value="item.id">{{ item.title }}</option>
+        <option v-for="item in categoryList" :key="item.id" :value="item.id">
+          {{ item.title }}
+        </option>
       </select>
     </div>
     <hr />
@@ -51,6 +53,7 @@ import Bytemd from './Bytemd.vue'
 let isComponentMounted = true
 const normalArticle: ContentEntity = {
   id: 0,
+  uniqueId: '',
   typeId: 0,
   categoryId: 0,
   title: '',
@@ -123,6 +126,7 @@ function editContent(content: string) {
 /**
  * title输入框回车事件
  */
+// eslint-disable-next-line
 function titleEnterEvent(_e: KeyboardEvent) {
   editArticle(article.value)
   refreshUrl()
