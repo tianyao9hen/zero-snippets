@@ -35,5 +35,12 @@ export const ipcEnum = {
   // 书签导入 IPC 事件
   importBookmarks: 'import-bookmarks',
   showWindowExclusive: 'show-window-exclusive',
-  openExternal: 'open-external'
+  openExternal: 'open-external',
+  // 设置相关 IPC 事件
+  getAllSettings: 'get-all-settings',
+  getSettingByKey: 'get-setting-by-key',
+  setSetting: 'set-setting',
+  deleteSetting: 'delete-setting',
+  // 快捷键相关 IPC 事件
+  reloadShortcut: 'reload-shortcut'
 }

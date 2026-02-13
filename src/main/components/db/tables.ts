@@ -1,5 +1,6 @@
 import { Random } from 'mockjs'
 import { createTable, findOne, insert } from './sql'
+import { initDefaultSettings } from './sql/settingSql'
 
 export function initTable() {
   // 内容类型表
@@ -54,6 +55,23 @@ export function initTable() {
     );
   `)
 
+  // 设置表 - 用于存储应用配置
+  createTable(`
+    create table if not exists snippets_setting (
+      id integer primary key autoincrement not null,
+      key text unique not null,
+      value text not null,
+      remark text,
+      create_time text not null default(datetime(CURRENT_TIMESTAMP,'localtime')),
+      update_time text not null default(datetime(CURRENT_TIMESTAMP,'localtime'))
+    );
+  `)
+
+  // 创建设置表索引
+  createTable(`
+    create index if not exists idx_setting_key on snippets_setting(key);
+  `)
+
   // 初始化表数据
   dbInit()
 }
@@ -63,6 +81,7 @@ function dbInit() {
   initSnippetsCategory()
   initSnippetsArticle()
   initSnippetsWebTree()
+  initDefaultSettings()
 }
 
 function initSnippetsType() {

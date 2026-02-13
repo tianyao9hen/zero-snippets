@@ -33,7 +33,12 @@ import {
   updateWebTreeNodeCategoryId,
   updateWebTreeNodeCategoryIdRecursive,
   fetchFavicon,
-  importBookmarks
+  importBookmarks,
+  getAllSettings,
+  getSettingByKey,
+  setSetting,
+  deleteSetting,
+  reloadShortcut
 } from './composables/db'
 
 // Custom APIs for renderer
@@ -72,7 +77,12 @@ const api = {
   fetchFavicon,
   importBookmarks,
   showWindowExclusive,
-  openExternal: (url: string) => ipcRenderer.send('open-external', url)
+  openExternal: (url: string) => ipcRenderer.send('open-external', url),
+  getAllSettings,
+  getSettingByKey,
+  setSetting,
+  deleteSetting,
+  reloadShortcut
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

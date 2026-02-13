@@ -153,6 +153,24 @@ interface BookmarkImportNode {
   children?: BookmarkImportNode[]
 }
 
+/**
+ * 设置实体
+ */
+interface SettingEntity {
+  /** 设置ID */
+  id: number
+  /** 设置键（唯一） */
+  key: string
+  /** 设置值 */
+  value: string
+  /** 设置描述 */
+  remark?: string
+  /** 创建时间 */
+  createTime?: string
+  /** 更新时间 */
+  updateTime?: string
+}
+
 declare module '@bytemd/vue-next' {
   // eslint-disable-next-line
   export const Editor: any

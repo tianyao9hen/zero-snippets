@@ -70,6 +70,13 @@ declare global {
       showWindowExclusive: (name: WindowNameType, path?: string) => void
       // 外部链接 API
       openExternal: (url: string) => void
+      // 设置相关 API
+      getAllSettings: () => Promise<SettingEntity[]>
+      getSettingByKey: (key: string) => Promise<SettingEntity | undefined>
+      setSetting: (key: string, value: string, remark?: string) => Promise<number>
+      deleteSetting: (key: string) => Promise<number>
+      // 快捷键相关 API
+      reloadShortcut: () => Promise<void>
     }
   }
 }

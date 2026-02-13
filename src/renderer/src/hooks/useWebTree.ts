@@ -170,7 +170,11 @@ export const calculateNewOrderNum = (
     return (prevNode.orderNum + targetNode.orderNum) / 2
   } else {
     // 插入到目标节点之后
-    if (targetIndex === -1 || targetIndex === sortedSiblings.length - 1 || sortedSiblings.length === 0) {
+    if (
+      targetIndex === -1 ||
+      targetIndex === sortedSiblings.length - 1 ||
+      sortedSiblings.length === 0
+    ) {
       // 目标是最后一个或不在列表中或列表为空，新排序号比最后一个大
       const lastOrderNum = sortedSiblings[sortedSiblings.length - 1]?.orderNum ?? 0
       return lastOrderNum + 1

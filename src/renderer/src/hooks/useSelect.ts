@@ -54,12 +54,10 @@ export default () => {
           // 选择了下面的一个选项
           const scrollNum = Math.ceil(num / itemRef.offsetHeight)
           scrollTopHeightCount += scrollNum
-          console.log('scrollTopHeightCount', scrollTopHeightCount, scrollNum)
         } else if (num < 0) {
           // 选择了下面的一个选项
           const scrollNum = Math.ceil(num / itemRef.offsetHeight)
           scrollTopHeightCount += scrollNum
-          console.log('scrollTopHeightCount', scrollTopHeightCount, scrollNum)
         }
       }
     }
@@ -98,11 +96,13 @@ export default () => {
         // 如果当前焦点在类别框
         if (snippetsStore.snippets.typeFlag) {
           snippetsStore.setWriteFlag(true)
+          scrollTopHeightCount = 5
           return
         }
         // 如果选项已经到达最上面
         if (index - 1 < 0) {
           snippetsStore.setTypeFlag(true)
+          scrollTopHeightCount = 5
           return
         }
         const itemRef = getItemRef(uniqueId)
@@ -128,6 +128,10 @@ export default () => {
         if (data.length === 0) return
         let uniqueId = snippetsStore.snippets.selectId
         const index = data.findIndex((item) => item.uniqueId === uniqueId)
+        if (!data[index + 1]) {
+          // 如果已经到达最下面，将滚动条最高滚动数量调整回默认值
+          scrollTopHeightCount = 5
+        }
         uniqueId = data[index + 1]?.uniqueId || data[0].uniqueId
         const itemRef = getItemRef(uniqueId)
         if (!itemRef) return

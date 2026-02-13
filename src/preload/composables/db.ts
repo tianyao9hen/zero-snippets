@@ -219,3 +219,50 @@ export function importBookmarks(params: { typeId: number; nodes: BookmarkImportN
 }> {
   return ipcRenderer.invoke(ipcEnum.importBookmarks, params)
 }
+
+// ==================== 设置相关 API ====================
+
+/**
+ * 获取所有设置
+ * @returns Promise<SettingEntity[]> 设置列表
+ */
+export function getAllSettings(): Promise<SettingEntity[]> {
+  return ipcRenderer.invoke(ipcEnum.getAllSettings)
+}
+
+/**
+ * 根据 key 获取设置
+ * @param key 设置键
+ * @returns Promise<SettingEntity | undefined> 设置实体
+ */
+export function getSettingByKey(key: string): Promise<SettingEntity | undefined> {
+  return ipcRenderer.invoke(ipcEnum.getSettingByKey, key)
+}
+
+/**
+ * 设置值（插入或更新）
+ * @param key 设置键
+ * @param value 设置值
+ * @param remark 设置描述
+ * @returns Promise<number> 受影响的行数
+ */
+export function setSetting(key: string, value: string, remark?: string): Promise<number> {
+  return ipcRenderer.invoke(ipcEnum.setSetting, key, value, remark)
+}
+
+/**
+ * 删除设置
+ * @param key 设置键
+ * @returns Promise<number> 受影响的行数
+ */
+export function deleteSetting(key: string): Promise<number> {
+  return ipcRenderer.invoke(ipcEnum.deleteSetting, key)
+}
+
+/**
+ * 重新加载快捷键
+ * @returns Promise<void>
+ */
+export function reloadShortcut(): Promise<void> {
+  return ipcRenderer.invoke(ipcEnum.reloadShortcut)
+}

@@ -35,6 +35,13 @@ import {
 import { fetchFavicon } from '../favicon'
 import { importBookmarks } from '../bookmarkImportService'
 import { ipcEnum } from '../../../enum/ipcEnum'
+import {
+  getAllSettings,
+  getSettingByKey,
+  setSetting,
+  deleteSetting
+} from './sql/settingSql'
+import { reloadShortcut } from '../shortcut'
 
 ipcMain.handle(
   ipcEnum.sql,
@@ -248,3 +255,43 @@ ipcMain.handle(
     return importBookmarks(params)
   }
 )
+
+// ==================== 设置相关 IPC 处理 ====================
+
+/**
+ * 获取所有设置
+ */
+ipcMain.handle(ipcEnum.getAllSettings, () => {
+  return getAllSettings()
+})
+
+/**
+ * 根据 key 获取设置
+ */
+ipcMain.handle(ipcEnum.getSettingByKey, (_event: IpcMainInvokeEvent, key: string) => {
+  return getSettingByKey(key)
+})
+
+/**
+ * 设置值（插入或更新）
+ */
+ipcMain.handle(
+  ipcEnum.setSetting,
+  (_event: IpcMainInvokeEvent, key: string, value: string, remark?: string) => {
+    return setSetting(key, value, remark)
+  }
+)
+
+/**
+ * 删除设置
+ */
+ipcMain.handle(ipcEnum.deleteSetting, (_event: IpcMainInvokeEvent, key: string) => {
+  return deleteSetting(key)
+})
+
+/**
+ * 重新加载快捷键
+ */
+ipcMain.handle(ipcEnum.reloadShortcut, () => {
+  return reloadShortcut()
+})

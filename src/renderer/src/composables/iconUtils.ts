@@ -23,8 +23,6 @@ import articleDIcon from '@renderer/assets/icons/article_d.svg'
 import settingIcon from '@renderer/assets/icons/setting.svg'
 import settingDIcon from '@renderer/assets/icons/setting_d.svg'
 
-
-
 export const iconMap: { [key: string]: IconClass } = {
   all: {
     id: 'all',
