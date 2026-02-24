@@ -35,7 +35,20 @@ const hasError = ref(false)
 
 const MODIFIER_KEYS = ['Control', 'Shift', 'Alt']
 const FORBIDDEN_KEYS = [' ', 'Enter', 'Delete', 'Tab', 'Escape', 'Backspace']
-const ALLOWED_FUNCTION_KEYS = ['F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11', 'F12']
+const ALLOWED_FUNCTION_KEYS = [
+  'F1',
+  'F2',
+  'F3',
+  'F4',
+  'F5',
+  'F6',
+  'F7',
+  'F8',
+  'F9',
+  'F10',
+  'F11',
+  'F12'
+]
 
 onMounted(async () => {
   await settingStore.loadSettings()
@@ -82,7 +95,11 @@ async function handleKeyDown(event: KeyboardEvent) {
 
   keys.push(mainKey)
 
-  if (keys.length === 1 && !ALLOWED_FUNCTION_KEYS.includes(keys[0]) && !/^[A-Z0-9]$/.test(keys[0])) {
+  if (
+    keys.length === 1 &&
+    !ALLOWED_FUNCTION_KEYS.includes(keys[0]) &&
+    !/^[A-Z0-9]$/.test(keys[0])
+  ) {
     hasError.value = true
     return
   }

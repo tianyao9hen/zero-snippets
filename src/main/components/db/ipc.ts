@@ -35,12 +35,7 @@ import {
 import { fetchFavicon } from '../favicon'
 import { importBookmarks } from '../bookmarkImportService'
 import { ipcEnum } from '../../../enum/ipcEnum'
-import {
-  getAllSettings,
-  getSettingByKey,
-  setSetting,
-  deleteSetting
-} from './sql/settingSql'
+import { getAllSettings, getSettingByKey, setSetting, deleteSetting } from './sql/settingSql'
 import { reloadShortcut } from '../shortcut'
 
 ipcMain.handle(

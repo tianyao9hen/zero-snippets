@@ -713,6 +713,44 @@ export default () => {
     return await window.api.reorderWebTreeNodes(orders)
   }
 
+  /**
+   * 获取父节点的路径名称
+   * @param nodes 扁平节点列表
+   * @param parentId 父节点ID
+   * @returns string 父节点路径字符串
+   */
+  const getParentPathNames = (nodes: WebTreeNode[], parentId: number): string => {
+    if (parentId === 0) return '根节点'
+
+    const parentNode = nodes.find((n) => n.id === parentId)
+    if (!parentNode) return '根节点'
+
+    // 构建完整路径数组
+    const pathNames: string[] = [parentNode.title]
+    let currentId = parentNode.parentId ?? 0
+
+    // 向上遍历获取所有父节点名称
+    while (currentId !== 0) {
+      const node = nodes.find((n) => n.id === currentId)
+      if (!node) break
+      pathNames.unshift(node.title)
+      currentId = node.parentId ?? 0
+    }
+
+    // 添加根节点
+    pathNames.unshift('根节点')
+
+    // 根据层级数量决定显示方式
+    if (pathNames.length <= 3) {
+      return pathNames.join(' > ')
+    } else {
+      // 超过3级，显示为：根节点 > ... > 父节点
+      const root = pathNames[0]
+      const parent = pathNames[pathNames.length - 1]
+      return `${root} > ... > ${parent}`
+    }
+  }
+
   return {
     searchWebTreeNodes,
     buildTree,
@@ -731,6 +769,7 @@ export default () => {
     updateWebTreeNodeCategoryIdRecursive,
     removeWebTreeNode,
     moveWebTreeNode,
-    reorderWebTreeNodes
+    reorderWebTreeNodes,
+    getParentPathNames
   }
 }

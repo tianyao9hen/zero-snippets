@@ -212,7 +212,7 @@
  * @example
  * <WebTree />
  */
-import { ref, computed, onMounted, onUnmounted, provide, readonly, h, watch } from 'vue'
+import { ref, computed, onMounted, onUnmounted, provide, readonly, h, watch, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import useWebTree from '@renderer/hooks/useWebTree'
 import { iconMap } from '@renderer/composables/iconUtils'
@@ -1034,7 +1034,10 @@ const openAddDialog = (nodeType: WebTreeNodeType, event?: MouseEvent) => {
   editNodeData.value = undefined
   dialogMode.value = 'add'
   typeIdForAdd.value = nodeType
-  showDialog.value = true
+  // 延迟打开对话框，确保右键菜单完全关闭后再打开
+  nextTick(() => {
+    showDialog.value = true
+  })
 }
 
 /**
@@ -1059,7 +1062,10 @@ const openAddDialogWithCategory = (nodeType: WebTreeNodeType, targetCategoryId: 
     categoryId: targetCategoryId
   }
 
-  showDialog.value = true
+  // 延迟打开对话框，确保右键菜单完全关闭后再打开
+  nextTick(() => {
+    showDialog.value = true
+  })
 }
 
 /**
@@ -1457,7 +1463,11 @@ const openEditDialog = (node: WebTreeNodeView) => {
     description: node.description || undefined
   }
   dialogMode.value = 'edit'
-  showDialog.value = true
+  // 延迟打开对话框，确保右键菜单完全关闭后再打开
+  // 避免与右键菜单的 DOM 操作冲突导致 Vue 运行时错误
+  nextTick(() => {
+    showDialog.value = true
+  })
 }
 
 // ==================== 删除操作 ====================
