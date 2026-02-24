@@ -31,7 +31,8 @@ import {
   searchByShortcut as searchWebTreeByShortcut,
   updateOrders as updateWebTreeOrders,
   updateCategoryId as updateWebTreeNodeCategoryId,
-  updateCategoryIdRecursive as updateWebTreeNodeCategoryIdRecursive
+  updateCategoryIdRecursive as updateWebTreeNodeCategoryIdRecursive,
+  setFolderAsCategory
 } from './sql/webTreeSql'
 import { fetchFavicon } from '../favicon'
 import { importBookmarks } from '../bookmarkImportService'
@@ -242,6 +243,16 @@ ipcMain.handle(
   ipcEnum.reorderWebTreeNodes,
   (_event: IpcMainInvokeEvent, orders: { id: number; orderNum: number }[]) => {
     return updateWebTreeOrders(orders)
+  }
+)
+
+/**
+ * 将文件夹设置为目录
+ */
+ipcMain.handle(
+  ipcEnum.setFolderAsCategory,
+  (_event: IpcMainInvokeEvent, folderId: number, folderName: string, typeId: number) => {
+    return setFolderAsCategory(folderId, folderName, typeId)
   }
 )
 

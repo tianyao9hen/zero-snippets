@@ -1,4 +1,6 @@
 import * as execute from '../sql'
+import { db } from '../connect'
+
 
 /**
  * 网页树节点实体接口
@@ -48,6 +50,109 @@ export const findAllByTypeId = (typeId: number): WebTreeNodeEntity[] => {
   `,
     { typeId }
   ) as WebTreeNodeEntity[]
+}
+
+/**
+ * 将文件夹设置为目录（事务操作）
+ * 1. 创建新目录
+ * 2. 更新子节点 category_id
+ * 3. 将直接子节点 parent_id 设为 0
+ * 4. 删除原文件夹节点
+ * @param folderId 文件夹节点ID
+ * @param folderName 文件夹名称
+ * @param typeId 类型ID
+ * @returns number 新创建的目录ID
+ */
+export const setFolderAsCategory = (
+  folderId: number,
+  folderName: string,
+  typeId: number
+): number => {
+  const database = db()
+  let newCategoryId = 0
+
+  const transaction = database.transaction(() => {
+    // 1. 创建新目录
+    // 获取当前最大 order_num
+    const maxOrderRes = database
+      .prepare('select max(order_num) as maxOrderNum from snippets_category')
+      .get() as { maxOrderNum: number }
+    const newOrderNum = (maxOrderRes?.maxOrderNum || 0) + 1
+
+    // 插入新目录
+    const insertRes = database
+      .prepare(
+        `
+      insert into snippets_category(
+        type_id,
+        title,
+        order_num
+      ) values(
+        @typeId,
+        @title,
+        @orderNum
+      )
+    `
+      )
+      .run({
+        typeId,
+        title: folderName,
+        orderNum: newOrderNum
+      })
+
+    newCategoryId = Number(insertRes.lastInsertRowid)
+
+    // 2. 获取该文件夹节点的完整子树并更新 category_id
+    // 使用 CTE 递归查询获取所有后代节点ID
+    // 注意：SQLite 支持递归 CTE
+    database
+      .prepare(
+        `
+      WITH RECURSIVE subtree AS (
+        SELECT id FROM snippets_web_tree WHERE id = @folderId
+        UNION ALL
+        SELECT t.id FROM snippets_web_tree t JOIN subtree s ON t.parent_id = s.id
+      )
+      UPDATE snippets_web_tree 
+      SET category_id = @newCategoryId 
+      WHERE id IN (SELECT id FROM subtree WHERE id != @folderId)
+    `
+      )
+      .run({
+        folderId,
+        newCategoryId
+      })
+
+    // 3. 将直接子节点的 parent_id 设置为 0（移到根级别）
+    database
+      .prepare(
+        `
+      UPDATE snippets_web_tree
+      SET parent_id = 0
+      WHERE parent_id = @folderId
+    `
+      )
+      .run({
+        folderId
+      })
+
+    // 4. 删除原文件夹节点
+    database
+      .prepare(
+        `
+      DELETE FROM snippets_web_tree
+      WHERE id = @folderId
+    `
+      )
+      .run({
+        folderId
+      })
+  })
+
+  // 执行事务
+  transaction()
+
+  return newCategoryId
 }
 
 /**

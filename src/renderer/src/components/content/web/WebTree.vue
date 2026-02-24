@@ -250,6 +250,11 @@ const editIcon = iconMap['edit']
 /** 添加网页图标 */
 const addWebIcon = iconMap['addWeb']
 
+/** 设为目录图标 */
+const changeIcon = iconMap['change']
+
+
+
 // ==================== 响应式状态 ====================
 
 /** 路由实例，用于获取URL参数 */
@@ -286,7 +291,8 @@ const {
   findParentNodeInTree,
   updateNodeOrderInTree,
   moveNodeInTree,
-  calculateParentId
+  calculateParentId,
+  setFolderAsCategory
 } = useWebTree()
 
 /** 树内容区域的DOM引用 */
@@ -593,6 +599,39 @@ const handleEditCancel = (node: WebTreeNodeView) => {
 }
 
 /**
+ * 处理将文件夹设为目录
+ * @param node 文件夹节点
+ */
+const handleSetAsDirectory = async (node: WebTreeNodeView) => {
+  if (
+    !confirm(
+      `确定要将文件夹 "${node.title}" 设为目录吗？\n该操作将创建一个同名目录，并将该文件夹下的所有内容移动到新目录中。`
+    )
+  ) {
+    return
+  }
+
+  try {
+    const newCategoryId = await setFolderAsCategory(node.id, node.title, node.typeId)
+
+    // 跳转到新目录，触发刷新
+    router.push({
+      name: 'folder',
+      params: {
+        tid: typeId.value,
+        cid: newCategoryId
+      },
+      query: {
+        t: Date.now()
+      }
+    })
+  } catch (error) {
+    console.error('设为目录失败:', error)
+    alert('设为目录失败，请重试')
+  }
+}
+
+/**
  * 处理右键菜单
  * 显示自定义的右键菜单，包含添加子节点、编辑、删除等操作
  *
@@ -624,19 +663,27 @@ const handleContextMenu = (payload: { node: WebTreeNodeView; event: MouseEvent }
     )
   }
 
-  menuItems.push(
-    {
-      label: h('div', { style: { fontSize: '12px', color: '#64748b' } }, '编辑'),
-      icon: h('img', { src: editIcon.dUrl, style: { width: '14px', height: '14px' } }),
-      divided: true,
-      onClick: () => openEditDialog(node)
-    },
-    {
-      label: h('div', { style: { fontSize: '12px', color: '#ef4444' } }, '删除'),
-      icon: h('img', { src: deleteIcon.url, style: { width: '12px', height: '12px' } }),
-      onClick: () => handleDeleteNode(node)
-    }
-  )
+  menuItems.push({
+    label: h('div', { style: { fontSize: '12px', color: '#64748b' } }, '编辑'),
+    icon: h('img', { src: editIcon.dUrl, style: { width: '14px', height: '14px' } }),
+    onClick: () => openEditDialog(node)
+  })
+
+  // 文件夹节点显示"设为目录"选项
+  if (node.nodeType === WebTreeNodeType.FOLDER) {
+    menuItems.push({
+      label: h('div', { style: { fontSize: '12px', color: '#64748b' } }, '设为目录'),
+      icon: h('img', { src: changeIcon.dUrl, style: { width: '12px', height: '12px' } }),
+      onClick: () => handleSetAsDirectory(node)
+    })
+  }
+
+  menuItems.push({
+    label: h('div', { style: { fontSize: '12px', color: '#ef4444' } }, '删除'),
+    icon: h('img', { src: deleteIcon.url, style: { width: '12px', height: '12px' } }),
+    divided: 'up',
+    onClick: () => handleDeleteNode(node)
+  })
 
   // 显示右键菜单
   ContextMenu.showContextMenu({
@@ -1438,7 +1485,10 @@ const clearSearch = async () => {
 const handleKeydown = (event: KeyboardEvent) => {
   // 如果焦点在输入框或文本域上，不处理
   const activeElement = document.activeElement as HTMLElement
-  if (activeElement && (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA')) {
+  if (
+    activeElement &&
+    (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA')
+  ) {
     return
   }
 

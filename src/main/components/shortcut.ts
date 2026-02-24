@@ -25,8 +25,6 @@ export async function initShortcut(): Promise<void> {
 
     if (!success) {
       console.error(`初始化快捷键失败: ${accelerator}`)
-    } else {
-      console.log(`快捷键已初始化: ${accelerator}`)
     }
   } catch (error) {
     console.error('初始化快捷键失败:', error)
@@ -42,7 +40,6 @@ async function registerShortcut(accelerator: string): Promise<boolean> {
   // 先注销旧快捷键
   if (currentAccelerator) {
     globalShortcut.unregister(currentAccelerator)
-    console.log(`已注销旧快捷键: ${currentAccelerator}`)
   }
 
   // 注册新快捷键
@@ -52,7 +49,6 @@ async function registerShortcut(accelerator: string): Promise<boolean> {
 
   if (success) {
     currentAccelerator = accelerator
-    console.log(`快捷键已注册: ${accelerator}`)
   } else {
     console.error(`快捷键注册失败: ${accelerator}`)
   }
@@ -69,11 +65,9 @@ function toggleSearchWindow(): void {
 
     if (win.isVisible()) {
       win.hide()
-      console.log('搜索窗口已隐藏')
     } else {
       win.show()
       win.focus()
-      console.log('搜索窗口已显示')
     }
   } catch (error) {
     console.error('切换搜索窗口失败:', error)
@@ -114,5 +108,4 @@ export function getCurrentShortcut(): string | null {
 export function unregisterAllShortcuts(): void {
   globalShortcut.unregisterAll()
   currentAccelerator = null
-  console.log('所有快捷键已注销')
 }

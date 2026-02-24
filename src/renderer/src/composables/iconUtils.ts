@@ -22,6 +22,8 @@ import articleIcon from '@renderer/assets/icons/article.svg'
 import articleDIcon from '@renderer/assets/icons/article_d.svg'
 import settingIcon from '@renderer/assets/icons/setting.svg'
 import settingDIcon from '@renderer/assets/icons/setting_d.svg'
+import changeIcon from '@renderer/assets/icons/change.svg'
+import changeDIcon from '@renderer/assets/icons/change_d.svg'
 
 export const iconMap: { [key: string]: IconClass } = {
   all: {
@@ -88,5 +90,10 @@ export const iconMap: { [key: string]: IconClass } = {
     id: 'setting',
     url: settingIcon,
     dUrl: settingDIcon
+  },
+  change: {
+    id: 'change',
+    url: changeIcon,
+    dUrl: changeDIcon
   }
 }

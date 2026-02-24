@@ -31,6 +31,7 @@ export const ipcEnum = {
   searchWebTree: 'search-web-tree',
   searchWebTreeByShortcut: 'search-web-tree-by-shortcut',
   reorderWebTreeNodes: 'reorder-web-tree-nodes',
+  setFolderAsCategory: 'set-folder-as-category',
   // 图标获取 IPC 事件
   fetchFavicon: 'fetch-favicon',
   // 书签导入 IPC 事件

@@ -759,6 +759,21 @@ export default () => {
     }
   }
 
+  /**
+   * 将文件夹设置为目录
+   * @param folderId 文件夹节点ID
+   * @param folderName 文件夹名称
+   * @param typeId 类型ID
+   * @returns Promise<number> 新目录ID
+   */
+  const setFolderAsCategory = async (
+    folderId: number,
+    folderName: string,
+    typeId: number
+  ): Promise<number> => {
+    return await window.api.setFolderAsCategory(folderId, folderName, typeId)
+  }
+
   return {
     searchWebTreeNodes,
     searchWebTreeNodesByShortcut,
@@ -779,6 +794,7 @@ export default () => {
     removeWebTreeNode,
     moveWebTreeNode,
     reorderWebTreeNodes,
-    getParentPathNames
+    getParentPathNames,
+    setFolderAsCategory
   }
 }

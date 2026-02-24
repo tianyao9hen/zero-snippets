@@ -51,6 +51,7 @@ declare global {
       moveWebTreeNode: (id: number, newParentId: number) => Promise<number>
       searchWebTree: (keyword: string, typeId: number, nodeType: number) => Promise<WebTreeNode[]>
       reorderWebTreeNodes: (orders: { id: number; orderNum: number }[]) => Promise<number>
+      setFolderAsCategory: (folderId: number, folderName: string, typeId: number) => Promise<number>
       updateWebTreeNodeCategoryId: (id: number, categoryId: number) => Promise<number>
       updateWebTreeNodeCategoryIdRecursive: (
         id: number,

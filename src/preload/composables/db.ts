@@ -178,6 +178,17 @@ export function reorderWebTreeNodes(orders: { id: number; orderNum: number }[]) 
 }
 
 /**
+ * 将文件夹设置为目录
+ * @param folderId 文件夹节点ID
+ * @param folderName 文件夹名称
+ * @param typeId 类型ID
+ * @returns Promise<number> 新目录ID
+ */
+export function setFolderAsCategory(folderId: number, folderName: string, typeId: number) {
+  return ipcRenderer.invoke(ipcEnum.setFolderAsCategory, folderId, folderName, typeId)
+}
+
+/**
  * 更新网页树节点的 category_id
  * @param id 节点ID
  * @param categoryId 类别ID
