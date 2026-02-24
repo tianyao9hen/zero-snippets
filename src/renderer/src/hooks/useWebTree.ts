@@ -265,6 +265,14 @@ export default () => {
     return await window.api.searchWebTree(keyword, typeId, nodeType)
   }
 
+  const searchWebTreeNodesByShortcut = async (
+    keyword: string,
+    typeId: number,
+    nodeType: number
+  ): Promise<WebTreeNode[]> => {
+    return await window.api.searchWebTreeByShortcut(keyword, typeId, nodeType)
+  }
+
   /**
    * 构建树形结构
    * @param flatList 扁平节点列表
@@ -753,6 +761,7 @@ export default () => {
 
   return {
     searchWebTreeNodes,
+    searchWebTreeNodesByShortcut,
     buildTree,
     expandAll,
     collapseAll,

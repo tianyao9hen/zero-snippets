@@ -28,6 +28,7 @@ import {
   remove as removeWebTreeNode,
   moveNode as moveWebTreeNode,
   search as searchWebTree,
+  searchByShortcut as searchWebTreeByShortcut,
   updateOrders as updateWebTreeOrders,
   updateCategoryId as updateWebTreeNodeCategoryId,
   updateCategoryIdRecursive as updateWebTreeNodeCategoryIdRecursive
@@ -221,6 +222,16 @@ ipcMain.handle(
   ipcEnum.searchWebTree,
   (_event: IpcMainInvokeEvent, keyword: string, typeId: number, nodeType: number) => {
     return searchWebTree(keyword, typeId, nodeType)
+  }
+)
+
+/**
+ * 根据快捷键搜索网页树节点
+ */
+ipcMain.handle(
+  ipcEnum.searchWebTreeByShortcut,
+  (_event: IpcMainInvokeEvent, keyword: string, typeId: number, nodeType: number) => {
+    return searchWebTreeByShortcut(keyword, typeId, nodeType)
   }
 )
 

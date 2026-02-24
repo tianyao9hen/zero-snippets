@@ -32,7 +32,7 @@ import { useSnippetsStore } from '@renderer/store/snippetsStore'
 import useSelect from '@renderer/hooks/useSelect'
 
 const snippetsStore = useSnippetsStore()
-const { selectTypeById } = useSelect()
+const { selectTypeById } = useSelect(false)
 </script>
 
 <style lang="scss" scoped></style>

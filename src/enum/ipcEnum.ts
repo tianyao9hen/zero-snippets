@@ -29,6 +29,7 @@ export const ipcEnum = {
   removeWebTreeNode: 'remove-web-tree-node',
   moveWebTreeNode: 'move-web-tree-node',
   searchWebTree: 'search-web-tree',
+  searchWebTreeByShortcut: 'search-web-tree-by-shortcut',
   reorderWebTreeNodes: 'reorder-web-tree-nodes',
   // 图标获取 IPC 事件
   fetchFavicon: 'fetch-favicon',

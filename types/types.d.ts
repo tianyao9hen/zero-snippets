@@ -38,6 +38,7 @@ type ContentEntity = {
   icon?: string // 网页图标
   url?: string // 网页URL
   shortcut?: string // 网页快捷键
+  paramUrl?: string | null // 参数URL
 }
 
 // 内容类型
@@ -74,6 +75,7 @@ type WebTreeNode = {
   shortcut?: string | null // 快捷键
   description?: string | null // 节点描述
   icon?: string | null // 网页图标地址（favicon）
+  paramUrl?: string | null // 参数URL
   categoryId?: number | null // 分类ID（null表示未分类）
   nodeType: WebTreeNodeType // 节点类型
   orderNum: number // 排序号

@@ -2,7 +2,6 @@
   <div
     v-if="visible"
     class="fixed inset-0 bg-black/50 flex items-center justify-center z-[1000]"
-    @click.self="closeDialog"
   >
     <div class="w-[360px] max-w-[90vw] bg-white rounded-lg shadow-lg max-h-[90vh] flex flex-col">
       <h3
@@ -147,6 +146,17 @@
         </div>
 
         <div v-if="dialogForm.nodeType === WebTreeNodeType.WEBSITE" class="mb-3">
+          <label class="block mb-1 text-xs font-medium text-slate-500">参数URL：</label>
+          <input
+            v-model="dialogForm.paramUrl"
+            type="text"
+            placeholder="例如: https://www.bing.com/search?q={}"
+            class="w-full px-2.5 py-1.5 text-xs border border-slate-200 rounded outline-none transition-colors duration-200 focus:border-[#4096ff] placeholder:text-slate-400"
+          />
+          <div class="mt-1 text-[10px] text-slate-400">使用 {} 作为参数占位符</div>
+        </div>
+
+        <div v-if="dialogForm.nodeType === WebTreeNodeType.WEBSITE" class="mb-3">
           <label class="block mb-1 text-xs font-medium text-slate-500">快捷键：</label>
           <input
             v-model="dialogForm.shortcut"
@@ -203,6 +213,7 @@ export interface NodeData {
   shortcut?: string
   description?: string
   icon?: string
+  paramUrl?: string
   categoryId?: number
 }
 
@@ -231,13 +242,15 @@ const dialogForm = ref<{
   shortcut: string
   description: string
   icon: string
+  paramUrl: string
 }>({
   nodeType: WebTreeNodeType.FOLDER,
   title: '',
   url: '',
   shortcut: '',
   description: '',
-  icon: ''
+  icon: '',
+  paramUrl: ''
 })
 
 const selectedParentId = ref<number>(0)
@@ -385,7 +398,8 @@ watch(
           url: props.nodeData.url || '',
           shortcut: props.nodeData.shortcut || '',
           description: props.nodeData.description || '',
-          icon: props.nodeData.icon || ''
+          icon: props.nodeData.icon || '',
+          paramUrl: props.nodeData.paramUrl || ''
         }
         // 如果有图标，显示它
         if (props.nodeData.icon) {
@@ -402,7 +416,8 @@ watch(
           url: '',
           shortcut: '',
           description: '',
-          icon: ''
+          icon: '',
+          paramUrl: ''
         }
         faviconUrl.value = ''
         // 添加模式下初始化父节点选择
@@ -473,7 +488,8 @@ const confirmDialog = async () => {
           url: dialogForm.value.url.trim() || undefined,
           shortcut: dialogForm.value.shortcut.trim() || undefined,
           description: dialogForm.value.description.trim() || undefined,
-          icon: dialogForm.value.icon.trim() || undefined
+          icon: dialogForm.value.icon.trim() || undefined,
+          paramUrl: dialogForm.value.paramUrl.trim() || undefined
         })
       }
     } else {
@@ -507,6 +523,7 @@ const confirmDialog = async () => {
         shortcut: dialogForm.value.shortcut.trim() || undefined,
         description: dialogForm.value.description.trim() || undefined,
         icon: dialogForm.value.icon.trim() || undefined,
+        paramUrl: dialogForm.value.paramUrl.trim() || undefined,
         categoryId: finalCategoryId,
         nodeType: dialogForm.value.nodeType,
         orderNum: 0
@@ -524,7 +541,8 @@ const confirmDialog = async () => {
         url: dialogForm.value.url.trim() || undefined,
         shortcut: dialogForm.value.shortcut.trim() || undefined,
         description: dialogForm.value.description.trim() || undefined,
-        icon: dialogForm.value.icon.trim() || undefined
+        icon: dialogForm.value.icon.trim() || undefined,
+        paramUrl: dialogForm.value.paramUrl.trim() || undefined
       }
       emit('success', updatedData)
     } else {

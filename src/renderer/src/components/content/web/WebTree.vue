@@ -1436,6 +1436,12 @@ const clearSearch = async () => {
  * @param event 键盘事件对象
  */
 const handleKeydown = (event: KeyboardEvent) => {
+  // 如果焦点在输入框或文本域上，不处理
+  const activeElement = document.activeElement as HTMLElement
+  if (activeElement && (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA')) {
+    return
+  }
+
   // 回车键打开网页
   if (event.key === 'Enter' && selectedNodeId.value > 0) {
     const node = flatNodeList.value.find((n) => n.id === selectedNodeId.value)

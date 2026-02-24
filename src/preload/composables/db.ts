@@ -164,6 +164,10 @@ export function searchWebTree(keyword: string, typeId: number, nodeType: number)
   return ipcRenderer.invoke(ipcEnum.searchWebTree, keyword, typeId, nodeType)
 }
 
+export function searchWebTreeByShortcut(keyword: string, typeId: number, nodeType: number) {
+  return ipcRenderer.invoke(ipcEnum.searchWebTreeByShortcut, keyword, typeId, nodeType)
+}
+
 /**
  * 批量更新网页树节点排序
  * @param orders 节点ID和排序号的映射数组

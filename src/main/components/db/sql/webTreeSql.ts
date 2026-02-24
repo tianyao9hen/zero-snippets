@@ -13,6 +13,7 @@ interface WebTreeNodeEntity {
   shortcut?: string | null
   description?: string | null
   icon?: string | null
+  paramUrl?: string | null
   categoryId?: number | null
   nodeType: number // 0-文件夹, 1-网页
   orderNum: number
@@ -36,6 +37,7 @@ export const findAllByTypeId = (typeId: number): WebTreeNodeEntity[] => {
       shortcut,
       description,
       icon,
+      param_url as paramUrl,
       category_id as categoryId,
       node_type as nodeType,
       order_num as orderNum,
@@ -66,6 +68,7 @@ export const findByParentId = (parentId: number, typeId: number): WebTreeNodeEnt
       shortcut,
       description,
       icon,
+      param_url as paramUrl,
       category_id as categoryId,
       node_type as nodeType,
       order_num as orderNum,
@@ -95,6 +98,7 @@ export const findById = (id: number): WebTreeNodeEntity | undefined => {
       shortcut,
       description,
       icon,
+      param_url as paramUrl,
       category_id as categoryId,
       node_type as nodeType,
       order_num as orderNum,
@@ -208,6 +212,10 @@ export const update = (
   if (updates.icon !== undefined) {
     fields.push('icon = $icon')
     params.icon = updates.icon ?? null
+  }
+  if (updates.paramUrl !== undefined) {
+    fields.push('param_url = $paramUrl')
+    params.paramUrl = updates.paramUrl ?? null
   }
   if (updates.categoryId !== undefined) {
     fields.push('category_id = $categoryId')
@@ -390,6 +398,7 @@ export const findChildrenByParentId = (parentId: number, typeId: number): WebTre
       shortcut,
       description,
       icon,
+      param_url as paramUrl,
       category_id as categoryId,
       node_type as nodeType,
       order_num as orderNum,
@@ -423,6 +432,7 @@ export const findAllByTypeIdAndCategoryId = (
       shortcut,
       description,
       icon,
+      param_url as paramUrl,
       category_id as categoryId,
       node_type as nodeType,
       order_num as orderNum,
@@ -453,6 +463,7 @@ export const findAllByTypeIdAndNullCategory = (typeId: number): WebTreeNodeEntit
       shortcut,
       description,
       icon,
+      param_url as paramUrl,
       category_id as categoryId,
       node_type as nodeType,
       order_num as orderNum,
@@ -485,6 +496,7 @@ export const search = (keyword: string, typeId: number, nodeType: number): WebTr
       shortcut,
       description,
       icon,
+      param_url as paramUrl,
       category_id as categoryId,
       node_type as nodeType,
       order_num as orderNum,
@@ -501,5 +513,36 @@ export const search = (keyword: string, typeId: number, nodeType: number): WebTr
     order by order_num
   `,
     { typeId, searchPattern, nodeType }
+  ) as WebTreeNodeEntity[]
+}
+
+export const searchByShortcut = (
+  keyword: string,
+  typeId: number,
+  nodeType: number
+): WebTreeNodeEntity[] => {
+  return execute.findAll(
+    `
+    select
+      id,
+      parent_id as parentId,
+      type_id as typeId,
+      title,
+      url,
+      shortcut,
+      description,
+      icon,
+      param_url as paramUrl,
+      category_id as categoryId,
+      node_type as nodeType,
+      order_num as orderNum,
+      create_time as createTime
+    from snippets_web_tree
+    where type_id = $typeId
+      and shortcut = $keyword
+      and node_type = $nodeType
+    order by order_num
+  `,
+    { typeId, keyword, nodeType }
   ) as WebTreeNodeEntity[]
 }

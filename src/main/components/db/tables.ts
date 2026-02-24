@@ -48,6 +48,7 @@ export function initTable() {
       shortcut text,                                  -- 快捷键（用于搜索）
       description text,                               -- 节点描述
       icon text,                                      -- 网页节点图标地址
+      param_url text,                                 -- 参数URL
       category_id integer not null default 64,        -- 类别ID
       node_type integer not null default 0,           -- 节点类型：0-文件夹，1-网页
       order_num integer not null,                     -- 排序号
@@ -236,7 +237,7 @@ function initSnippetsWebTree() {
   )
 
   insert(
-    `insert into snippets_web_tree(parent_id, type_id, title, url, shortcut, description, node_type, order_num) values($parentId, $typeId, $title, $url, $shortcut, $description, $nodeType, $orderNum)`,
+    `insert into snippets_web_tree(parent_id, type_id, title, url, shortcut, description, param_url, node_type, order_num) values($parentId, $typeId, $title, $url, $shortcut, $description, $paramUrl, $nodeType, $orderNum)`,
     {
       parentId: searchFolderId,
       typeId: 2,
@@ -244,6 +245,7 @@ function initSnippetsWebTree() {
       url: 'https://bing.com',
       shortcut: 'bing',
       description: '必应搜索',
+      paramUrl: 'https://www.bing.com/search?q={}',
       nodeType: 1,
       orderNum: 2
     }

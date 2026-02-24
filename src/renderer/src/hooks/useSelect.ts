@@ -4,8 +4,9 @@ import useSearch from './useSearch'
 
 /**
  * @description 选择类型、结果、输入框的事件处理
+ * @param enableKeyboard 是否启用键盘事件监听，默认为 true
  */
-export default () => {
+export default (enableKeyboard = true) => {
   const snippetsStore = useSnippetsStore()
   const { handleSearch } = useSearch()
   let scrollTopHeightCount = 5
@@ -190,9 +191,36 @@ export default () => {
             // 文章类型，打开 content 窗口
             const path = `/content/1/category/${selectedItem.categoryId}/catelog/${selectedItem.id}/article`
             window.api.showWindowExclusive('content', path)
-          } else if (selectedItem.typeId === 2 && selectedItem.url) {
-            // 网页类型，使用浏览器打开 URL
-            window.api.openExternal(selectedItem.url)
+          } else if (selectedItem.typeId === 2) {
+            // 网页类型，判断是否有参数URL
+            const search = snippetsStore.snippets.search.trim()
+            // 如果存在参数且选中项有 paramUrl
+            if (search.includes(' ') && selectedItem.paramUrl) {
+              // 提取参数（第一个空格后的所有内容）
+              const params = search.substring(search.indexOf(' ') + 1).trim()
+              if (params) {
+                // 替换 {} 占位符
+                let targetUrl = selectedItem.paramUrl
+                const paramParts = params.split(/\s+/) // 多个参数使用空格分割，支持多个空格
+
+                // 查找所有 {} 占位符
+                let paramIndex = 0
+                targetUrl = targetUrl.replace(/\{.*?\}/g, () => {
+                  const val = paramParts[paramIndex] || ''
+                  paramIndex++
+                  return val
+                })
+
+                console.log('select targetUrl', targetUrl)
+                window.api.openExternal(targetUrl)
+                return
+              }
+            }
+
+            // 默认打开普通 URL
+            if (selectedItem.url) {
+              window.api.openExternal(selectedItem.url)
+            }
           }
         }
         break
@@ -201,11 +229,15 @@ export default () => {
   }
 
   onMounted(() => {
-    document.addEventListener('keydown', handleKeyEvent)
+    if (enableKeyboard) {
+      document.addEventListener('keydown', handleKeyEvent)
+    }
   })
 
   onUnmounted(() => {
-    document.removeEventListener('keydown', handleKeyEvent)
+    if (enableKeyboard) {
+      document.removeEventListener('keydown', handleKeyEvent)
+    }
   })
 
   return {
