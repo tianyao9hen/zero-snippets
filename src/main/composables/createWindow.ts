@@ -21,7 +21,7 @@ export function createWindow(options: OptionsClass): BrowserWindow {
         autoHideMenuBar: true,
         alwaysOnTop: false,
         transparent: true, // 窗口透明
-        ...(process.platform === 'linux' ? { icon } : {}),
+        icon,
         webPreferences: {
           preload: join(__dirname, '../preload/index.js'),
           sandbox: false
