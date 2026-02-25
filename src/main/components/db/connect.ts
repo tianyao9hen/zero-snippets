@@ -7,7 +7,7 @@ const db = (): BetterSqlist3.Database => {
   // C:\Users\39886\AppData\Roaming\snippets\zero-snippets.db
   const file = 'zero-snippets.db'
   const appDataPath = app.getPath('appData')
-  let dbPath = join(appDataPath, 'snippets')
+  let dbPath = join(appDataPath, 'zero-snippets')
   dbPath = join(dbPath, file)
   console.log('dbPath', dbPath)
   const db: BetterSqlist3.Database = new Database(dbPath, {})

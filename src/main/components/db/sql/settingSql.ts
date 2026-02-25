@@ -6,7 +6,7 @@ import { findAll, findOne, insert, edit } from './index'
  */
 export function getAllSettings(): SettingEntity[] {
   const sql = `
-    SELECT 
+    SELECT
       id,
       key,
       value,
@@ -26,7 +26,7 @@ export function getAllSettings(): SettingEntity[] {
  */
 export function getSettingByKey(key: string): SettingEntity | undefined {
   const sql = `
-    SELECT 
+    SELECT
       id,
       key,
       value,
@@ -75,25 +75,4 @@ export function setSetting(key: string, value: string, remark?: string): number 
 export function deleteSetting(key: string): number {
   const sql = `DELETE FROM snippets_setting WHERE key = $key`
   return edit(sql, { key })
-}
-
-/**
- * 初始化默认设置
- * 在应用启动时调用，确保必要的默认设置存在
- */
-export function initDefaultSettings(): void {
-  const defaultSettings = [
-    {
-      key: 'shortcut.showSnippets',
-      value: 'F1',
-      remark: '唤起快捷键：显示/隐藏 snippet 搜索窗口'
-    }
-  ]
-
-  for (const setting of defaultSettings) {
-    const existing = getSettingByKey(setting.key)
-    if (!existing) {
-      setSetting(setting.key, setting.value, setting.remark)
-    }
-  }
 }

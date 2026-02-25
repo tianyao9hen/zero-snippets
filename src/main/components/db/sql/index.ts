@@ -4,12 +4,15 @@ export const createTable = (sql: string) => {
   db().exec(sql)
 }
 
-export const findAll = (sql: string, params: Record<string, string | number | null> | number[]) => {
-  return db().prepare(sql).all(params)
+export const findAll = <T>(
+  sql: string,
+  params: Record<string, string | number | null> | number[]
+): T[] => {
+  return db().prepare(sql).all(params) as T[]
 }
 
-export const findOne = (sql: string, params: Record<string, string | number | null>) => {
-  return db().prepare(sql).get(params)
+export const findOne = <T>(sql: string, params: Record<string, string | number | null>): T => {
+  return db().prepare(sql).get(params) as T
 }
 
 export const insert = (sql: string, params: Record<string, string | number | null>) => {
