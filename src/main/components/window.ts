@@ -14,7 +14,7 @@ export const window: Record<WindowNameType, WindowClass> = {
       transparent: true, // 透明
       autoHideMenuBar: true,
       alwaysOnTop: true,
-      openDevTools: true,
+      // openDevTools: true,
       initShow: true,
       path: ''
     }
@@ -28,7 +28,7 @@ export const window: Record<WindowNameType, WindowClass> = {
       resizable: true,
       frame: true,
       transparent: false,
-      openDevTools: true,
+      // openDevTools: true,
       initShow: true,
       path: '/content'
       // path: '/content/1/category/0/catelog/11/article'
@@ -46,7 +46,7 @@ export const window: Record<WindowNameType, WindowClass> = {
       transparent: true,
       autoHideMenuBar: true,
       alwaysOnTop: true,
-      openDevTools: true,
+      // openDevTools: true,
       initShow: true,
       path: '/note-input'
     }
@@ -148,6 +148,6 @@ export const showWindowExclusive = async (
 }
 
 app.whenReady().then(() => {
-  // showWindow('search')
-  showWindowExclusive('content')
+  showWindow('search')
+  // showWindowExclusive('content')
 })

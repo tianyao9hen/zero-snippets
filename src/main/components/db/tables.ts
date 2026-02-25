@@ -129,13 +129,13 @@ function initSnippetsType() {
     {
       id: 1,
       name: 'category',
-      title: '文本片段',
+      title: '知识库',
       orderNum: 1
     },
     {
       id: 2,
       name: 'web',
-      title: '网页搜索',
+      title: '网站库',
       orderNum: 2
     },
     {

@@ -213,6 +213,7 @@ export default (enableKeyboard = true) => {
 
                 console.log('select targetUrl', targetUrl)
                 window.api.openExternal(targetUrl)
+                window.api.hideWindow('search')
                 return
               }
             }
@@ -220,6 +221,7 @@ export default (enableKeyboard = true) => {
             // 默认打开普通 URL
             if (selectedItem.url) {
               window.api.openExternal(selectedItem.url)
+              window.api.hideWindow('search')
             }
           }
         }
