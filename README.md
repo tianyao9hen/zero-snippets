@@ -1,34 +1,106 @@
-# zero-snippets
+# Zero Snippets - 您的本地化个人知识库
 
-An Electron application with Vue and TypeScript
+## 1. 软件简介
 
-## Recommended IDE Setup
+Zero Snippets 是一款专为开发者和知识工作者打造的桌面端知识管理工具。在日常工作中，我们经常会遇到代码片段散落在各地、网页书签难以整理、灵感笔记无处安放的困扰。Zero Snippets 正是为了解决这些问题而生。
 
-- [VSCode](https://code.visualstudio.com/) + [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) + [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin)
+它集成了**代码片段管理**、**Markdown 笔记编辑**以及**网页书签整理**三大核心功能，旨在帮助您构建一个私有、高效、且完全掌控在自己手中的知识体系。我们坚持“本地优先”的设计理念，所有数据均存储在您的本地设备上，既保证了极速的访问体验，也最大程度地保护了您的隐私安全。无论您是需要快速复用代码的程序员，还是喜欢沉浸式写作的记录者，Zero Snippets 都能成为您得力的助手。
 
-## Project Setup
+## 2. 技术架构与依赖
 
-### Install
+Zero Snippets 基于现代化的 Web 技术栈构建，为您提供流畅、稳定且美观的使用体验。作为用户，您无需深入了解底层技术，但可以确信它是基于成熟且活跃的开源生态打造的。
 
-```bash
-$ npm install
-```
+| 组件类型 | 核心技术 | 说明 |
+| :--- | :--- | :--- |
+| **应用框架** | Electron 28, Node.js 18+ | 确保跨平台（Windows, macOS, Linux）运行的稳定性 |
+| **前端界面** | Vue 3, Ant Design Vue | 响应迅速、交互现代化的用户界面 |
+| **开发语言** | TypeScript | 代码健壮，减少运行时错误 |
+| **数据存储** | SQLite (better-sqlite3) | 高性能本地数据库，无需联网，数据完全归您所有 |
+| **编辑器** | Bytemd | 强大的 Markdown 编辑器，支持数学公式、图表等 |
 
-### Development
+**系统要求：**
+*   **操作系统**: Windows 10/11, macOS 10.15+, 或主流 Linux 发行版。
+*   **内存**: 建议 4GB 及以上。
+*   **磁盘空间**: 预留 500MB 以上空间（取决于您的数据量）。
+*   **网络服务**: 本软件完全本地运行，**无任何强制云端依赖**。
 
-```bash
-$ npm run dev
-```
+## 3. 功能一览
 
-### Build
+*   **代码片段秒搜**：支持模糊搜索与分类管理，瞬间找到您收藏的代码块，提升编码效率。[图片内容]
+*   **沉浸式笔记**：基于 Bytemd 的 Markdown 编辑器，支持 Mermaid 图表、数学公式与代码高亮，写作体验行云流水。[图片内容]
+*   **书签树管理**：支持层级化的书签管理与浏览器书签导入，让杂乱的网页收藏井井有条。[图片内容]
+*   **全局快捷键**：默认 F1 唤起搜索，F2 唤起随手记，无需切换窗口，灵感即刻捕捉。
+*   **本地数据库**：使用 SQLite 本地存储所有数据，无需担心服务停运或数据泄露，安全可靠。
+*   **剪贴板协同**：智能识别剪贴板内容，快速保存为片段或笔记，减少重复操作。
 
-```bash
-# For windows
-$ npm run build:win
+## 4. 安装与首次运行
 
-# For macOS
-$ npm run build:mac
+我们致力于让安装过程简单直观，即使是初次接触此类软件的用户也能轻松上手。
 
-# For Linux
-$ npm run build:linux
-```
+**第一步：获取安装包**
+*   **官方渠道**: 请前往 GitHub Releases 页面下载最新版本的安装包（推荐）。
+*   **国内镜像**: （此处可预留国内加速下载链接，如有）
+
+**第二步：安装软件**
+*   **Windows**: 双击 `.exe` 安装包，按照提示点击“下一步”即可完成安装。
+*   **macOS**: 双击 `.dmg` 文件，将 Zero Snippets 图标拖入 Applications 文件夹。[图片内容]
+*   **Linux**: 提供 AppImage 或 deb 包，按需安装。
+
+**第三步：初始化向导**
+首次启动软件时，Zero Snippets 会自动为您初始化本地数据库。您将看到简洁的主界面。
+*   **默认配置**: 系统已为您预设了常用的分类标签。
+*   **个性化设置**: 您可以进入“设置”页面，根据习惯调整界面主题或修改默认的全局快捷键。
+
+## 5. 使用教程
+
+### 快速上手
+只需简单几步，即可完成一次典型的“知识收集与复用”流程：
+
+1.  **唤起**: 按下全局快捷键 `F1` 打开搜索窗口。[图片内容]
+2.  **搜索/新建**: 输入关键词查找现有片段，或点击右上角“+”号新建一个代码片段。[图片内容]
+3.  **编辑**: 在编辑器中粘贴您的代码，选择语言（如 JavaScript），并添加描述标签。[图片内容]
+4.  **保存**: 点击保存按钮，您的智慧结晶即被安全存入本地数据库。
+5.  **复用**: 下次需要时，再次 `F1` 搜索，点击复制按钮，直接粘贴到您的 IDE 中。[图片内容]
+
+### 常见问题速查 (Q&A)
+1.  **Q: 快捷键 F1/F2 没反应或与其他软件冲突怎么办？**
+    *   A: 请进入“设置 -> 快捷键设置”修改为您习惯的组合键（如 `Alt+Space`）。
+2.  **Q: 数据存储在哪里？我可以备份吗？**
+    *   A: 数据存储在用户目录下的 SQLite 数据库文件中，您可以直接备份该文件。
+3.  **Q: 支持 Markdown 的高级语法吗？**
+    *   A: 支持，内置了 GFM、数学公式 (MathJax)、流程图 (Mermaid) 等插件。
+4.  **Q: 只有 Windows 版本吗？**
+    *   A: 不止，我们基于 Electron 开发，同时支持 Windows、macOS 和 Linux。
+5.  **Q: 软件需要联网注册吗？**
+    *   A: 不需要，Zero Snippets 是完全离线的本地软件，无需注册登录。
+
+### 快捷键速查表
+
+| 功能 | 默认快捷键 | 说明 |
+| :--- | :--- | :--- |
+| **唤起搜索/主窗口** | `F1` | 快速打开代码片段搜索界面 |
+| **唤起随手记** | `F2` | 快速打开小窗记录灵感 |
+| **保存** | `Ctrl + S` / `Cmd + S` | 在编辑界面保存内容 |
+| **关闭窗口** | `Esc` | 隐藏当前窗口（程序仍在后台运行） |
+
+## 6. 更新与反馈
+
+*   **版本规则**: 本项目遵循 [Semantic Versioning 2.0.0](https://semver.org/lang/zh-CN/) 语义化版本规范。
+*   **发布周期**: 我们通常会每两周发布一个包含新功能或修复的小版本。
+
+**反馈渠道：**
+您的每一条建议都会让软件更好用！如果您在使用中遇到问题或有好的想法，欢迎通过以下方式联系我们：
+
+*   **GitHub Discussion**: 在项目仓库的 Discussions 板块留言（推荐）。
+*   **邮件联系**: 发送邮件至 `support@example.com`（请替换为实际邮箱）。
+*   **微信交流群**: 扫描下方二维码加入用户交流群。[图片内容]
+
+## 7. 许可证与致谢
+
+本项目采用 **MIT 许可证** 开源。这意味着您可以免费使用、修改和分发本软件，但需保留原作者的版权声明。
+
+**致谢：**
+感谢以下开源项目让 Zero Snippets 成为可能：Electron, Vue.js, Better-SQLite3, Bytemd 以及所有为社区贡献代码的开发者们。
+
+---
+*Created with ❤️ by Zero Snippets Team*
