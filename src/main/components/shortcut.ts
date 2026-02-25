@@ -9,9 +9,11 @@ import { getWindowByName } from './window'
 
 // 设置表中存储唤起快捷键的 key
 const SHORTCUT_KEY = 'shortcut.showSnippets'
+const SHORTCUT_NOTE_KEY = 'shortcut.showNote'
 
 // 当前注册的快捷键
 let currentAccelerator: string | null = null
+let currentNoteAccelerator: string | null = null
 
 /**
  * 初始化快捷键
@@ -21,11 +23,12 @@ export async function initShortcut(): Promise<void> {
   try {
     const setting = await getSettingByKey(SHORTCUT_KEY)
     const accelerator = setting?.value || 'F1'
-    const success = await registerShortcut(accelerator)
+    await registerShortcut(accelerator)
 
-    if (!success) {
-      console.error(`初始化快捷键失败: ${accelerator}`)
-    }
+    // 初始化随手记快捷键
+    const noteSetting = await getSettingByKey(SHORTCUT_NOTE_KEY)
+    const noteAccelerator = noteSetting?.value || 'F2'
+    await registerNoteShortcut(noteAccelerator)
   } catch (error) {
     console.error('初始化快捷键失败:', error)
   }
@@ -57,6 +60,27 @@ async function registerShortcut(accelerator: string): Promise<boolean> {
 }
 
 /**
+ * 注册随手记快捷键
+ */
+async function registerNoteShortcut(accelerator: string): Promise<boolean> {
+  if (currentNoteAccelerator) {
+    globalShortcut.unregister(currentNoteAccelerator)
+  }
+
+  const success = globalShortcut.register(accelerator, () => {
+    toggleNoteWindow()
+  })
+
+  if (success) {
+    currentNoteAccelerator = accelerator
+  } else {
+    console.error(`随手记快捷键注册失败: ${accelerator}`)
+  }
+
+  return success
+}
+
+/**
  * 切换搜索窗口显示/隐藏
  */
 function toggleSearchWindow(): void {
@@ -75,6 +99,24 @@ function toggleSearchWindow(): void {
 }
 
 /**
+ * 切换随手记窗口显示/隐藏
+ */
+function toggleNoteWindow(): void {
+  try {
+    const win = getWindowByName('note')
+
+    if (win.isVisible()) {
+      win.hide()
+    } else {
+      win.show()
+      win.focus()
+    }
+  } catch (error) {
+    console.error('切换随手记窗口失败:', error)
+  }
+}
+
+/**
  * 重新加载快捷键
  * 设置变更时调用，重新从数据库读取并注册
  */
@@ -82,10 +124,14 @@ export async function reloadShortcut(): Promise<void> {
   try {
     const setting = await getSettingByKey(SHORTCUT_KEY)
     if (setting?.value) {
-      const success = await registerShortcut(setting.value)
-      if (!success) {
-        throw new Error(`快捷键 "${setting.value}" 注册失败，可能已被系统或其他应用占用`)
-      }
+      await registerShortcut(setting.value)
+    }
+
+    const noteSetting = await getSettingByKey(SHORTCUT_NOTE_KEY)
+    if (noteSetting?.value) {
+      await registerNoteShortcut(noteSetting.value)
+    } else {
+      await registerNoteShortcut('F2')
     }
   } catch (error) {
     console.error('重新加载快捷键失败:', error)
@@ -108,4 +154,5 @@ export function getCurrentShortcut(): string | null {
 export function unregisterAllShortcuts(): void {
   globalShortcut.unregisterAll()
   currentAccelerator = null
+  currentNoteAccelerator = null
 }

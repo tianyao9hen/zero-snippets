@@ -1,7 +1,6 @@
 import * as execute from '../sql'
 import { db } from '../connect'
 
-
 /**
  * 网页树节点实体接口
  * 对应数据库表 snippets_web_tree 的结构

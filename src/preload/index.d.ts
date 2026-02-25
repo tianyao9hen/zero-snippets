@@ -69,6 +69,7 @@ declare global {
       }>
       // 窗口管理 API
       showWindowExclusive: (name: WindowNameType, path?: string) => void
+      hideWindow: (name: WindowNameType) => void
       // 外部链接 API
       openExternal: (url: string) => void
       // 设置相关 API
@@ -78,6 +79,15 @@ declare global {
       deleteSetting: (key: string) => Promise<number>
       // 快捷键相关 API
       reloadShortcut: () => Promise<void>
+      // 随手记相关 API
+      addNote: (note: Partial<NoteEntity>) => Promise<number>
+      editNote: (note: Partial<NoteEntity>) => Promise<number>
+      removeNote: (id: number) => Promise<number>
+      listAllNote: () => Promise<NoteEntity[]>
+      getNoteById: (id: number) => Promise<NoteEntity>
+      // 开机自启动 API
+      getAutoLaunchStatus: () => Promise<boolean>
+      toggleAutoLaunch: (enable: boolean) => Promise<{ success: boolean; error?: string }>
     }
   }
 }

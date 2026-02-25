@@ -39,6 +39,13 @@ import { importBookmarks } from '../bookmarkImportService'
 import { ipcEnum } from '../../../enum/ipcEnum'
 import { getAllSettings, getSettingByKey, setSetting, deleteSetting } from './sql/settingSql'
 import { reloadShortcut } from '../shortcut'
+import {
+  add as addNote,
+  edit as editNote,
+  remove as removeNote,
+  listAll as listAllNote,
+  getById as getNoteById
+} from './sql/noteSql'
 
 ipcMain.handle(
   ipcEnum.sql,
@@ -311,4 +318,26 @@ ipcMain.handle(ipcEnum.deleteSetting, (_event: IpcMainInvokeEvent, key: string) 
  */
 ipcMain.handle(ipcEnum.reloadShortcut, () => {
   return reloadShortcut()
+})
+
+// ==================== 随手记相关 IPC 处理 ====================
+
+ipcMain.handle(ipcEnum.addNote, (_event: IpcMainInvokeEvent, note: Partial<NoteEntity>) => {
+  return addNote(note)
+})
+
+ipcMain.handle(ipcEnum.editNote, (_event: IpcMainInvokeEvent, note: Partial<NoteEntity>) => {
+  return editNote(note)
+})
+
+ipcMain.handle(ipcEnum.removeNote, (_event: IpcMainInvokeEvent, id: number) => {
+  return removeNote(id)
+})
+
+ipcMain.handle(ipcEnum.listAllNote, () => {
+  return listAllNote()
+})
+
+ipcMain.handle(ipcEnum.getNoteById, (_event: IpcMainInvokeEvent, id: number) => {
+  return getNoteById(id)
 })

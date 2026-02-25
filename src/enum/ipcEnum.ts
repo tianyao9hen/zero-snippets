@@ -37,6 +37,7 @@ export const ipcEnum = {
   // 书签导入 IPC 事件
   importBookmarks: 'import-bookmarks',
   showWindowExclusive: 'show-window-exclusive',
+  hideWindow: 'hide-window',
   openExternal: 'open-external',
   // 设置相关 IPC 事件
   getAllSettings: 'get-all-settings',
@@ -44,5 +45,14 @@ export const ipcEnum = {
   setSetting: 'set-setting',
   deleteSetting: 'delete-setting',
   // 快捷键相关 IPC 事件
-  reloadShortcut: 'reload-shortcut'
+  reloadShortcut: 'reload-shortcut',
+  // 随手记相关 IPC 事件
+  addNote: 'add-note',
+  editNote: 'edit-note',
+  removeNote: 'remove-note',
+  listAllNote: 'list-all-note',
+  getNoteById: 'get-note-by-id',
+  // 开机自启动相关 IPC 事件
+  toggleAutoLaunch: 'toggle-auto-launch',
+  getAutoLaunchStatus: 'get-auto-launch-status'
 }

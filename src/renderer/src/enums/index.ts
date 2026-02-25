@@ -8,3 +8,35 @@ export enum WebTreeNodeType {
   /** 网页节点 */
   WEBSITE = 1
 }
+
+/**
+ * 随手记类型枚举
+ * 用于区分工作随手记和日志随手记
+ */
+export enum NoteType {
+  /** 工作随手记 */
+  WORK = 0,
+  /** 日志随手记 */
+  LIVE = 1
+}
+
+/**
+ * 随手记分组模式枚举
+ */
+export enum NoteGroupingMode {
+  /** 不分组 */
+  NONE = 0,
+  /** 按日期分组 */
+  DATE = 1,
+  /** 按周分组 */
+  WEEK = 2
+}
+
+export enum SettingKey {
+  /** 随手记分组模式 */
+  NOTE_GROUPING_MODE_KEY = 'note.groupingMode',
+  /** 搜索框展示快捷键 */
+  SHORTCUT_KEY = 'shortcut.showSnippets',
+  /** 随手记展示快捷键 */
+  SHORTCUT_NOTE_KEY = 'shortcut.showNote'
+}

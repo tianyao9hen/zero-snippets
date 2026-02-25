@@ -8,11 +8,18 @@ import Catelog from '@renderer/components/content/Catelog.vue'
 import Article from '@renderer/components/content/Article.vue'
 import Folder from '@renderer/components/content/Folder.vue'
 import Setting from '@renderer/components/content/Setting.vue'
+import NoteInput from '@renderer/pages/NoteInput.vue'
+import NoteList from '@renderer/components/content/NoteList.vue'
 
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
     redirect: '/snippets'
+  },
+  {
+    path: '/note-input',
+    name: 'note-input',
+    component: NoteInput
   },
   {
     path: '/snippets',
@@ -54,6 +61,11 @@ const routes: RouteRecordRaw[] = [
             component: Folder
           }
         ]
+      },
+      {
+        path: 'note',
+        name: 'note',
+        component: NoteList
       },
       {
         path: 'software',

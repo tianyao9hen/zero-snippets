@@ -68,6 +68,18 @@ export function initTable() {
     );
   `)
 
+  // 随手记表
+  createTable(`
+    create table if not exists snippets_notes (
+      id integer primary key autoincrement not null,
+      type_id integer default 4,
+      note_type integer default 0,
+      name text,
+      note text,
+      create_time text not null default(datetime(CURRENT_TIMESTAMP,'localtime'))
+    );
+  `)
+
   // 创建设置表索引
   createTable(`
     create index if not exists idx_setting_key on snippets_setting(key);
@@ -106,6 +118,12 @@ function initSnippetsType() {
       name: 'nativeApp',
       title: '电脑软件',
       orderNum: 3
+    },
+    {
+      id: 4,
+      name: 'note',
+      title: '随手记',
+      orderNum: 4
     }
   ]
   types.forEach((type) => {

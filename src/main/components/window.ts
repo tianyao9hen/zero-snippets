@@ -34,6 +34,22 @@ export const window: Record<WindowNameType, WindowClass> = {
       // path: '/content/1/category/0/catelog/11/article'
       // path: '/content/2/web/0/folder'
     }
+  },
+  note: {
+    id: 0,
+    options: {
+      width: 600,
+      height: 400,
+      center: true,
+      resizable: true,
+      frame: false,
+      transparent: true,
+      autoHideMenuBar: true,
+      alwaysOnTop: true,
+      openDevTools: true,
+      initShow: true,
+      path: '/note-input'
+    }
   }
 }
 

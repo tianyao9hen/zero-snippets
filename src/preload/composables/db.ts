@@ -281,3 +281,25 @@ export function deleteSetting(key: string): Promise<number> {
 export function reloadShortcut(): Promise<void> {
   return ipcRenderer.invoke(ipcEnum.reloadShortcut)
 }
+
+// ==================== 随手记相关 API ====================
+
+export function addNote(note: Partial<NoteEntity>) {
+  return ipcRenderer.invoke(ipcEnum.addNote, note)
+}
+
+export function editNote(note: Partial<NoteEntity>) {
+  return ipcRenderer.invoke(ipcEnum.editNote, note)
+}
+
+export function removeNote(id: number) {
+  return ipcRenderer.invoke(ipcEnum.removeNote, id)
+}
+
+export function listAllNote() {
+  return ipcRenderer.invoke(ipcEnum.listAllNote)
+}
+
+export function getNoteById(id: number) {
+  return ipcRenderer.invoke(ipcEnum.getNoteById, id)
+}

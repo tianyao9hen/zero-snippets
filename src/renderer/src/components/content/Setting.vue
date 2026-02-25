@@ -24,6 +24,7 @@
 import { ref, computed, type Component } from 'vue'
 import GeneralSettings from './setting/GeneralSettings.vue'
 import ShortcutSettings from './setting/ShortcutSettings.vue'
+import NoteSettings from './setting/NoteSettings.vue'
 
 interface MenuConfig {
   id: string
@@ -33,7 +34,8 @@ interface MenuConfig {
 
 const menuConfig: MenuConfig[] = [
   { id: 'general', label: '通用配置', component: GeneralSettings },
-  { id: 'shortcut', label: '快捷键', component: ShortcutSettings }
+  { id: 'shortcut', label: '快捷键', component: ShortcutSettings },
+  { id: 'note', label: '随手记', component: NoteSettings }
 ]
 
 const activeMenuId = ref<string>('general')

@@ -1,8 +1,5 @@
 <template>
-  <div
-    v-if="visible"
-    class="fixed inset-0 bg-black/50 flex items-center justify-center z-[1000]"
-  >
+  <div v-if="visible" class="fixed inset-0 bg-black/50 flex items-center justify-center z-[1000]">
     <div class="w-[360px] max-w-[90vw] bg-white rounded-lg shadow-lg max-h-[90vh] flex flex-col">
       <h3
         class="px-4 py-3 text-sm font-semibold text-slate-800 border-b border-slate-200 flex-shrink-0"

@@ -14,7 +14,7 @@ type WindowClass = {
 }
 
 // 窗口名称类型
-type WindowNameType = 'search' | 'content'
+type WindowNameType = 'search' | 'content' | 'note'
 
 type SqlActionType = 'findAll' | 'findOne' | 'insert' | 'update' | 'del'
 
@@ -171,6 +171,15 @@ interface SettingEntity {
   createTime?: string
   /** 更新时间 */
   updateTime?: string
+}
+
+type NoteEntity = {
+  id: number
+  typeId: number
+  noteType: number
+  name: string
+  note: string
+  createTime: string
 }
 
 declare module '@bytemd/vue-next' {
