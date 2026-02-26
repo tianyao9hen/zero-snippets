@@ -1,5 +1,6 @@
 appId: com.electron.app
 productName: zero-snippets
+compression: maximum
 directories:
   buildResources: build
 files:
@@ -9,13 +10,13 @@ files:
   - '!{.eslintignore,.eslintrc.cjs,.prettierignore,.prettierrc.yaml,dev-app-update.yml,CHANGELOG.md,README.md}'
   - '!{.env,.env.*,.npmrc,pnpm-lock.yaml}'
   - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
+  - '!resources'
+  - '!**/*.map'
 extraResources:
   - from: resources
     to: resources
     filter:
       - '**/*'
-asarUnpack:
-  - resources/**
 win:
   executableName: zero-snippets
   target:
