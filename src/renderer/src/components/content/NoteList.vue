@@ -83,7 +83,7 @@ const settingStore = useSettingStore()
 const groupingMode = computed(() => {
   // 确保在设置加载完成时重新计算
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const _ = settingStore.isLoaded
+  void settingStore.isLoaded
 
   // 从 Store 获取分组模式设置
   const mode = settingStore.getSetting(SettingKey.NOTE_GROUPING_MODE_KEY)
@@ -195,20 +195,10 @@ $text-secondary: #6b7280; // Gray 500
   display: grid;
   gap: 16px;
   margin-bottom: 16px;
-  // Default 1 column for < 600px
-  grid-template-columns: repeat(1, minmax(0, 1fr));
-
-  @media (min-width: 600px) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  @media (min-width: 900px) {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  @media (min-width: 1200px) {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
+  // 自适应列数，根据卡片最小宽度自动填充
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  // 确保卡片左对齐，当列宽大于卡片最大宽度时，右侧留白
+  justify-items: start;
 }
 
 .loading-state,

@@ -1,5 +1,5 @@
 import { ref, onMounted, onBeforeUnmount, computed } from 'vue'
-import { debounce } from '../composables/debounceUtils'
+// import { debounce } from '../composables/debounceUtils'
 import { NoteType } from '../enums'
 
 export function useNoteInput() {
@@ -65,11 +65,11 @@ export function useNoteInput() {
   /**
    * 自动保存 (防抖)
    */
-  const autoSave = debounce(async () => {
-    if (content.value.trim()) {
-      await save()
-    }
-  }, 2000)
+  // const autoSave = debounce(async () => {
+  //   if (content.value.trim()) {
+  //     await save()
+  //   }
+  // }, 2000)
 
   /**
    * 处理内容变更

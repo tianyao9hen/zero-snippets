@@ -38,10 +38,10 @@ export default function useSearch() {
             categoryId: node.categoryId || -1,
             title: node.title,
             content: node.url || node.description || '',
-            icon: node.icon,
-            url: node.url,
-            shortcut: node.shortcut,
-            paramUrl: node.paramUrl
+            icon: node.icon || undefined,
+            url: node.url || undefined,
+            shortcut: node.shortcut || undefined,
+            paramUrl: node.paramUrl || undefined
           }))
 
           snippetsStore.setTypeList(await getTypeListByIdList([2]))
@@ -72,10 +72,10 @@ export default function useSearch() {
             categoryId: node.categoryId || -1,
             title: node.title,
             content: node.url || node.description || '',
-            icon: node.icon,
-            url: node.url,
-            shortcut: node.shortcut,
-            paramUrl: node.paramUrl
+            icon: node.icon || undefined,
+            url: node.url || undefined,
+            shortcut: node.shortcut || undefined,
+            paramUrl: node.paramUrl || undefined
           }))
 
           // 合并结果：文章在前，网页在后

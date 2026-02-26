@@ -17,16 +17,16 @@ export const createTray = () => {
 
   const iconPath = getIconPath()
   const icon = nativeImage.createFromPath(iconPath)
-  
+
   tray = new Tray(icon)
-  
+
   // 设置悬停提示
   tray.setToolTip('Zero Snippets')
 
   // 构建上下文菜单
   // 使用 menu.search 作为基础模板
   const contextMenuTemplate = menu.search || []
-  
+
   const contextMenu = Menu.buildFromTemplate(contextMenuTemplate)
   tray.setContextMenu(contextMenu)
 

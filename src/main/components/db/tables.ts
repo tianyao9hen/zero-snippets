@@ -395,7 +395,7 @@ function initSnippetsWebTree() {
   // 遍历并插入搜索引擎子节点
   engines.forEach((engine, index) => {
     insert(
-      `insert into snippets_web_tree(parent_id, type_id, title, url, shortcut, description, param_url, node_type, order_num, category_id) values($parentId, $typeId, $title, $url, $shortcut, $description, $paramUrl, $nodeType, $orderNum, $categoryId)`,
+      `insert into snippets_web_tree(parent_id, type_id, title, url, shortcut, description, icon, param_url, node_type, order_num, category_id) values($parentId, $typeId, $title, $url, $shortcut, $description, $paramUrl, $nodeType, $orderNum, $categoryId)`,
       {
         parentId: searchFolderId,
         typeId: 2,
@@ -403,6 +403,7 @@ function initSnippetsWebTree() {
         url: engine.url,
         shortcut: engine.shortcut,
         description: engine.desc,
+        icon: engine.icon,
         paramUrl: engine.paramUrl,
         nodeType: 1,
         orderNum: index + 1,

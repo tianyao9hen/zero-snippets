@@ -442,8 +442,8 @@ const isDataImageIcon = (icon?: string): boolean => {
 /** 节点图标源地址 */
 const nodeIconSrc = computed(() => {
   // 如果是data:image开头的base64图标，始终显示该图标，不受选中或悬停影响
-  if (isDataImageIcon(props.node.icon) && !iconLoadError.value) {
-    return props.node.icon
+  if (isDataImageIcon(props.node.icon || undefined) && !iconLoadError.value) {
+    return props.node.icon || undefined
   }
 
   if (isFolder.value) {
@@ -572,7 +572,7 @@ const handleIconError = () => {
  */
 const handleIconMouseEnter = () => {
   // 当显示data:image图标或自定义图标时，不启用悬停切换
-  if (isDataImageIcon(props.node.icon) || (props.node.icon && !iconLoadError.value)) {
+  if (isDataImageIcon(props.node.icon || undefined) || (props.node.icon && !iconLoadError.value)) {
     return
   }
   // 只有当显示默认图标时才启用悬停切换
