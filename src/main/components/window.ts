@@ -14,6 +14,7 @@ export const window: Record<WindowNameType, WindowClass> = {
       transparent: true, // 透明
       autoHideMenuBar: true,
       alwaysOnTop: true,
+      skipTaskbar: true,
       // openDevTools: true,
       initShow: true,
       path: ''
@@ -30,6 +31,7 @@ export const window: Record<WindowNameType, WindowClass> = {
       transparent: false,
       // openDevTools: true,
       initShow: true,
+      skipTaskbar: false,
       path: '/content'
       // path: '/content/1/category/0/catelog/11/article'
       // path: '/content/2/web/0/folder'
@@ -46,6 +48,7 @@ export const window: Record<WindowNameType, WindowClass> = {
       transparent: true, // 透明
       autoHideMenuBar: true,
       alwaysOnTop: true,
+      skipTaskbar: true,
       openDevTools: true,
       initShow: true,
       path: '/note-input'

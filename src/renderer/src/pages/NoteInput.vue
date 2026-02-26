@@ -1,6 +1,6 @@
 <template>
   <div class="note-input-container">
-    <div class="header drag">
+    <div class="note-header drag">
       <div class="left-section">
         <div class="icon-wrapper">
           <svg
@@ -116,7 +116,7 @@ $header-bg: #f9fafb;
   display: flex;
   flex-direction: column;
   background: $bg-color;
-  // border: 1px solid $border-color;
+  border: 1px solid $border-color;
   // 圆角
   border-radius: 10px;
   box-sizing: border-box;
@@ -124,15 +124,17 @@ $header-bg: #f9fafb;
   // Since it's a frameless window, we might want to handle border radius in the main process window config,
   // but here we ensure the content fits.
 
-  .header {
+  .note-header {
     height: 56px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0 16px;
-    // background: $header-bg;
-    // border-bottom: 1px solid $border-color;
+    background: $header-bg;
+    border-bottom: 1px solid $border-color;
     user-select: none;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
 
     .left-section {
       display: flex;

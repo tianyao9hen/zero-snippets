@@ -4,32 +4,50 @@ import './components/window'
 import './components/ipc'
 import './components/db'
 import { initShortcut, unregisterAllShortcuts } from './components/shortcut'
+import { createTray } from './components/tray'
+import { showWindowExclusive } from './components/window'
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
-app.whenReady().then(async () => {
-  // Set app user model id for windows
-  electronApp.setAppUserModelId('com.electron')
+// Ensure single instance
+const gotTheLock = app.requestSingleInstanceLock()
 
-  // Initialize global shortcut
-  await initShortcut()
-
-  // Default open or close DevTools by F12 in development
-  // and ignore CommandOrControl + R in production.
-  // see https://github.com/alex8088/electron-toolkit/tree/master/packages/utils
-  app.on('browser-window-created', (_, window) => {
-    optimizer.watchWindowShortcuts(window)
+if (!gotTheLock) {
+  app.quit()
+} else {
+  app.on('second-instance', () => {
+    // Someone tried to run a second instance, we should focus our window.
+    showWindowExclusive('content')
   })
-})
+
+  // This method will be called when Electron has finished
+  // initialization and is ready to create browser windows.
+  // Some APIs can only be used after this event occurs.
+  app.whenReady().then(async () => {
+    // Set app user model id for windows
+    electronApp.setAppUserModelId('com.electron')
+
+    // Initialize global shortcut
+    await initShortcut()
+
+    // Create system tray
+    createTray()
+
+    // Default open or close DevTools by F12 in development
+    // and ignore CommandOrControl + R in production.
+    // see https://github.com/alex8088/electron-toolkit/tree/master/packages/utils
+    app.on('browser-window-created', (_, window) => {
+      optimizer.watchWindowShortcuts(window)
+    })
+  })
+}
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
+  // Do not quit when all windows are closed, keep tray icon active
+  // if (process.platform !== 'darwin') {
+  //   app.quit()
+  // }
 })
 
 // Unregister all shortcuts before quit

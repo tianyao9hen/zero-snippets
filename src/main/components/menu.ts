@@ -4,9 +4,33 @@ import { showWindowExclusive } from './window'
 
 const mainMenu: Electron.MenuItemConstructorOptions[] = [
   {
-    label: '内容',
+    label: '知识库',
     click: () => {
       showWindowExclusive('content')
+    }
+  },
+  {
+    label: '网站库',
+    click: () => {
+      showWindowExclusive('content', '/content/2/web/0/folder')
+    }
+  },
+  {
+    label: '随手记',
+    click: () => {
+      showWindowExclusive('content', '/content/4/note')
+    }
+  },
+  {
+    label: '新增随手记',
+    click: () => {
+      showWindowExclusive('note')
+    }
+  },
+  {
+    label: '设置',
+    click: () => {
+      showWindowExclusive('content', '/content/-1/setting')
     }
   },
   {
