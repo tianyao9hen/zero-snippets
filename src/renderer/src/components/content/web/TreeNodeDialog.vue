@@ -390,8 +390,8 @@ watch(
 
       if (isEditing.value && props.nodeData) {
         dialogForm.value = {
-          nodeType: props.nodeData.nodeType,
-          title: props.nodeData.title,
+          nodeType: props.nodeData.nodeType!,
+          title: props.nodeData.title!,
           url: props.nodeData.url || '',
           shortcut: props.nodeData.shortcut || '',
           description: props.nodeData.description || '',
@@ -480,7 +480,7 @@ const confirmDialog = async () => {
   try {
     if (isEditing.value) {
       if (props.nodeData) {
-        await updateWebTreeNode(props.nodeData.id, {
+        await updateWebTreeNode(props.nodeData.id!, {
           title: dialogForm.value.title.trim(),
           url: dialogForm.value.url.trim() || undefined,
           shortcut: dialogForm.value.shortcut.trim() || undefined,

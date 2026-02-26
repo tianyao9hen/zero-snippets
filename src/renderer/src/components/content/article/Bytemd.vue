@@ -31,6 +31,9 @@ import 'bytemd/dist/index.css'
 import 'juejin-markdown-themes/dist/github.min.css'
 import 'highlight.js/styles/a11y-light.min.css'
 import { debounce } from '@renderer/composables/debounceUtils'
+import { message } from 'ant-design-vue'
+import { useSettingStore } from '@renderer/store/settingStore'
+import { SettingKey } from '@renderer/enums'
 
 // 编辑器插件
 const mdPlugins = ref([
@@ -99,23 +102,61 @@ function contentEditEvent(value: string) {
 }
 
 /**
- * TOOD 上传图片并展示
+ * 上传图片并展示
  * @param files 文件
  */
-async function handleUploadImages(files: any) {
-  const imgs: any = []
-  for (let index = 0; index < files.length; index++) {
-    const item = files[index]
-    const fromData = new FormData()
-    fromData.append('file', item)
-    // let res = await uploadImage(fromData);  // 上传到阿里云
-    const res = {
-      url: 'https://parkossv2.sdtwxx.com/parkv2/pc/box/20250522/202552294530_%E9%B2%81Q18F3V_1747877659036.jpg'
+async function handleUploadImages(files: File[]) {
+  const settingStore = useSettingStore()
+  if (!settingStore.isLoaded) {
+    await settingStore.loadSettings()
+  }
+
+  const region = settingStore.getSetting(SettingKey.OSS_REGION)
+  const accessKeyId = settingStore.getSetting(SettingKey.OSS_ACCESS_KEY_ID)
+  const accessKeySecret = settingStore.getSetting(SettingKey.OSS_ACCESS_KEY_SECRET)
+  const bucket = settingStore.getSetting(SettingKey.OSS_BUCKET)
+
+  if (!region || !accessKeyId || !accessKeySecret || !bucket) {
+    message.warning('请先在设置页面的“知识库”中配置阿里云 OSS 信息')
+    return []
+  }
+
+  const hide = message.loading('正在上传图片...', 0)
+  const imgs: { title: string; url: string }[] = []
+  try {
+    for (let index = 0; index < files.length; index++) {
+      const item = files[index]
+      try {
+        const arrayBuffer = await item.arrayBuffer()
+        const result = await window.api.uploadToOss({
+          config: {
+            region,
+            accessKeyId,
+            accessKeySecret,
+            bucket,
+            secure: true
+          } as OssConfig,
+          fileInfo: {
+            name: `images/${Date.now()}_${item.name}`,
+            buffer: arrayBuffer
+          }
+        })
+
+        if (result.success && result.url) {
+          imgs.push({
+            title: item.name,
+            url: result.url
+          })
+        } else {
+          throw new Error(result.error || '上传失败')
+        }
+      } catch (error) {
+        console.error('Upload failed:', error)
+        message.error(`图片 ${item.name} 上传失败: ${(error as Error).message}`)
+      }
     }
-    imgs.push({
-      title: item.name,
-      url: res.url
-    })
+  } finally {
+    hide()
   }
   return imgs
 }

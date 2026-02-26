@@ -9,7 +9,6 @@ const db = (): BetterSqlist3.Database => {
   const appDataPath = app.getPath('appData')
   let dbPath = join(appDataPath, 'zero-snippets')
   dbPath = join(dbPath, file)
-  console.log('dbPath', dbPath)
   const db: BetterSqlist3.Database = new Database(dbPath, {})
   db.pragma('journal_mode = WAL')
   return db

@@ -9,11 +9,7 @@
           <span class="text-sm font-medium text-slate-700">开机自启动</span>
           <span class="text-xs text-slate-400 mt-1">开机后自动运行应用</span>
         </div>
-        <a-switch
-          :checked="isAutoLaunch"
-          :loading="loading"
-          @change="toggleAutoLaunch"
-        />
+        <a-switch :checked="isAutoLaunch" :loading="loading" @change="toggleAutoLaunch" />
       </div>
     </div>
   </div>

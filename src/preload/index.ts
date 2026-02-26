@@ -1,8 +1,8 @@
-import { contextBridge, clipboard, ipcRenderer } from 'electron'
+import { contextBridge, clipboard } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 import { showMainMenu } from './composables/menu'
 import { setIgnoreMouseEvent } from './composables/setIgnoreMouseEvent'
-import { showWindowExclusive, hideWindow } from './composables/window'
+import { showWindowExclusive, hideWindow, openExternal } from './composables/window'
 import { getAutoLaunchStatus, toggleAutoLaunch } from './composables/autoLaunch'
 import {
   sql,
@@ -48,6 +48,7 @@ import {
   listAllNote,
   getNoteById
 } from './composables/db'
+import { uploadToOss } from './composables/ossService'
 
 // Custom APIs for renderer
 const api = {
@@ -88,7 +89,7 @@ const api = {
   importBookmarks,
   showWindowExclusive,
   hideWindow,
-  openExternal: (url: string) => ipcRenderer.send('open-external', url),
+  openExternal,
   getAllSettings,
   getSettingByKey,
   setSetting,
@@ -101,7 +102,8 @@ const api = {
   getNoteById,
   // 开机自启动 API
   getAutoLaunchStatus,
-  toggleAutoLaunch
+  toggleAutoLaunch,
+  uploadToOss
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

@@ -38,5 +38,13 @@ export enum SettingKey {
   /** 搜索框展示快捷键 */
   SHORTCUT_KEY = 'shortcut.showSnippets',
   /** 随手记展示快捷键 */
-  SHORTCUT_NOTE_KEY = 'shortcut.showNote'
+  SHORTCUT_NOTE_KEY = 'shortcut.showNote',
+  /** 阿里云OSS accessKeyId */
+  OSS_ACCESS_KEY_ID = 'oss.accessKeyId',
+  /** 阿里云OSS accessKeySecret */
+  OSS_ACCESS_KEY_SECRET = 'oss.accessKeySecret',
+  /** 阿里云OSS bucket */
+  OSS_BUCKET = 'oss.bucket',
+  /** 阿里云OSS region */
+  OSS_REGION = 'oss.region'
 }

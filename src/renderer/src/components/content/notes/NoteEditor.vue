@@ -63,6 +63,7 @@ const handleChange = (val: string) => {
   :deep(.bytemd) {
     height: 100%;
     border: none;
+    background-color: transparent;
   }
 
   :deep(.bytemd-toolbar) {

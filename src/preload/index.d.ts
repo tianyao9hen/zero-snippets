@@ -50,6 +50,11 @@ declare global {
       removeWebTreeNode: (id: number) => Promise<number>
       moveWebTreeNode: (id: number, newParentId: number) => Promise<number>
       searchWebTree: (keyword: string, typeId: number, nodeType: number) => Promise<WebTreeNode[]>
+      searchWebTreeByShortcut: (
+        keyword: string,
+        typeId: number,
+        nodeType: number
+      ) => Promise<WebTreeNode[]>
       reorderWebTreeNodes: (orders: { id: number; orderNum: number }[]) => Promise<number>
       setFolderAsCategory: (folderId: number, folderName: string, typeId: number) => Promise<number>
       updateWebTreeNodeCategoryId: (id: number, categoryId: number) => Promise<number>
@@ -88,6 +93,11 @@ declare global {
       // 开机自启动 API
       getAutoLaunchStatus: () => Promise<boolean>
       toggleAutoLaunch: (enable: boolean) => Promise<{ success: boolean; error?: string }>
+      // OSS 上传 API
+      uploadToOss: (params: {
+        config: OssConfig
+        fileInfo: OssFileInfo
+      }) => Promise<{ success: boolean; url?: string; error?: string }>
     }
   }
 }

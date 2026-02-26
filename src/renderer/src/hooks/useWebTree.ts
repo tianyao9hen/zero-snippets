@@ -664,6 +664,15 @@ export default () => {
   }
 
   /**
+   * 添加网页树节点
+   * @param node 节点信息
+   * @returns Promise<number> 新节点ID
+   */
+  const addWebTreeNode = async (node: Omit<WebTreeNode, 'id' | 'createTime'>): Promise<number> => {
+    return await window.api.addWebTreeNode(node)
+  }
+
+  /**
    * 更新网页树节点
    * @param id 节点ID
    * @param updates 更新内容
@@ -789,6 +798,7 @@ export default () => {
     getWebTreeByTypeId,
     getWebTreeByTypeIdAndCategoryId,
     getWebTreeByTypeIdAndNullCategory,
+    addWebTreeNode,
     updateWebTreeNode,
     updateWebTreeNodeCategoryIdRecursive,
     removeWebTreeNode,

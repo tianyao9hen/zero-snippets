@@ -4,7 +4,7 @@ import { createMenu } from '../composables/createMenu'
 
 export const window: Record<WindowNameType, WindowClass> = {
   search: {
-    id: 0,
+    id: 10,
     options: {
       width: 500,
       height: 500,
@@ -20,7 +20,7 @@ export const window: Record<WindowNameType, WindowClass> = {
     }
   },
   content: {
-    id: 0,
+    id: 11,
     options: {
       width: 1000,
       height: 600,
@@ -36,17 +36,17 @@ export const window: Record<WindowNameType, WindowClass> = {
     }
   },
   note: {
-    id: 0,
+    id: 12,
     options: {
       width: 600,
       height: 400,
       center: true,
       resizable: true,
       frame: false,
-      transparent: true,
+      transparent: true, // 透明
       autoHideMenuBar: true,
       alwaysOnTop: true,
-      // openDevTools: true,
+      openDevTools: true,
       initShow: true,
       path: '/note-input'
     }
@@ -147,7 +147,21 @@ export const showWindowExclusive = async (
   return showWindow(name, path)
 }
 
+export const createWindowHide = async (
+  name: WindowNameType,
+  path: string = window[name].options.path || ''
+): Promise<BrowserWindow> => {
+  const win = getWindowByName(name)
+  const currentUrl = win.webContents.getURL()
+  const targetUrl = getTargetUrl(path)
+  if (!currentUrl.includes(path)) {
+    await win.loadURL(targetUrl)
+  }
+  win.hide()
+  return win
+}
+
 app.whenReady().then(() => {
-  showWindow('search')
-  // showWindowExclusive('content')
+  createWindowHide('search')
+  // showWindow('search')
 })

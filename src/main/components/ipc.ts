@@ -1,8 +1,8 @@
 import { ipcMain, IpcMainEvent, shell } from 'electron'
 import { ipcEnum } from '../../enum/ipcEnum'
 import { getWindowByEvent, showWindowExclusive, hideWindow } from './window'
-import './db/ipc'
 import { toggleAutoLaunch, getAutoLaunchStatus } from './autoLaunch'
+import './db/ipc'
 
 /**
  * 处理切换开机自启动的IPC请求
@@ -41,4 +41,9 @@ ipcMain.on(ipcEnum.hideWindow, (_event: IpcMainEvent, name: WindowNameType) => {
 
 ipcMain.on(ipcEnum.openExternal, (_event: IpcMainEvent, url: string) => {
   shell.openExternal(url)
+})
+
+ipcMain.handle(ipcEnum.ossUpload, async (_event, params) => {
+  const { registerOssService } = await import('./ossService')
+  return registerOssService(params)
 })

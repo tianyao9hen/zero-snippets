@@ -87,7 +87,6 @@ const groupingMode = computed(() => {
 
   // 从 Store 获取分组模式设置
   const mode = settingStore.getSetting(SettingKey.NOTE_GROUPING_MODE_KEY)
-  console.log('groupingMode', mode)
   if (!mode) return NoteGroupingMode.NONE
 
   // 转换为数字枚举

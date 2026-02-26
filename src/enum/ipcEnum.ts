@@ -54,5 +54,7 @@ export const ipcEnum = {
   getNoteById: 'get-note-by-id',
   // 开机自启动相关 IPC 事件
   toggleAutoLaunch: 'toggle-auto-launch',
-  getAutoLaunchStatus: 'get-auto-launch-status'
+  getAutoLaunchStatus: 'get-auto-launch-status',
+  // OSS 上传相关 IPC 事件
+  ossUpload: 'oss-upload'
 }

@@ -182,6 +182,19 @@ type NoteEntity = {
   createTime: string
 }
 
+type OssConfig = {
+  region: string
+  accessKeyId: string
+  accessKeySecret: string
+  bucket: string
+  secure: boolean
+}
+
+type OssFileInfo = {
+  name: string
+  buffer: ArrayBuffer
+}
+
 declare module '@bytemd/vue-next' {
   // eslint-disable-next-line
   export const Editor: any

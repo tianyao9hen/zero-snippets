@@ -83,17 +83,14 @@ import { useNoteInput } from '../hooks/useNoteInput'
 import { NoteType } from '../enums'
 
 const editorRef = ref()
-const { content, title, noteType, isSaving, lastSavedTime, wordCount, handleContentChange, submit, close } =
-  useNoteInput()
-
-const titleInputRef = ref()
+const { content, title, noteType, isSaving, handleContentChange, submit, close } = useNoteInput()
 
 onMounted(() => {
   // Set default title
   if (!title.value) {
     title.value = new Date().toLocaleString()
   }
-  
+
   // Focus on editor content area
   // We need to wait for Bytemd to mount
   setTimeout(() => {
@@ -119,7 +116,9 @@ $header-bg: #f9fafb;
   display: flex;
   flex-direction: column;
   background: $bg-color;
-  border: 1px solid $border-color;
+  // border: 1px solid $border-color;
+  // 圆角
+  border-radius: 10px;
   box-sizing: border-box;
   // Border radius if window supports it (e.g. rounded corners on Mac/Win11)
   // Since it's a frameless window, we might want to handle border radius in the main process window config,
@@ -131,8 +130,8 @@ $header-bg: #f9fafb;
     justify-content: space-between;
     align-items: center;
     padding: 0 16px;
-    background: $header-bg;
-    border-bottom: 1px solid $border-color;
+    // background: $header-bg;
+    // border-bottom: 1px solid $border-color;
     user-select: none;
 
     .left-section {
