@@ -1,7 +1,14 @@
 import { is } from '@electron-toolkit/utils'
-import { BrowserWindow, shell } from 'electron'
-import icon from '../../../resources/icon.png?asset'
+import { app, BrowserWindow, shell } from 'electron'
 import { join } from 'path'
+
+// 获取图标路径
+const getIconPath = (): string => {
+  if (app.isPackaged) {
+    return join(process.resourcesPath, 'resources', 'icon.png')
+  }
+  return join(app.getAppPath(), 'resources', 'icon.png')
+}
 
 // 统一构建目标 URL
 export const getTargetUrl = (path: string): string => {
@@ -21,7 +28,7 @@ export function createWindow(options: OptionsClass): BrowserWindow {
         autoHideMenuBar: true,
         alwaysOnTop: false,
         transparent: true, // 窗口透明
-        icon,
+        icon: getIconPath(),
         webPreferences: {
           preload: join(__dirname, '../preload/index.js'),
           sandbox: false

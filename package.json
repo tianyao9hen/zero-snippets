@@ -1,6 +1,6 @@
 {
   "name": "zero-snippets",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Zero Snippets 是一款专为开发者和知识工作者打造的桌面端知识管理工具。",
   "main": "./out/main/index.js",
   "author": "tianyao9hen.com",
