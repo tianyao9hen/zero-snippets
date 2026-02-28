@@ -1,6 +1,12 @@
-import { nativeImage } from 'electron'
+import { nativeImage, app } from 'electron'
 import path from 'path'
 
-export const closeIcon = nativeImage
-  .createFromPath(path.join(__dirname, '../../resources/close.png'))
-  .resize({ width: 12, height: 12 })
+const getIconPath = () => {
+  if (app.isPackaged) {
+    return path.join(process.resourcesPath, 'resources', 'close.png')
+  } else {
+    return path.join(app.getAppPath(), 'resources', 'close.png')
+  }
+}
+
+export const closeIcon = nativeImage.createFromPath(getIconPath()).resize({ width: 12, height: 12 })
