@@ -5,4 +5,5 @@ out
 *.log*
 .trae
 AGENTS.md
+cursor.README.md
 .*
