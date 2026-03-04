@@ -28,6 +28,18 @@ const mainMenu: Electron.MenuItemConstructorOptions[] = [
     }
   },
   {
+    label: '命令行',
+    click: () => {
+      showWindowExclusive('content', '/content/5/command-log')
+    }
+  },
+  {
+    label: '命令行日志',
+    click: () => {
+      showWindowExclusive('commandLog')
+    }
+  },
+  {
     label: '设置',
     click: () => {
       showWindowExclusive('content', '/content/-1/setting')
@@ -45,5 +57,6 @@ const mainMenu: Electron.MenuItemConstructorOptions[] = [
 export const menu: Record<WindowNameType, Electron.MenuItemConstructorOptions[] | null> = {
   search: mainMenu,
   content: null,
-  note: null
+  note: null,
+  commandLog: null
 }
