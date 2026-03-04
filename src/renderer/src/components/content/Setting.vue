@@ -26,6 +26,7 @@ import GeneralSettings from './setting/GeneralSettings.vue'
 import ShortcutSettings from './setting/ShortcutSettings.vue'
 import NoteSettings from './setting/NoteSettings.vue'
 import ArticleSettings from './setting/ArticleSettings.vue'
+import CommandSettings from './setting/CommandSettings.vue'
 
 interface MenuConfig {
   id: string
@@ -37,7 +38,8 @@ const menuConfig: MenuConfig[] = [
   { id: 'general', label: '通用配置', component: GeneralSettings },
   { id: 'shortcut', label: '快捷键', component: ShortcutSettings },
   { id: 'note', label: '随手记', component: NoteSettings },
-  { id: 'article', label: '知识库', component: ArticleSettings }
+  { id: 'article', label: '知识库', component: ArticleSettings },
+  { id: 'command', label: '命令行', component: CommandSettings }
 ]
 
 const activeMenuId = ref<string>('general')

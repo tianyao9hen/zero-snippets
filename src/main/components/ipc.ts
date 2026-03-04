@@ -1,6 +1,6 @@
 import { ipcMain, IpcMainEvent, shell } from 'electron'
 import { ipcEnum } from '../../enum/ipcEnum'
-import { getWindowByEvent, showWindowExclusive, hideWindow } from './window'
+import { getWindowByEvent, showWindowExclusive, hideWindow, showWindow } from './window'
 import { toggleAutoLaunch, getAutoLaunchStatus } from './autoLaunch'
 import './db/ipc'
 
@@ -34,6 +34,10 @@ ipcMain.on(
     showWindowExclusive(name, path)
   }
 )
+
+ipcMain.on(ipcEnum.showWindow, (_event: IpcMainEvent, name: WindowNameType, path?: string) => {
+  showWindow(name, path)
+})
 
 ipcMain.on(ipcEnum.hideWindow, (_event: IpcMainEvent, name: WindowNameType) => {
   hideWindow(name)

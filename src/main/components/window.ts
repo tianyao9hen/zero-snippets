@@ -29,7 +29,7 @@ export const window: Record<WindowNameType, WindowClass> = {
       resizable: true,
       frame: true,
       transparent: false,
-      // openDevTools: true,
+      openDevTools: true,
       initShow: true,
       skipTaskbar: false,
       path: '/content'
@@ -49,9 +49,25 @@ export const window: Record<WindowNameType, WindowClass> = {
       autoHideMenuBar: true,
       alwaysOnTop: true,
       skipTaskbar: true,
-      openDevTools: true,
+      // openDevTools: true,
       initShow: true,
       path: '/note-input'
+    }
+  },
+  commandLog: {
+    id: 13,
+    options: {
+      width: 900,
+      height: 600,
+      center: true,
+      resizable: true,
+      frame: true,
+      transparent: false,
+      autoHideMenuBar: true,
+      initShow: true,
+      skipTaskbar: false,
+      // openDevTools: true,
+      path: '/command-log'
     }
   }
 }
@@ -68,13 +84,26 @@ export const getWindowByName = (name: WindowNameType): BrowserWindow => {
     }
   }
   win.hookWindowMessage(278, function () {
-    win.setEnabled(false) //窗口禁用
+    win!.setEnabled(false) //窗口禁用
     setTimeout(() => {
       win!.setEnabled(true) //窗口启用
     }, 100)
     return true
   })
   return win
+}
+
+/**
+ * 仅获取已存在的窗口实例，不会创建新窗口
+ * @param name 窗口名称
+ * @returns 已存在的 BrowserWindow 或 null
+ */
+export const getExistingWindowByName = (name: WindowNameType): BrowserWindow | null => {
+  const win = BrowserWindow.fromId(window[name].id)
+  if (win && !win.isDestroyed()) {
+    return win
+  }
+  return null
 }
 
 export const getWindowByEvent = (event: IpcMainEvent | IpcMainInvokeEvent) => {
@@ -141,7 +170,9 @@ export const showWindowExclusive = async (
 ): Promise<BrowserWindow> => {
   // 1. 先隐藏其他所有窗口
   ;(Object.keys(window) as WindowNameType[]).forEach((winName) => {
-    if (winName !== name) {
+    // NoteInput 与 CommandLog 窗口在其他窗口切换时保持独立，不随之隐藏
+    const isStickyWindow = winName === 'note' || winName === 'commandLog'
+    if (winName !== name && !isStickyWindow) {
       hideWindow(winName)
     }
   })

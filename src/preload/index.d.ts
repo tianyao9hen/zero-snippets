@@ -73,6 +73,7 @@ declare global {
         error?: string
       }>
       // 窗口管理 API
+      showWindow: (name: WindowNameType, path?: string) => void
       showWindowExclusive: (name: WindowNameType, path?: string) => void
       hideWindow: (name: WindowNameType) => void
       // 外部链接 API
@@ -98,6 +99,38 @@ declare global {
         config: OssConfig
         fileInfo: OssFileInfo
       }) => Promise<{ success: boolean; url?: string; error?: string }>
+      // 命令配置与执行 API
+      listCommands: () => Promise<CommandEntity[]>
+      searchCommands: (keyword: string) => Promise<CommandEntity[]>
+      addCommand: (command: Omit<CommandEntity, 'id' | 'createTime'>) => Promise<number>
+      updateCommand: (
+        id: number,
+        updates: Partial<Omit<CommandEntity, 'id' | 'createTime'>>
+      ) => Promise<number>
+      removeCommand: (id: number) => Promise<number>
+      getRunningCommands: () => Promise<
+        {
+          instanceId: string
+          commandId: number
+          title: string
+          shortcut?: string
+          allowUnified: boolean
+          exited: boolean
+          exitCode: number | null
+        }[]
+      >
+      getCommandLogs: (instanceId: string) => Promise<
+        {
+          time: number
+          source: 'stdout' | 'stderr'
+          line: string
+        }[]
+      >
+      runCommand: (commandId: number) => Promise<string>
+      runUnifiedCommands: () => Promise<string[]>
+      stopCommand: (commandId: number) => Promise<void>
+      stopUnifiedCommands: () => Promise<void>
+      dismissCommandInstance: (instanceId: string) => Promise<void>
     }
   }
 }

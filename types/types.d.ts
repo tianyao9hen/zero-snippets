@@ -14,7 +14,7 @@ type WindowClass = {
 }
 
 // 窗口名称类型
-type WindowNameType = 'search' | 'content' | 'note'
+type WindowNameType = 'search' | 'content' | 'note' | 'commandLog'
 
 type SqlActionType = 'findAll' | 'findOne' | 'insert' | 'update' | 'del'
 
@@ -47,6 +47,21 @@ type TypeEntity = {
   name: string
   title: string
   orderNum: number
+  createTime?: string
+}
+
+// 命令实体（仅用于主进程和渲染进程之间的数据传输）
+type CommandEntity = {
+  id: number
+  name: string
+  type: string
+  basePath?: string | null
+  command: string
+  stopCommand?: string | null
+  shortcut?: string | null
+  allowUnified: boolean
+  orderNum: number
+  remark?: string | null
   createTime?: string
 }
 

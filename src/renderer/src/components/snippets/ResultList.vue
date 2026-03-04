@@ -32,6 +32,22 @@
           </div>
         </template>
 
+        <!-- 命令类型：命令名称 + 快捷键，单行展示 -->
+        <template v-else-if="item.typeId === 5">
+          <img :src="iconMap.article.dUrl" class="item-type-icon" alt="命令" />
+          <div class="command-section">
+            <span
+              class="command-title truncate"
+              v-html="
+                highlightText(truncateText(item.title, TEXT_LIMIT.commandTitle), searchKeyword)
+              "
+            />
+            <span v-if="item.shortcut" class="command-shortcut">{{
+              truncateText(item.shortcut, TEXT_LIMIT.shortcut)
+            }}</span>
+          </div>
+        </template>
+
         <!-- 网页类型：使用 web 图标或自定义图标 -->
         <template v-else>
           <img
@@ -79,7 +95,10 @@ const TEXT_LIMIT = {
   articleTitle: 35, // 文章名称最大长度
   categoryName: 10, // 分类名称最大长度
   webTitle: 16, // 网页名称最大长度
-  url: 50 // URL最大长度
+  url: 50, // URL最大长度
+  commandTitle: 30, // 命令名称最大长度（适当放宽，便于识别）
+  commandContent: 60, // 命令内容最大长度
+  shortcut: 16 // 快捷键最大长度
 }
 
 /**
@@ -163,5 +182,32 @@ const highlightText = (text: string, keyword: string): string => {
   display: flex;
   align-items: center;
   gap: 6px;
+}
+
+/* 命令类型样式：与文章/网页类型统一 */
+.command-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex: 1;
+  gap: 8px;
+
+  .command-title {
+    font-weight: 500;
+    font-size: 14px;
+    flex-shrink: 0;
+    max-width: 200px;
+  }
+
+  .command-shortcut {
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 3px;
+    background-color: #e3f2fd;
+    color: #1976d2;
+    flex-shrink: 0;
+    white-space: nowrap;
+    font-weight: 500;
+  }
 }
 </style>

@@ -2,7 +2,7 @@ import { contextBridge, clipboard } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 import { showMainMenu } from './composables/menu'
 import { setIgnoreMouseEvent } from './composables/setIgnoreMouseEvent'
-import { showWindowExclusive, hideWindow, openExternal } from './composables/window'
+import { showWindow, showWindowExclusive, hideWindow, openExternal } from './composables/window'
 import { getAutoLaunchStatus, toggleAutoLaunch } from './composables/autoLaunch'
 import {
   sql,
@@ -46,7 +46,19 @@ import {
   editNote,
   removeNote,
   listAllNote,
-  getNoteById
+  getNoteById,
+  listCommands,
+  searchCommands,
+  addCommand,
+  updateCommand,
+  removeCommand,
+  getRunningCommands,
+  getCommandLogs,
+  runCommand,
+  runUnifiedCommands,
+  stopCommand,
+  stopUnifiedCommands,
+  dismissCommandInstance
 } from './composables/db'
 import { uploadToOss } from './composables/ossService'
 
@@ -87,6 +99,7 @@ const api = {
   updateWebTreeNodeCategoryIdRecursive,
   fetchFavicon,
   importBookmarks,
+  showWindow,
   showWindowExclusive,
   hideWindow,
   openExternal,
@@ -103,7 +116,20 @@ const api = {
   // 开机自启动 API
   getAutoLaunchStatus,
   toggleAutoLaunch,
-  uploadToOss
+  uploadToOss,
+  // 命令配置与执行 API
+  listCommands,
+  searchCommands,
+  addCommand,
+  updateCommand,
+  removeCommand,
+  getRunningCommands,
+  getCommandLogs,
+  runCommand,
+  runUnifiedCommands,
+  stopCommand,
+  stopUnifiedCommands,
+  dismissCommandInstance
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

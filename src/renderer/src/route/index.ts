@@ -1,9 +1,11 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
 import Snippets from '@renderer/pages/Snippets.vue'
 import Content from '@renderer/pages/Content.vue'
+import CommandLog from '@renderer/pages/CommandLog.vue'
 import Category from '@renderer/components/content/Category.vue'
 import Web from '@renderer/components/content/Web.vue'
 import Software from '@renderer/components/content/Software.vue'
+import Command from '@renderer/components/content/Command.vue'
 import Catelog from '@renderer/components/content/Catelog.vue'
 import Article from '@renderer/components/content/Article.vue'
 import Folder from '@renderer/components/content/Folder.vue'
@@ -25,6 +27,11 @@ const routes: RouteRecordRaw[] = [
     path: '/snippets',
     name: 'snippets',
     component: Snippets
+  },
+  {
+    path: '/command-log',
+    name: 'command-log',
+    component: CommandLog
   },
   {
     path: '/content/:tid?',
@@ -71,6 +78,11 @@ const routes: RouteRecordRaw[] = [
         path: 'software',
         name: 'software',
         component: Software
+      },
+      {
+        path: 'command',
+        name: 'command',
+        component: Command
       },
       {
         path: 'setting',

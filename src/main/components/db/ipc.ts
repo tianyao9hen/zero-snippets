@@ -46,6 +46,22 @@ import {
   listAll as listAllNote,
   getById as getNoteById
 } from './sql/noteSql'
+import {
+  findAllCommands,
+  searchCommands,
+  addCommand,
+  updateCommand,
+  removeCommand
+} from './sql/commandSql'
+import {
+  getRunningCommandSummaries,
+  getCommandLogs,
+  runCommandById,
+  runUnifiedCommands,
+  stopCommandById,
+  stopUnifiedCommands,
+  dismissCommandInstance
+} from '../commandRunner'
 
 ipcMain.handle(
   ipcEnum.sql,
@@ -341,3 +357,68 @@ ipcMain.handle(ipcEnum.listAllNote, () => {
 ipcMain.handle(ipcEnum.getNoteById, (_event: IpcMainInvokeEvent, id: number) => {
   return getNoteById(id)
 })
+
+// ==================== 命令配置相关 IPC 处理 ====================
+
+ipcMain.handle(ipcEnum.listCommands, () => {
+  return findAllCommands()
+})
+
+ipcMain.handle(ipcEnum.searchCommands, (_event: IpcMainInvokeEvent, keyword: string) => {
+  return searchCommands(keyword)
+})
+
+ipcMain.handle(
+  ipcEnum.addCommand,
+  (_event: IpcMainInvokeEvent, command: Omit<CommandEntity, 'id' | 'createTime'>) => {
+    return addCommand(command)
+  }
+)
+
+ipcMain.handle(
+  ipcEnum.updateCommand,
+  (
+    _event: IpcMainInvokeEvent,
+    id: number,
+    updates: Partial<Omit<CommandEntity, 'id' | 'createTime'>>
+  ) => {
+    return updateCommand(id, updates)
+  }
+)
+
+ipcMain.handle(ipcEnum.removeCommand, (_event: IpcMainInvokeEvent, id: number) => {
+  return removeCommand(id)
+})
+
+// ==================== 命令执行与日志相关 IPC 处理 ====================
+
+ipcMain.handle(ipcEnum.getRunningCommands, () => {
+  return getRunningCommandSummaries()
+})
+
+ipcMain.handle(ipcEnum.getCommandLogs, (_event: IpcMainInvokeEvent, instanceId: string) => {
+  return getCommandLogs(instanceId)
+})
+
+ipcMain.handle(ipcEnum.runCommand, async (_event: IpcMainInvokeEvent, commandId: number) => {
+  return runCommandById(commandId)
+})
+
+ipcMain.handle(ipcEnum.runUnifiedCommands, async () => {
+  return runUnifiedCommands()
+})
+
+ipcMain.handle(ipcEnum.stopCommand, (_event: IpcMainInvokeEvent, commandId: number) => {
+  stopCommandById(commandId)
+})
+
+ipcMain.handle(ipcEnum.stopUnifiedCommands, () => {
+  stopUnifiedCommands()
+})
+
+ipcMain.handle(
+  ipcEnum.dismissCommandInstance,
+  (_event: IpcMainInvokeEvent, instanceId: string) => {
+    dismissCommandInstance(instanceId)
+  }
+)

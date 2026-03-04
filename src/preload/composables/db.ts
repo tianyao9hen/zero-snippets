@@ -303,3 +303,100 @@ export function listAllNote() {
 export function getNoteById(id: number) {
   return ipcRenderer.invoke(ipcEnum.getNoteById, id)
 }
+
+// ==================== 命令相关 API ====================
+
+/**
+ * 获取所有命令
+ */
+export function listCommands(): Promise<CommandEntity[]> {
+  return ipcRenderer.invoke(ipcEnum.listCommands)
+}
+
+/**
+ * 搜索命令（根据名称、快捷键、命令内容模糊查询）
+ * @param keyword 搜索关键词
+ */
+export function searchCommands(keyword: string): Promise<CommandEntity[]> {
+  return ipcRenderer.invoke(ipcEnum.searchCommands, keyword)
+}
+
+/**
+ * 新增命令
+ * @param command 命令实体（不包含 id/createTime）
+ */
+export function addCommand(command: Omit<CommandEntity, 'id' | 'createTime'>) {
+  return ipcRenderer.invoke(ipcEnum.addCommand, command)
+}
+
+/**
+ * 更新命令
+ * @param id 命令ID
+ * @param updates 需要更新的字段
+ */
+export function updateCommand(
+  id: number,
+  updates: Partial<Omit<CommandEntity, 'id' | 'createTime'>>
+) {
+  return ipcRenderer.invoke(ipcEnum.updateCommand, id, updates)
+}
+
+/**
+ * 删除命令
+ * @param id 命令ID
+ */
+export function removeCommand(id: number) {
+  return ipcRenderer.invoke(ipcEnum.removeCommand, id)
+}
+
+/**
+ * 获取正在运行的命令实例摘要列表
+ */
+export function getRunningCommands() {
+  return ipcRenderer.invoke(ipcEnum.getRunningCommands)
+}
+
+/**
+ * 获取指定实例的日志
+ * @param instanceId 实例ID
+ */
+export function getCommandLogs(instanceId: string) {
+  return ipcRenderer.invoke(ipcEnum.getCommandLogs, instanceId)
+}
+
+/**
+ * 运行指定命令
+ * @param commandId 命令ID
+ */
+export function runCommand(commandId: number) {
+  return ipcRenderer.invoke(ipcEnum.runCommand, commandId)
+}
+
+/**
+ * 统一执行所有允许统一执行的命令
+ */
+export function runUnifiedCommands() {
+  return ipcRenderer.invoke(ipcEnum.runUnifiedCommands)
+}
+
+/**
+ * 停止指定命令
+ * @param commandId 命令ID
+ */
+export function stopCommand(commandId: number) {
+  return ipcRenderer.invoke(ipcEnum.stopCommand, commandId)
+}
+
+/**
+ * 统一中止所有允许统一执行的命令
+ */
+export function stopUnifiedCommands() {
+  return ipcRenderer.invoke(ipcEnum.stopUnifiedCommands)
+}
+
+/**
+ * 移除命令实例（关闭标签页时调用）
+ */
+export function dismissCommandInstance(instanceId: string) {
+  return ipcRenderer.invoke(ipcEnum.dismissCommandInstance, instanceId)
+}

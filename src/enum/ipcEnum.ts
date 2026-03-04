@@ -36,6 +36,7 @@ export const ipcEnum = {
   fetchFavicon: 'fetch-favicon',
   // 书签导入 IPC 事件
   importBookmarks: 'import-bookmarks',
+  showWindow: 'show-window',
   showWindowExclusive: 'show-window-exclusive',
   hideWindow: 'hide-window',
   openExternal: 'open-external',
@@ -56,5 +57,19 @@ export const ipcEnum = {
   toggleAutoLaunch: 'toggle-auto-launch',
   getAutoLaunchStatus: 'get-auto-launch-status',
   // OSS 上传相关 IPC 事件
-  ossUpload: 'oss-upload'
+  ossUpload: 'oss-upload',
+  // 命令配置相关 IPC 事件
+  listCommands: 'list-commands',
+  searchCommands: 'search-commands',
+  addCommand: 'add-command',
+  updateCommand: 'update-command',
+  removeCommand: 'remove-command',
+  // 命令执行与日志相关 IPC 事件
+  runCommand: 'run-command',
+  stopCommand: 'stop-command',
+  runUnifiedCommands: 'run-unified-commands',
+  stopUnifiedCommands: 'stop-unified-commands',
+  getRunningCommands: 'get-running-commands',
+  getCommandLogs: 'get-command-logs',
+  dismissCommandInstance: 'dismiss-command-instance'
 }

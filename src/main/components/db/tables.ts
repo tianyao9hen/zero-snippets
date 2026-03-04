@@ -87,6 +87,30 @@ export function initTable() {
     );
   `)
 
+  // 命令表：存储用户配置的 Windows 命令及相关元数据
+  createTable(`
+    create table if not exists snippets_command (
+      id integer primary key autoincrement not null,           -- 主键ID
+      name text not null,                                      -- 命令名称
+      type text not null,                                      -- 命令类型：如 nacos/redis/mongodb/rocketmq/custom 等
+      base_path text,                                          -- 基础路径（预设类型使用），自定义命令可为空
+      command text not null,                                   -- 实际执行的完整命令
+      stop_command text,                                       -- 关闭命令（优雅停止服务）
+      shortcut text,                                           -- 执行快捷键（仅在应用内生效）
+      allow_unified integer not null default 0,                -- 是否允许统一执行：0-否，1-是
+      order_num integer not null default 0,                    -- 排序号
+      remark text,                                             -- 命令说明，用于提示和示范
+      create_time text not null default(datetime(CURRENT_TIMESTAMP,'localtime'))
+    );
+  `)
+
+  // 兼容已有数据库：为 snippets_command 补加 stop_command 列
+  try {
+    createTable(`ALTER TABLE snippets_command ADD COLUMN stop_command text;`)
+  } catch {
+    // 列已存在则忽略
+  }
+
   // 创建设置表索引，提高查询效率
   createTable(`
     create index if not exists idx_setting_key on snippets_setting(key);
@@ -109,6 +133,7 @@ function dbInit() {
   initSnippetsWebTree()
   initSnippetsNotes()
   initDefaultSettings()
+  initSnippetsCommand()
 }
 
 /**
@@ -453,6 +478,125 @@ function initSnippetsNotes() {
       note: '这里是您的生活随手记。\n记录生活点滴、购物清单或者旅行计划。\n工作与生活，轻松切换。'
     }
   )
+}
+
+/**
+ * 初始化命令行示例数据
+ *
+ * 仅在 snippets_command 表为空时插入预置命令，方便用户参考和快速上手。
+ * 用户可在命令行页面中根据自身环境修改 base_path 与命令内容。
+ */
+function initSnippetsCommand() {
+  const isInit = findOne(`select * from snippets_command`, {})
+  if (isInit) return
+
+  const commands = [
+    {
+      name: 'Nacos启动',
+      type: 'nacos',
+      basePath: 'D:/Nacos/Nacos-server-2.3.0/bin',
+      command: 'startup.cmd',
+      stopCommand: 'shutdown.cmd',
+      shortcut: 'nacos',
+      allowUnified: 0,
+      orderNum: 100,
+      remark: '请将 basePath 改为本机 Nacos bin 目录后保存。'
+    },
+    {
+      name: 'Redis启动',
+      type: 'redis',
+      basePath: 'D:/Redis',
+      command: 'redis-server.exe redis.windows.conf',
+      stopCommand: 'redis-cli.exe shutdown',
+      shortcut: 'redis',
+      allowUnified: 0,
+      orderNum: 90,
+      remark: '请将 basePath 改为本机 Redis 目录。'
+    },
+    {
+      name: 'MongoDB启动',
+      type: 'mongodb',
+      basePath: 'D:/mongodb/mongodb-win32-x86_64-windows-8.0.4/bin',
+      command: 'mongod --config ../conf/mongodb.conf',
+      stopCommand: 'mongod --shutdown --config ../conf/mongodb.conf',
+      shortcut: 'mongo',
+      allowUnified: 0,
+      orderNum: 80,
+      remark: '请将 basePath 改为本机 MongoDB bin 目录，并确认 conf 下配置文件存在。'
+    },
+    {
+      name: 'RocketMQ Namesrv',
+      type: 'mqnamesrv',
+      basePath: 'D:/rocketmq/rocketmq-all-5.3.1-bin-release/bin',
+      command: 'mqnamesrv.cmd',
+      stopCommand: 'mqshutdown.cmd namesrv',
+      shortcut: 'mqns',
+      allowUnified: 1,
+      orderNum: 70,
+      remark: '请将 basePath 改为本机 RocketMQ bin 目录。'
+    },
+    {
+      name: 'RocketMQ Broker',
+      type: 'mqbroker',
+      basePath: 'D:/rocketmq/rocketmq-all-5.3.1-bin-release/bin',
+      command: 'mqbroker.cmd -n 127.0.0.1:9876 autoCreateTopicEnable=true',
+      stopCommand: 'mqshutdown.cmd broker',
+      shortcut: 'mqbroker',
+      allowUnified: 1,
+      orderNum: 60,
+      remark: '请将 basePath 改为本机 RocketMQ bin 目录，并确保 NameSrv 已启动。'
+    },
+    {
+      name: '自定义命令',
+      type: 'custom',
+      basePath: '',
+      command: 'cmd /c echo Hello Zero Snippets',
+      stopCommand: '',
+      shortcut: 'demo',
+      allowUnified: 0,
+      orderNum: 50,
+      remark: '自定义命令可直接填写完整 Windows 命令行，例如简单的 echo 测试命令。'
+    }
+  ]
+
+  commands.forEach((cmd) => {
+    insert(
+      `
+      insert into snippets_command(
+        name,
+        type,
+        base_path,
+        command,
+        stop_command,
+        shortcut,
+        allow_unified,
+        order_num,
+        remark
+      ) values (
+        $name,
+        $type,
+        $basePath,
+        $command,
+        $stopCommand,
+        $shortcut,
+        $allowUnified,
+        $orderNum,
+        $remark
+      )
+      `,
+      {
+        name: cmd.name,
+        type: cmd.type,
+        basePath: cmd.basePath,
+        command: cmd.command,
+        stopCommand: cmd.stopCommand || null,
+        shortcut: cmd.shortcut,
+        allowUnified: cmd.allowUnified,
+        orderNum: cmd.orderNum,
+        remark: cmd.remark
+      }
+    )
+  })
 }
 
 /**

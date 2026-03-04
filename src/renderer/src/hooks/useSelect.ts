@@ -49,7 +49,6 @@ export default (enableKeyboard = true) => {
     if (oldUniqueId) {
       const oldItemRef = getItemRef(oldUniqueId)
       if (oldItemRef) {
-        console.log(oldItemRef.offsetTop - itemRef.offsetTop, itemRef.offsetHeight)
         const num = itemRef.offsetTop - oldItemRef.offsetTop
         if (num > 0) {
           // 选择了下面的一个选项
@@ -69,6 +68,40 @@ export default (enableKeyboard = true) => {
     // itemRef.focus({ preventScroll: true })
     // 阻止浏览器自动滚动
     snippetsStore.setId(uniqueId)
+  }
+
+  /**
+   * 处理命令类型结果的回车行为：
+   * 1. 统一执行项：如果当前已有允许统一执行的命令在运行，则执行统一中止；否则执行统一执行并打开日志窗口。
+   * 2. 单条命令项：如果该命令当前正在运行，则中止命令；否则执行命令并打开日志窗口。
+   */
+  const handleCommandEnter = async (selectedItem: ContentEntity) => {
+    try {
+      const runningList = await window.api.getRunningCommands()
+
+      if (selectedItem.uniqueId === 'command-unified') {
+        const hasUnifiedRunning = runningList.some((item) => item.allowUnified && !item.exited)
+
+        if (hasUnifiedRunning) {
+          await window.api.stopUnifiedCommands()
+        } else {
+          await window.api.runUnifiedCommands()
+          window.api.showWindowExclusive('commandLog', '/command-log')
+        }
+      } else if (selectedItem.id > 0) {
+        const instance = runningList.find((item) => item.commandId === selectedItem.id)
+        const isRunning = instance && !instance.exited
+
+        if (isRunning) {
+          await window.api.stopCommand(selectedItem.id)
+        } else {
+          await window.api.runCommand(selectedItem.id)
+          window.api.showWindowExclusive('commandLog', '/command-log')
+        }
+      }
+    } catch (error) {
+      console.error('处理命令执行/中止失败:', error)
+    }
   }
 
   const handleKeyEvent = (e: KeyboardEvent) => {
@@ -140,7 +173,7 @@ export default (enableKeyboard = true) => {
         section.value?.scrollTo(0, itemRef.offsetTop - itemRef.offsetHeight * scrollTopHeightCount)
         break
       }
-      case 'ArrowLeft': {
+      case 'ArrowRight': {
         if (snippetsStore.snippets.writeFlag) {
           return
         }
@@ -158,7 +191,7 @@ export default (enableKeyboard = true) => {
         handleSearch()
         break
       }
-      case 'ArrowRight': {
+      case 'ArrowLeft': {
         if (snippetsStore.snippets.writeFlag) {
           return
         }
@@ -210,8 +243,6 @@ export default (enableKeyboard = true) => {
                   paramIndex++
                   return val
                 })
-
-                console.log('select targetUrl', targetUrl)
                 window.api.openExternal(targetUrl)
                 window.api.hideWindow('search')
                 return
@@ -223,6 +254,9 @@ export default (enableKeyboard = true) => {
               window.api.openExternal(selectedItem.url)
               window.api.hideWindow('search')
             }
+          } else if (selectedItem.typeId === 5) {
+            // 命令类型：根据当前运行状态执行/中止
+            void handleCommandEnter(selectedItem)
           }
         }
         break
