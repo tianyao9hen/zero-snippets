@@ -26,7 +26,7 @@ import frontmatter from '@bytemd/plugin-frontmatter'
 import breaks from '@bytemd/plugin-breaks'
 import zhHans from 'bytemd/locales/zh_Hans.json'
 import 'bytemd/dist/index.css'
-import 'juejin-markdown-themes/dist/github.min.css'
+import '@renderer/assets/styles/github-markdown.min.css'
 import 'highlight.js/styles/a11y-light.min.css'
 
 const props = defineProps({

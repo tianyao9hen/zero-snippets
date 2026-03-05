@@ -99,6 +99,9 @@ declare global {
         config: OssConfig
         fileInfo: OssFileInfo
       }) => Promise<{ success: boolean; url?: string; error?: string }>
+      pickAndUploadImages: (params: {
+        config: OssConfig
+      }) => Promise<{ success: boolean; images?: { title: string; url: string }[] }>
       // 命令配置与执行 API
       listCommands: () => Promise<CommandEntity[]>
       searchCommands: (keyword: string) => Promise<CommandEntity[]>

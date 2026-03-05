@@ -1,18 +1,11 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
+
+// 主窗口入口与常用页面直接导入，保证首屏速度
 import Snippets from '@renderer/pages/Snippets.vue'
 import Content from '@renderer/pages/Content.vue'
 import CommandLog from '@renderer/pages/CommandLog.vue'
-import Category from '@renderer/components/content/Category.vue'
-import Web from '@renderer/components/content/Web.vue'
-import Software from '@renderer/components/content/Software.vue'
-import Command from '@renderer/components/content/Command.vue'
-import Catelog from '@renderer/components/content/Catelog.vue'
-import Article from '@renderer/components/content/Article.vue'
-import Folder from '@renderer/components/content/Folder.vue'
-import Setting from '@renderer/components/content/Setting.vue'
 import NoteInput from '@renderer/pages/NoteInput.vue'
-import NoteList from '@renderer/components/content/NoteList.vue'
-
+// 子页面按需懒加载，减小初始 bundle（含 bytemd、antd 等重型组件）
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
@@ -41,17 +34,17 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'category/:cid?',
         name: 'category',
-        component: Category,
+        component: () => import('@renderer/components/content/Category.vue'),
         children: [
           {
             path: 'catelog/:aid?',
             name: 'catelog',
-            component: Catelog,
+            component: () => import('@renderer/components/content/Catelog.vue'),
             children: [
               {
                 path: 'article',
                 name: 'article',
-                component: Article
+                component: () => import('@renderer/components/content/Article.vue')
               }
             ]
           }
@@ -60,34 +53,34 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'web/:cid?',
         name: 'web',
-        component: Web,
+        component: () => import('@renderer/components/content/Web.vue'),
         children: [
           {
             path: 'folder',
             name: 'folder',
-            component: Folder
+            component: () => import('@renderer/components/content/Folder.vue')
           }
         ]
       },
       {
         path: 'note',
         name: 'note',
-        component: NoteList
+        component: () => import('@renderer/components/content/NoteList.vue')
       },
       {
         path: 'software',
         name: 'software',
-        component: Software
+        component: () => import('@renderer/components/content/Software.vue')
       },
       {
         path: 'command',
         name: 'command',
-        component: Command
+        component: () => import('@renderer/components/content/Command.vue')
       },
       {
         path: 'setting',
         name: 'setting',
-        component: Setting
+        component: () => import('@renderer/components/content/Setting.vue')
       }
     ]
   }

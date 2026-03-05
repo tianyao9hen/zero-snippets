@@ -58,6 +58,8 @@ export const ipcEnum = {
   getAutoLaunchStatus: 'get-auto-launch-status',
   // OSS 上传相关 IPC 事件
   ossUpload: 'oss-upload',
+  // 使用 Electron 原生对话框选择并上传图片，避免 packaged 下 input[type=file] 白屏
+  pickAndUploadImages: 'pick-and-upload-images',
   // 命令配置相关 IPC 事件
   listCommands: 'list-commands',
   searchCommands: 'search-commands',

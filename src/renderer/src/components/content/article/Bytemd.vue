@@ -6,7 +6,7 @@
       :plugins="mdPlugins"
       :style="editorStyle"
       :locale="zhHans"
-      :upload-images="handleUploadImages"
+      :upload-images="undefined"
       @change="contentEditEvent"
     />
   </div>
@@ -26,14 +26,32 @@ import mediumZoom from '@bytemd/plugin-medium-zoom'
 import breaks from '@bytemd/plugin-breaks'
 import zhHans from 'bytemd/locales/zh_Hans.json'
 import math from '@bytemd/plugin-math'
-import mermaid from '@bytemd/plugin-mermaid'
+import { createImageUploadPlugin } from '@renderer/plugins/imageUploadPlugin'
 import 'bytemd/dist/index.css'
-import 'juejin-markdown-themes/dist/github.min.css'
+import '@renderer/assets/styles/github-markdown.min.css'
 import 'highlight.js/styles/a11y-light.min.css'
 import { debounce } from '@renderer/composables/debounceUtils'
 import { message } from 'ant-design-vue'
 import { useSettingStore } from '@renderer/store/settingStore'
 import { SettingKey } from '@renderer/enums'
+
+// 使用 Electron dialog 选择图片，开发/打包行为一致，避免 packaged 下 input[type=file] 白屏
+const imageUploadPlugin = createImageUploadPlugin({
+  onConfigMissing: () => {
+    message.warning('请先在设置页面的“知识库”中配置阿里云 OSS 信息')
+  },
+  onUploadStart: () => message.loading('正在上传图片...', 0),
+  getOssConfig: async () => {
+    const store = useSettingStore()
+    if (!store.isLoaded) await store.loadSettings()
+    const region = store.getSetting(SettingKey.OSS_REGION)
+    const accessKeyId = store.getSetting(SettingKey.OSS_ACCESS_KEY_ID)
+    const accessKeySecret = store.getSetting(SettingKey.OSS_ACCESS_KEY_SECRET)
+    const bucket = store.getSetting(SettingKey.OSS_BUCKET)
+    if (!region || !accessKeyId || !accessKeySecret || !bucket) return null
+    return { region, accessKeyId, accessKeySecret, bucket, secure: true } as OssConfig
+  }
+})
 
 // 编辑器插件
 const mdPlugins = ref([
@@ -43,8 +61,8 @@ const mdPlugins = ref([
   gfm(),
   highlight(),
   math(),
-  mermaid(),
-  mediumZoom()
+  mediumZoom(),
+  imageUploadPlugin
 ])
 
 // 文章内容
@@ -99,66 +117,6 @@ const debounceEditEvent = debounce(
 function contentEditEvent(value: string) {
   mdValue.value = value
   debounceEditEvent(value)
-}
-
-/**
- * 上传图片并展示
- * @param files 文件
- */
-async function handleUploadImages(files: File[]) {
-  const settingStore = useSettingStore()
-  if (!settingStore.isLoaded) {
-    await settingStore.loadSettings()
-  }
-
-  const region = settingStore.getSetting(SettingKey.OSS_REGION)
-  const accessKeyId = settingStore.getSetting(SettingKey.OSS_ACCESS_KEY_ID)
-  const accessKeySecret = settingStore.getSetting(SettingKey.OSS_ACCESS_KEY_SECRET)
-  const bucket = settingStore.getSetting(SettingKey.OSS_BUCKET)
-
-  if (!region || !accessKeyId || !accessKeySecret || !bucket) {
-    message.warning('请先在设置页面的“知识库”中配置阿里云 OSS 信息')
-    return []
-  }
-
-  const hide = message.loading('正在上传图片...', 0)
-  const imgs: { title: string; url: string }[] = []
-  try {
-    for (let index = 0; index < files.length; index++) {
-      const item = files[index]
-      try {
-        const arrayBuffer = await item.arrayBuffer()
-        const result = await window.api.uploadToOss({
-          config: {
-            region,
-            accessKeyId,
-            accessKeySecret,
-            bucket,
-            secure: true
-          } as OssConfig,
-          fileInfo: {
-            name: `images/${Date.now()}_${item.name}`,
-            buffer: arrayBuffer
-          }
-        })
-
-        if (result.success && result.url) {
-          imgs.push({
-            title: item.name,
-            url: result.url
-          })
-        } else {
-          throw new Error(result.error || '上传失败')
-        }
-      } catch (error) {
-        console.error('Upload failed:', error)
-        message.error(`图片 ${item.name} 上传失败: ${(error as Error).message}`)
-      }
-    }
-  } finally {
-    hide()
-  }
-  return imgs
 }
 
 defineExpose({

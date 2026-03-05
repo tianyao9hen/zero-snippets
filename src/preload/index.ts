@@ -60,7 +60,7 @@ import {
   stopUnifiedCommands,
   dismissCommandInstance
 } from './composables/db'
-import { uploadToOss } from './composables/ossService'
+import { uploadToOss, pickAndUploadImages } from './composables/ossService'
 
 // Custom APIs for renderer
 const api = {
@@ -117,6 +117,7 @@ const api = {
   getAutoLaunchStatus,
   toggleAutoLaunch,
   uploadToOss,
+  pickAndUploadImages,
   // 命令配置与执行 API
   listCommands,
   searchCommands,

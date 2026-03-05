@@ -1,6 +1,10 @@
 appId: com.electron.app
 productName: zero-snippets
 compression: maximum
+# 仅保留中文和英文 locale，减少约 10-15MB（Electron 默认打包 80+ 种语言）
+electronLanguages:
+  - zh_CN
+  - en_US
 directories:
   buildResources: build
 files:
@@ -21,7 +25,6 @@ win:
   executableName: zero-snippets
   target:
     - nsis
-    - zip
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}
