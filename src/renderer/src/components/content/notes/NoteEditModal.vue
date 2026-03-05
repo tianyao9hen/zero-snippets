@@ -249,10 +249,10 @@ $border-color: #e5e7eb; // Gray 200
               }
 
               // Live (1) -> Light Green (Updated to match image concept: Gray bg for inactive, but active should be distinct)
-              // Image shows "日常" as gray when "工作" is active. 
+              // Image shows "日常" as gray when "工作" is active.
               // Assuming active state for "日常" uses its own color.
               &:last-child {
-                background: #f3f4f6; // Default gray for live? Or specific color? 
+                background: #f3f4f6; // Default gray for live? Or specific color?
                 // Let's stick to previous logic but refined:
                 // If the user wants "日常" to be active, maybe a neutral or green color.
                 // The image shows "工作" active (red). "日常" inactive (gray).
@@ -280,7 +280,7 @@ $border-color: #e5e7eb; // Gray 200
           box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 
           &:hover {
-            background: darken($primary-color, 5%);
+            background: #2563eb;
             transform: translateY(-1px);
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
           }

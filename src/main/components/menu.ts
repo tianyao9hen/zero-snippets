@@ -30,7 +30,7 @@ const mainMenu: Electron.MenuItemConstructorOptions[] = [
   {
     label: '命令行',
     click: () => {
-      showWindowExclusive('content', '/content/5/command-log')
+      showWindowExclusive('content', '/content/5/command')
     }
   },
   {

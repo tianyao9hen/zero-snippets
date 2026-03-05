@@ -272,7 +272,7 @@ $header-bg: #f9fafb;
           box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 
           &:hover {
-            background: darken($primary-color, 5%);
+            background: #2563eb;
             transform: translateY(-1px);
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
           }

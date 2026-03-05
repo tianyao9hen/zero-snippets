@@ -115,7 +115,7 @@ $shadow-md:
   &:hover {
     transform: translateY(-4px);
     box-shadow: $shadow-md;
-    border-color: lighten($primary-color, 20%);
+    border-color: #60a5fa;
 
     .card-actions {
       opacity: 1;
