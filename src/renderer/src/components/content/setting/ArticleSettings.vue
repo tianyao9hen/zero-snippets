@@ -49,6 +49,19 @@
           "
         />
       </div>
+      <div class="setting-item">
+        <label class="setting-label">存储目录前缀（可选）</label>
+        <input
+          v-model="pathPrefix"
+          type="text"
+          class="setting-input"
+          placeholder="例如: zero-snippets/images 或 images"
+          @change="saveSetting(SettingKey.OSS_PATH_PREFIX, pathPrefix, 'OSS 存储目录前缀')"
+        />
+        <span class="text-slate-500 text-xs mt-1"
+          >留空则使用默认路径，填写后所有图片将保存在该目录下</span
+        >
+      </div>
       <div v-if="saveError" class="text-red-500 text-sm mt-2">
         {{ saveError }}
       </div>
@@ -67,6 +80,7 @@ const region = ref('')
 const bucket = ref('')
 const accessKeyId = ref('')
 const accessKeySecret = ref('')
+const pathPrefix = ref('')
 const saveError = ref('')
 
 onMounted(async () => {
@@ -81,6 +95,7 @@ function loadSettings() {
   bucket.value = settingStore.getSetting(SettingKey.OSS_BUCKET) || ''
   accessKeyId.value = settingStore.getSetting(SettingKey.OSS_ACCESS_KEY_ID) || ''
   accessKeySecret.value = settingStore.getSetting(SettingKey.OSS_ACCESS_KEY_SECRET) || ''
+  pathPrefix.value = settingStore.getSetting(SettingKey.OSS_PATH_PREFIX) || ''
 }
 
 async function saveSetting(key: string, value: string, remark: string) {

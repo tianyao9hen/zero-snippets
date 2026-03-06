@@ -203,6 +203,8 @@ type OssConfig = {
   accessKeySecret: string
   bucket: string
   secure: boolean
+  /** OSS 存储目录前缀，如 "zero-snippets/images"，所有图片将保存在该目录下 */
+  pathPrefix?: string
 }
 
 type OssFileInfo = {

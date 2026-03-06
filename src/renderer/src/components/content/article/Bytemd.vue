@@ -48,8 +48,16 @@ const imageUploadPlugin = createImageUploadPlugin({
     const accessKeyId = store.getSetting(SettingKey.OSS_ACCESS_KEY_ID)
     const accessKeySecret = store.getSetting(SettingKey.OSS_ACCESS_KEY_SECRET)
     const bucket = store.getSetting(SettingKey.OSS_BUCKET)
+    const pathPrefix = store.getSetting(SettingKey.OSS_PATH_PREFIX)
     if (!region || !accessKeyId || !accessKeySecret || !bucket) return null
-    return { region, accessKeyId, accessKeySecret, bucket, secure: true } as OssConfig
+    return {
+      region,
+      accessKeyId,
+      accessKeySecret,
+      bucket,
+      secure: true,
+      pathPrefix: pathPrefix || undefined
+    } as OssConfig
   }
 })
 

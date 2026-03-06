@@ -46,5 +46,7 @@ export enum SettingKey {
   /** 阿里云OSS bucket */
   OSS_BUCKET = 'oss.bucket',
   /** 阿里云OSS region */
-  OSS_REGION = 'oss.region'
+  OSS_REGION = 'oss.region',
+  /** 阿里云OSS 存储目录前缀，如 zero-snippets/images */
+  OSS_PATH_PREFIX = 'oss.pathPrefix'
 }
