@@ -2,7 +2,18 @@
   <div class="command-log-tabs">
     <div class="box-title flex items-center justify-between">
       <span class="unselectable">正在执行的命令</span>
-      <a-button size="small" type="default" @click="refreshRunningCommands">刷新列表</a-button>
+      <a-space>
+        <a-tooltip title="全部中止" :mouse-enter-delay="0.5">
+          <a-button size="small" type="default" class="toolbar-icon-btn" @click="handleStopAll">
+            <img :src="iconMap.stop.url" class="btn-icon" alt="" />
+          </a-button>
+        </a-tooltip>
+        <a-tooltip title="刷新列表" :mouse-enter-delay="0.5">
+          <a-button size="small" type="default" class="toolbar-icon-btn" @click="refreshRunningCommands">
+            <img :src="iconMap.refresh.dUrl" class="btn-icon" alt="" />
+          </a-button>
+        </a-tooltip>
+      </a-space>
     </div>
     <div class="box-content">
       <a-tabs
@@ -27,6 +38,11 @@
                 已退出{{ item.exitCode != null ? `(${item.exitCode})` : '' }}
               </span>
             </div>
+            <a-tooltip v-if="!item.exited" title="中止该命令" :mouse-enter-delay="0.5">
+              <a-button size="small" type="default" class="tab-stop-btn" @click="handleStopInstance(item)">
+                <img :src="iconMap.stop.url" class="btn-icon" alt="" />
+              </a-button>
+            </a-tooltip>
           </div>
           <div ref="logContainerRef" class="log-container">
             <pre v-for="(log, index) in logs" :key="index" class="log-line">
@@ -53,7 +69,15 @@
  * - 每个标签内展示对应命令的标准输出和错误输出。
  */
 import { ref, onMounted, onUnmounted, watch } from 'vue'
-import { Tabs as ATabs, TabPane as ATabPane, Button as AButton, message } from 'ant-design-vue'
+import {
+  Tabs as ATabs,
+  TabPane as ATabPane,
+  Button as AButton,
+  Space as ASpace,
+  Tooltip as ATooltip,
+  message
+} from 'ant-design-vue'
+import { iconMap } from '@renderer/composables/iconUtils'
 
 const runningList = ref<
   {
@@ -77,6 +101,35 @@ const logs = ref<
 >([])
 
 const logContainerRef = ref<HTMLDivElement | null>(null)
+
+/**
+ * @description 中止当前 tab 对应的命令
+ */
+const handleStopInstance = async (item: (typeof runningList.value)[number]) => {
+  if (item.exited) return
+  try {
+    await window.api.stopCommand(item.commandId)
+    message.success('已发送中止')
+    await refreshRunningCommands()
+  } catch (error) {
+    console.error('中止命令失败:', error)
+    message.error('中止命令失败')
+  }
+}
+
+/**
+ * @description 全部中止：中止所有正在运行的命令并刷新列表
+ */
+const handleStopAll = async () => {
+  try {
+    await window.api.stopUnifiedCommands()
+    message.success('已发送全部中止')
+    await refreshRunningCommands()
+  } catch (error) {
+    console.error('全部中止失败:', error)
+    message.error('全部中止失败')
+  }
+}
 
 /**
  * @description 刷新正在运行的命令列表
@@ -214,7 +267,15 @@ watch(
 }
 
 .tab-header {
-  @apply px-3 py-2 border-b border-slate-100 flex items-center justify-between flex-shrink-0;
+  @apply px-3 py-2 border-b border-slate-100 flex items-center justify-between flex-shrink-0 gap-2;
+}
+
+.tab-stop-btn {
+  @apply flex items-center justify-center p-1 flex-shrink-0;
+}
+
+.tab-stop-btn .btn-icon {
+  @apply w-4 h-4 block;
 }
 
 .info {
@@ -271,6 +332,14 @@ watch(
 
 .empty-tip {
   @apply px-3 py-2 text-xs text-slate-500;
+}
+
+.toolbar-icon-btn {
+  @apply flex items-center justify-center p-1;
+}
+
+.btn-icon {
+  @apply w-4 h-4 block;
 }
 </style>
 

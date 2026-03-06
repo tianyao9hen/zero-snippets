@@ -41,8 +41,7 @@
       <NoteEditModal
         v-if="editingNote"
         :note="editingNote"
-        @update:note="(val) => (editingNote = val)"
-        @save="saveEdit"
+        @save="(note) => saveEdit(note)"
         @cancel="cancelEdit"
       />
     </Transition>

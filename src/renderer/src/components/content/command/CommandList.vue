@@ -38,26 +38,40 @@
                 />
                 <span class="status-text">允许统一执行</span>
               </span>
-              <a-button
-                size="small"
-                :type="runningCommandIds.includes(item.id) ? 'default' : 'primary'"
-                :danger="runningCommandIds.includes(item.id)"
-                @click.stop="
-                  runningCommandIds.includes(item.id)
-                    ? emit('stop-command', item.id)
-                    : emit('run-command', item.id)
-                "
+              <a-tooltip
+                :title="runningCommandIds.includes(item.id) ? '中止' : '执行'"
+                :mouse-enter-delay="0.5"
               >
-                {{ runningCommandIds.includes(item.id) ? '中止' : '执行' }}
-              </a-button>
-              <a-button
-                size="small"
-                danger
-                :disabled="runningCommandIds.includes(item.id)"
-                @click.stop="handleDelete(item)"
-              >
-                删除
-              </a-button>
+                <a-button
+                  size="small"
+                  class="list-icon-btn"
+                  type="default"
+                  @click.stop="
+                    runningCommandIds.includes(item.id)
+                      ? emit('stop-command', item.id)
+                      : emit('run-command', item.id)
+                  "
+                >
+                  <img
+                    :src="
+                      runningCommandIds.includes(item.id) ? iconMap.stop.url : iconMap.play.url
+                    "
+                    class="btn-icon"
+                    alt=""
+                  />
+                </a-button>
+              </a-tooltip>
+              <a-tooltip title="删除" :mouse-enter-delay="0.5">
+                <a-button
+                  size="small"
+                  class="list-icon-btn"
+                  danger
+                  :disabled="runningCommandIds.includes(item.id)"
+                  @click.stop="handleDelete(item)"
+                >
+                  <img :src="iconMap.delete.url" class="btn-icon" alt="" />
+                </a-button>
+              </a-tooltip>
             </div>
           </div>
         </template>
@@ -81,8 +95,10 @@ import {
   Button as AButton,
   Input as AInput,
   Modal,
-  message
+  message,
+  Tooltip as ATooltip
 } from 'ant-design-vue'
+import { iconMap } from '@renderer/composables/iconUtils'
 import CommandItem from './CommandItem.vue'
 
 const props = defineProps<{
@@ -211,5 +227,13 @@ const handleDelete = (item: CommandEntity) => {
 
 .status-text {
   @apply text-xs text-slate-500;
+}
+
+.list-icon-btn {
+  @apply flex items-center justify-center p-1;
+}
+
+.list-icon-btn .btn-icon {
+  @apply w-4 h-4 block;
 }
 </style>

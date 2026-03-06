@@ -24,6 +24,12 @@ import settingIcon from '@renderer/assets/icons/setting.svg'
 import settingDIcon from '@renderer/assets/icons/setting_d.svg'
 import changeIcon from '@renderer/assets/icons/change.svg'
 import changeDIcon from '@renderer/assets/icons/change_d.svg'
+import playIcon from '@renderer/assets/icons/play.svg'
+import stopIcon from '@renderer/assets/icons/stop.svg'
+import refreshIcon from '@renderer/assets/icons/refresh.svg'
+import refreshDIcon from '@renderer/assets/icons/refresh_d.svg'
+import logIcon from '@renderer/assets/icons/log.svg'
+import logDIcon from '@renderer/assets/icons/log_d.svg'
 
 export const iconMap: { [key: string]: IconClass } = {
   all: {
@@ -95,5 +101,25 @@ export const iconMap: { [key: string]: IconClass } = {
     id: 'change',
     url: changeIcon,
     dUrl: changeDIcon
+  },
+  play: {
+    id: 'play',
+    url: playIcon,
+    dUrl: playIcon
+  },
+  stop: {
+    id: 'stop',
+    url: stopIcon,
+    dUrl: stopIcon
+  },
+  refresh: {
+    id: 'refresh',
+    url: refreshIcon,
+    dUrl: refreshDIcon
+  },
+  log: {
+    id: 'log',
+    url: logIcon,
+    dUrl: logDIcon
   }
 }

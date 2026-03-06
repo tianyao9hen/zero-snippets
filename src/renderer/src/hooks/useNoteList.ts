@@ -72,14 +72,13 @@ export function useNoteList() {
   }
 
   /**
-   * 保存编辑
+   * 保存编辑（由弹层在保存时传入当前笔记数据，避免实时双向同步导致的重渲染与焦点问题）
    */
-  const saveEdit = async () => {
-    if (!editingNote.value) return
+  const saveEdit = async (noteToSave: NoteEntity) => {
+    if (!noteToSave) return
     try {
-      // Create a plain object to avoid proxy issues when sending via IPC
-      const noteToSave = JSON.parse(JSON.stringify(editingNote.value))
-      await window.api.editNote(noteToSave)
+      const plain = JSON.parse(JSON.stringify(noteToSave))
+      await window.api.editNote(plain)
       editingNote.value = null
       await loadNotes()
     } catch (e) {

@@ -13,13 +13,13 @@
           @update-unified-shortcut="handleUpdateUnifiedShortcut"
           @run-unified="handleRunUnified"
           @stop-unified="handleStopUnified"
-          @refresh="loadCommands"
+          @refresh="handleRefresh"
           @add-command="handleAddCommand"
         />
         <CommandList
           :commands="commands"
           :running-command-ids="runningCommandIds"
-          @refresh="loadCommands"
+          @refresh="handleRefresh"
           @run-command="handleRunCommand"
           @stop-command="handleStopCommand"
           @delete-command="handleDeleteCommand"
@@ -89,6 +89,14 @@ const refreshRunningCommands = async () => {
   } catch (error) {
     console.error('获取运行中命令失败:', error)
   }
+}
+
+/**
+ * @description 刷新命令列表：同时拉取命令配置与当前运行状态（避免在日志窗口中止后页面仍显示执行中）
+ */
+const handleRefresh = async () => {
+  await loadCommands()
+  await refreshRunningCommands()
 }
 
 /**

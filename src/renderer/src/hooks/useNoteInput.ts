@@ -97,13 +97,17 @@ export function useNoteInput() {
   }
 
   /**
-   * 键盘事件
+   * 键盘事件：阻止已处理按键的默认行为与冒泡，避免生产环境下被其它逻辑或系统处理
    */
   const handleKeydown = (e: KeyboardEvent) => {
     if (e.key === 'Escape') {
+      e.preventDefault()
+      e.stopPropagation()
       close()
     }
     if (e.key === 'Enter' && e.ctrlKey) {
+      e.preventDefault()
+      e.stopPropagation()
       submit()
       localStorage.removeItem('quick-note-draft')
     }

@@ -1,5 +1,5 @@
 import { app } from 'electron'
-import { closeIcon } from '../components/icon'
+import { closeIcon, settingIcon } from '../components/icon'
 import { showWindowExclusive } from './window'
 
 const mainMenu: Electron.MenuItemConstructorOptions[] = [
@@ -41,6 +41,7 @@ const mainMenu: Electron.MenuItemConstructorOptions[] = [
   },
   {
     label: '设置',
+    icon: settingIcon,
     click: () => {
       showWindowExclusive('content', '/content/-1/setting')
     }

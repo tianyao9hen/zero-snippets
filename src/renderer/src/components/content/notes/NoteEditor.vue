@@ -1,5 +1,5 @@
 <template>
-  <div class="note-editor">
+  <div ref="rootRef" class="note-editor" tabindex="-1">
     <Editor
       class="editor-instance"
       :value="modelValue"
@@ -17,7 +17,7 @@
  * 随手记专用 Markdown 编辑器
  * 特点：无工具栏、无预览、纯文本编辑体验
  */
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { Editor } from '@bytemd/vue-next'
 import gfm from '@bytemd/plugin-gfm'
 import gemoji from '@bytemd/plugin-gemoji'
@@ -50,9 +50,17 @@ const editorStyle = computed(() => {
   }
 })
 
+const rootRef = ref<HTMLElement | null>(null)
+
 const handleChange = (val: string) => {
   emit('update:modelValue', val)
 }
+
+function focus() {
+  rootRef.value?.focus()
+}
+
+defineExpose({ focus })
 </script>
 
 <style lang="scss" scoped>

@@ -2,30 +2,38 @@
   <div class="command-toolbar">
     <div class="left">
       <div class="field-group">
-        <label class="label">统一执行快捷键</label>
-        <a-input
-          v-model:value="localShortcut"
-          class="shortcut-input"
-          placeholder="请输入统一执行字符串（例如：cmdall）"
-          @blur="emitUpdate"
-        />
-        <span class="hint">说明：仅在应用内生效，用于搜索框快速触发统一执行。</span>
+        <div class="label-input-row">
+          <label class="label">统一执行快捷键</label>
+          <div class="input-with-hint">
+            <a-input
+              v-model:value="localShortcut"
+              class="shortcut-input"
+              placeholder="请输入统一执行字符串（例如：cmdall）"
+              @blur="emitUpdate"
+            />
+            <span class="hint">说明：仅在应用内生效，用于搜索框快速触发统一执行。</span>
+          </div>
+        </div>
       </div>
     </div>
     <div class="right">
       <a-space>
-        <a-button
-          :type="hasUnifiedRunning ? 'default' : 'primary'"
-          :danger="hasUnifiedRunning"
-          @click="handleToggleUnified"
-        >
-          {{ hasUnifiedRunning ? '统一中止' : '统一执行' }}
-        </a-button>
-        <a-dropdown :trigger="['click']">
-          <a-button type="default">
-            新增命令
-            <DownOutlined class="ml-1" />
+        <a-tooltip :title="hasUnifiedRunning ? '统一中止' : '统一执行'" :mouse-enter-delay="0.5">
+          <a-button
+            type="default"
+            class="toolbar-icon-btn"
+            @click="handleToggleUnified"
+          >
+            <img :src="hasUnifiedRunning ? iconMap.stop.url : iconMap.play.url" class="btn-icon" alt="" />
           </a-button>
+        </a-tooltip>
+        <a-dropdown :trigger="['click']">
+          <a-tooltip title="新增命令" :mouse-enter-delay="0.5">
+            <a-button type="default" class="toolbar-icon-btn">
+              <img :src="iconMap.addArticle.url" class="btn-icon" alt="" />
+              <DownOutlined class="ml-1" />
+            </a-button>
+          </a-tooltip>
           <template #overlay>
             <a-menu @click="handleAddMenuClick">
               <a-menu-item key="nacos">Nacos</a-menu-item>
@@ -38,8 +46,16 @@
             </a-menu>
           </template>
         </a-dropdown>
-        <a-button @click="$emit('refresh')">刷新命令列表</a-button>
-        <a-button type="default" @click="handleOpenLog">日志</a-button>
+        <a-tooltip title="刷新命令列表" :mouse-enter-delay="0.5">
+          <a-button class="toolbar-icon-btn" @click="$emit('refresh')">
+            <img :src="iconMap.refresh.dUrl" class="btn-icon" alt="" />
+          </a-button>
+        </a-tooltip>
+        <a-tooltip title="日志" :mouse-enter-delay="0.5">
+          <a-button type="default" class="toolbar-icon-btn" @click="handleOpenLog">
+            <img :src="iconMap.log.dUrl" class="btn-icon" alt="" />
+          </a-button>
+        </a-tooltip>
       </a-space>
     </div>
   </div>
@@ -60,9 +76,11 @@ import {
   Dropdown as ADropdown,
   Menu as AMenu,
   MenuItem as AMenuItem,
-  MenuDivider as AMenuDivider
+  MenuDivider as AMenuDivider,
+  Tooltip as ATooltip
 } from 'ant-design-vue'
 import type { MenuProps } from 'ant-design-vue'
+import { iconMap } from '@renderer/composables/iconUtils'
 
 /** 预制命令模板（不含 id、createTime） */
 const PRESET_TEMPLATES: Record<string, Omit<CommandEntity, 'id' | 'createTime'>> = {
@@ -189,15 +207,31 @@ const handleAddMenuClick: MenuProps['onClick'] = ({ key }) => {
   @apply flex flex-col gap-1;
 }
 
+.label-input-row {
+  @apply flex items-start gap-2;
+}
+
 .label {
-  @apply text-xs text-slate-600;
+  @apply text-xs text-slate-600 flex-shrink-0 pt-1.5;
+}
+
+.input-with-hint {
+  @apply flex flex-col gap-1;
 }
 
 .shortcut-input {
-  @apply w-64;
+  @apply w-64 flex-shrink-0;
 }
 
 .hint {
   @apply text-[11px] text-slate-400;
+}
+
+.toolbar-icon-btn {
+  @apply flex items-center justify-center p-1;
+}
+
+.btn-icon {
+  @apply w-5 h-5 block;
 }
 </style>

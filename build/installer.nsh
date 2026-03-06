@@ -44,8 +44,8 @@ done:
   ; ---------------------------------------------------------------------
 
   ; 检查1：必须包含主程序文件，确保我们正在操作正确的安装目录
-  IfFileExists "$INSTDIR\zero-snippets.exe" +3
-    MessageBox MB_OK|MB_ICONSTOP "卸载程序无法确认安装目录有效性（未找到 zero-snippets.exe），为防止误删数据，跳过目录清理。请手动删除 $INSTDIR"
+  ; 未找到 exe 时静默跳过目录清理（常见于“不卸载直接重装”时旧卸载逻辑被调用、目录已变更的情况），避免反复提示
+  IfFileExists "$INSTDIR\zero-snippets.exe" +2
     Return
 
   ; 检查2：防止删除磁盘根目录 (例如 C:\ 或 D:\)

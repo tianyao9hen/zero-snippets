@@ -72,7 +72,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted, onBeforeUnmount } from 'vue'
+import { ref, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import NoteEditor from './NoteEditor.vue'
 import { NoteType } from '@renderer/enums'
 import { NoteEntity } from '@renderer/composables/noteGrouping'
@@ -82,11 +82,11 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  (e: 'update:note', note: NoteEntity): void
-  (e: 'save'): void
+  (e: 'save', note: NoteEntity): void
   (e: 'cancel'): void
 }>()
 
+const editorRef = ref<InstanceType<typeof NoteEditor> | null>(null)
 const localNote = ref<NoteEntity>({ ...props.note })
 
 watch(
@@ -97,34 +97,33 @@ watch(
   { deep: true }
 )
 
-watch(
-  localNote,
-  (newVal) => {
-    emit('update:note', newVal)
-  },
-  { deep: true }
-)
-
 const handleSave = () => {
-  emit('save')
+  emit('save', { ...localNote.value })
 }
 
 const handleCancel = () => {
   emit('cancel')
 }
 
-// Keyboard shortcuts
+// Keyboard shortcuts：阻止已处理按键的默认行为与冒泡，避免生产环境下被其它逻辑或系统处理
 const handleKeydown = (e: KeyboardEvent) => {
   if (e.key === 'Escape') {
+    e.preventDefault()
+    e.stopPropagation()
     handleCancel()
   }
   if (e.key === 'Enter' && e.ctrlKey) {
+    e.preventDefault()
+    e.stopPropagation()
     handleSave()
   }
 }
 
 onMounted(() => {
   window.addEventListener('keydown', handleKeydown)
+  nextTick(() => {
+    editorRef.value?.focus()
+  })
 })
 
 onBeforeUnmount(() => {
