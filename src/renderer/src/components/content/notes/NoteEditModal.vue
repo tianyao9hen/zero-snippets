@@ -1,7 +1,7 @@
 <template>
   <div class="edit-modal">
     <div class="modal-overlay" @click="handleCancel"></div>
-    <div class="modal-content">
+    <div class="modal-content" :class="{ maximized: isMaximized }">
       <div class="modal-header">
         <div class="header-left">
           <div class="icon-wrapper">
@@ -44,6 +44,14 @@
             <span>保存</span>
             <kbd>Ctrl+Enter</kbd>
           </button>
+          <button class="btn-maximize" :title="isMaximized ? '恢复' : '最大化'" @click="toggleMaximize">
+            <svg v-if="!isMaximized" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+            </svg>
+            <svg v-else viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"></path>
+            </svg>
+          </button>
           <button class="btn-close" title="关闭 (Esc)" @click="handleCancel">
             <svg
               viewBox="0 0 24 24"
@@ -64,6 +72,7 @@
       <div class="modal-body">
         <NoteEditor
           ref="editorRef"
+          :key="editorKey"
           v-model="localNote.note"
         />
       </div>
@@ -88,6 +97,13 @@ const emit = defineEmits<{
 
 const editorRef = ref<InstanceType<typeof NoteEditor> | null>(null)
 const localNote = ref<NoteEntity>({ ...props.note })
+const isMaximized = ref(false)
+const editorKey = ref(0)
+
+const toggleMaximize = () => {
+  isMaximized.value = !isMaximized.value
+  editorKey.value++
+}
 
 watch(
   () => props.note,
@@ -168,6 +184,14 @@ $border-color: #e5e7eb; // Gray 200
     flex-direction: column;
     overflow: hidden;
     animation: modal-in 0.3s ease-out;
+    transition: all 0.3s ease-in-out;
+
+    &.maximized {
+      width: 100%;
+      max-width: 100%;
+      height: 100vh;
+      border-radius: 0;
+    }
 
     .modal-header {
       padding: 12px 24px;
@@ -260,6 +284,24 @@ $border-color: #e5e7eb; // Gray 200
                 color: #15803d;
               }
             }
+          }
+        }
+
+        .btn-maximize {
+          background: transparent;
+          border: none;
+          color: $text-secondary;
+          cursor: pointer;
+          padding: 4px;
+          border-radius: 4px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: all 0.2s;
+
+          &:hover {
+            background: #f3f4f6;
+            color: $text-main;
           }
         }
 
