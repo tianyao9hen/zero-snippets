@@ -1,5 +1,14 @@
 <template>
   <div class="note-list-page">
+    <button
+      class="add-note-fab"
+      type="button"
+      title="新增随手记"
+      aria-label="新增随手记"
+      @click="openNoteWindow"
+    >
+      <img class="add-note-fab-icon" :src="addNoteIcon" alt="" />
+    </button>
     <div class="note-container">
       <div v-if="loading && notes.length === 0" class="loading-state">
         <div class="spinner"></div>
@@ -56,6 +65,7 @@ import { useNoteList } from '@renderer/hooks/useNoteList'
 import { useSettingStore } from '@renderer/store/settingStore'
 import { SettingKey, NoteGroupingMode } from '@renderer/enums'
 import { groupNotes } from '@renderer/composables/noteGrouping'
+import { iconMap } from '@renderer/composables/iconUtils'
 
 // 使用 useNoteList hook 获取笔记相关状态和方法
 const {
@@ -72,6 +82,12 @@ const {
 
 // 获取设置 Store
 const settingStore = useSettingStore()
+
+const addNoteIcon = iconMap.add.url
+
+function openNoteWindow() {
+  window.api.showWindow('note', '/note-input')
+}
 
 /**
  * 计算随手记分组模式
@@ -164,6 +180,50 @@ $text-secondary: #6b7280; // Gray 500
   overflow-y: auto;
   display: flex;
   flex-direction: column;
+}
+
+.add-note-fab {
+  position: fixed;
+  top: 16px;
+  right: 24px;
+  width: 44px;
+  height: 44px;
+  border-radius: 9999px;
+  background: #4096ff;
+  border: 1px solid #4096ff;
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  cursor: pointer;
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease,
+    background-color 120ms ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    background: #2f7fe6;
+    border-color: #2f7fe6;
+    box-shadow:
+      0 12px 18px -3px rgba(0, 0, 0, 0.12),
+      0 6px 8px -4px rgba(0, 0, 0, 0.12);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.add-note-fab-icon {
+  width: 20px;
+  height: 20px;
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
 }
 
 .note-container {
