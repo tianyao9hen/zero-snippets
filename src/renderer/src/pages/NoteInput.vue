@@ -22,24 +22,7 @@
       </div>
 
       <div class="actions no-drag">
-        <div class="type-switch">
-          <button
-            class="type-btn"
-            :class="{ active: noteType === NoteType.WORK }"
-            title="工作"
-            @click="noteType = NoteType.WORK"
-          >
-            工作
-          </button>
-          <button
-            class="type-btn"
-            :class="{ active: noteType === NoteType.LIVE }"
-            title="日志"
-            @click="noteType = NoteType.LIVE"
-          >
-            日常
-          </button>
-        </div>
+        <NoteTypeSwitch v-model="noteType" />
         <button class="btn primary" title="保存 (Ctrl+Enter)" @click="submit">
           <span>保存</span>
           <kbd>Ctrl+Enter</kbd>
@@ -79,8 +62,8 @@
  */
 import { ref, onMounted } from 'vue'
 import NoteEditor from '../components/content/notes/NoteEditor.vue'
+import NoteTypeSwitch from '../components/content/notes/NoteTypeSwitch.vue'
 import { useNoteInput } from '../hooks/useNoteInput'
-import { NoteType } from '../enums'
 
 const editorRef = ref()
 const { content, title, noteType, isSaving, handleContentChange, submit, close } = useNoteInput()
@@ -193,53 +176,6 @@ $header-bg: #f9fafb;
       display: flex;
       align-items: center;
       gap: 12px;
-
-      .type-switch {
-        display: flex;
-        background: #f3f4f6;
-        border-radius: 6px;
-        padding: 2px;
-        gap: 2px;
-
-        .type-btn {
-          border: none;
-          background: transparent;
-          border-radius: 4px;
-          min-width: 24px;
-          padding: 0 8px;
-          height: 24px;
-          font-size: 12px;
-          color: $text-secondary;
-          cursor: pointer;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          transition: all 0.2s;
-          font-weight: 500;
-
-          &:hover {
-            background: rgba(0, 0, 0, 0.05);
-            color: $text-main;
-          }
-
-          &.active {
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-            font-weight: 600;
-
-            // Work (0) -> Light Red
-            &:first-child {
-              background: #fee2e2;
-              color: #b91c1c;
-            }
-
-            // Live (1) -> Light Green
-            &:last-child {
-              background: #dcfce7;
-              color: #15803d;
-            }
-          }
-        }
-      }
 
       .word-count {
         font-size: 12px;

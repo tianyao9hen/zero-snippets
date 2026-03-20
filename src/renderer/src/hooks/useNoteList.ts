@@ -87,6 +87,19 @@ export function useNoteList() {
   }
 
   /**
+   * 静默保存（不关闭弹层，用于类型切换等即时持久化场景）
+   */
+  const silentSave = async (noteToSave: NoteEntity) => {
+    if (!noteToSave) return
+    try {
+      const plain = JSON.parse(JSON.stringify(noteToSave))
+      await window.api.editNote(plain)
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+  /**
    * 取消编辑
    */
   const cancelEdit = () => {
@@ -118,6 +131,7 @@ export function useNoteList() {
     formatTime,
     editNote,
     saveEdit,
+    silentSave,
     cancelEdit,
     deleteNote
   }

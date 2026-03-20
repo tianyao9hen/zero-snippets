@@ -22,34 +22,45 @@
           <input v-model="localNote.name" class="title-input" placeholder="标题" />
         </div>
         <div class="header-right">
-          <div class="type-switch">
-            <button
-              class="type-btn"
-              :class="{ active: localNote.noteType === NoteType.WORK }"
-              title="工作"
-              @click="localNote.noteType = NoteType.WORK"
-            >
-              工作
-            </button>
-            <button
-              class="type-btn"
-              :class="{ active: localNote.noteType === NoteType.LIVE }"
-              title="日常"
-              @click="localNote.noteType = NoteType.LIVE"
-            >
-              日常
-            </button>
-          </div>
+          <NoteTypeSwitch v-model="localNote.noteType" />
           <button class="btn-save" title="保存 (Ctrl+Enter)" @click="handleSave">
             <span>保存</span>
             <kbd>Ctrl+Enter</kbd>
           </button>
-          <button class="btn-maximize" :title="isMaximized ? '恢复' : '最大化'" @click="toggleMaximize">
-            <svg v-if="!isMaximized" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+          <button
+            class="btn-maximize"
+            :title="isMaximized ? '恢复' : '最大化'"
+            @click="toggleMaximize"
+          >
+            <svg
+              v-if="!isMaximized"
+              viewBox="0 0 24 24"
+              width="18"
+              height="18"
+              stroke="currentColor"
+              stroke-width="2"
+              fill="none"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"
+              ></path>
             </svg>
-            <svg v-else viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"></path>
+            <svg
+              v-else
+              viewBox="0 0 24 24"
+              width="18"
+              height="18"
+              stroke="currentColor"
+              stroke-width="2"
+              fill="none"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"
+              ></path>
             </svg>
           </button>
           <button class="btn-close" title="关闭 (Esc)" @click="handleCancel">
@@ -70,11 +81,7 @@
         </div>
       </div>
       <div class="modal-body">
-        <NoteEditor
-          ref="editorRef"
-          :key="editorKey"
-          v-model="localNote.note"
-        />
+        <NoteEditor ref="editorRef" :key="editorKey" v-model="localNote.note" />
       </div>
     </div>
   </div>
@@ -83,7 +90,7 @@
 <script setup lang="ts">
 import { ref, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import NoteEditor from './NoteEditor.vue'
-import { NoteType } from '@renderer/enums'
+import NoteTypeSwitch from './NoteTypeSwitch.vue'
 import { NoteEntity } from '@renderer/composables/noteGrouping'
 
 const props = defineProps<{
@@ -92,6 +99,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: 'save', note: NoteEntity): void
+  (e: 'silentSave', note: NoteEntity): void
   (e: 'cancel'): void
 }>()
 
@@ -111,6 +119,13 @@ watch(
     localNote.value = { ...newVal }
   },
   { deep: true }
+)
+
+watch(
+  () => localNote.value.noteType,
+  () => {
+    emit('silentSave', { ...localNote.value })
+  }
 )
 
 const handleSave = () => {
@@ -235,57 +250,6 @@ $border-color: #e5e7eb; // Gray 200
         align-items: center;
         gap: 16px;
         margin-left: 16px;
-
-        .type-switch {
-          display: flex;
-          background: #f3f4f6;
-          border-radius: 6px;
-          padding: 2px;
-          gap: 4px;
-
-          .type-btn {
-            border: none;
-            background: transparent;
-            border-radius: 4px;
-            padding: 4px 12px;
-            font-size: 13px;
-            color: $text-secondary;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-            font-weight: 500;
-
-            &:hover {
-              background: rgba(0, 0, 0, 0.05);
-              color: $text-main;
-            }
-
-            &.active {
-              font-weight: 600;
-
-              // Work (0) -> Light Red
-              &:first-child {
-                background: #fee2e2;
-                color: #b91c1c;
-              }
-
-              // Live (1) -> Light Green (Updated to match image concept: Gray bg for inactive, but active should be distinct)
-              // Image shows "日常" as gray when "工作" is active.
-              // Assuming active state for "日常" uses its own color.
-              &:last-child {
-                background: #f3f4f6; // Default gray for live? Or specific color?
-                // Let's stick to previous logic but refined:
-                // If the user wants "日常" to be active, maybe a neutral or green color.
-                // The image shows "工作" active (red). "日常" inactive (gray).
-                // Let's keep green for Live active state for consistency with the list badge.
-                background: #dcfce7;
-                color: #15803d;
-              }
-            }
-          }
-        }
 
         .btn-maximize {
           background: transparent;

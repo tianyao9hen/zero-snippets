@@ -11,13 +11,14 @@ export enum WebTreeNodeType {
 
 /**
  * 随手记类型枚举
- * 用于区分工作随手记和日志随手记
  */
 export enum NoteType {
   /** 工作随手记 */
   WORK = 0,
-  /** 日志随手记 */
-  LIVE = 1
+  /** 日常随手记 */
+  LIVE = 1,
+  /** TODO 待办 */
+  TODO = 2
 }
 
 /**

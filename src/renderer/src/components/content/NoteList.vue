@@ -51,6 +51,7 @@
         v-if="editingNote"
         :note="editingNote"
         @save="(note) => saveEdit(note)"
+        @silent-save="(note) => silentSave(note)"
         @cancel="cancelEdit"
       />
     </Transition>
@@ -76,6 +77,7 @@ const {
   loadMore,
   editNote,
   saveEdit,
+  silentSave,
   cancelEdit,
   deleteNote
 } = useNoteList()

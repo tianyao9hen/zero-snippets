@@ -1,12 +1,20 @@
 <template>
-  <div class="note-card group">
+  <div
+    class="note-card group"
+    :class="{
+      'type-work': note.noteType === NoteType.WORK,
+      'type-live': note.noteType === NoteType.LIVE,
+      'type-todo': note.noteType === NoteType.TODO
+    }"
+  >
     <!-- Type Badge -->
     <div
       v-if="note.noteType !== undefined && note.noteType !== null"
       class="type-badge"
       :class="{
         work: note.noteType === NoteType.WORK,
-        live: note.noteType === NoteType.LIVE
+        live: note.noteType === NoteType.LIVE,
+        todo: note.noteType === NoteType.TODO
       }"
     ></div>
 
@@ -115,12 +123,25 @@ $shadow-md:
   &:hover {
     transform: translateY(-4px);
     box-shadow: $shadow-md;
+    // 默认（无类型或未识别）
     border-color: #60a5fa;
 
     .card-actions {
       opacity: 1;
       transform: translate(-50%, -50%) scale(1);
     }
+  }
+
+  &.type-work:hover {
+    border-color: #3b82f6; // 与角标 work 同色（Blue 500）
+  }
+
+  &.type-live:hover {
+    border-color: #22c55e; // Green 500，与角标 live 一致
+  }
+
+  &.type-todo:hover {
+    border-color: #f97316; // Orange 500，与角标 todo 一致
   }
 
   // Type Badge
@@ -137,13 +158,18 @@ $shadow-md:
       inset 0 2px 4px rgba(255, 255, 255, 0.4);
 
     &.work {
-      background-color: #ef4444; // Red 500
-      border: 2px solid #fee2e2; // Red 100 ring
+      background-color: #3b82f6; // Blue 500
+      border: 2px solid #dbeafe; // Blue 100 ring
     }
 
     &.live {
       background-color: #22c55e; // Green 500
       border: 2px solid #dcfce7; // Green 100 ring
+    }
+
+    &.todo {
+      background-color: #f97316; // Orange 500
+      border: 2px solid #ffedd5; // Orange 100 ring
     }
   }
 
