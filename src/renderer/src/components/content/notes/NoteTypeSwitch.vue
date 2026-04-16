@@ -103,6 +103,7 @@ $text-secondary: #6b7280;
     justify-content: center;
     transition: color 0.2s;
     font-weight: 500;
+    white-space: nowrap;
 
     &:hover {
       color: $text-main;

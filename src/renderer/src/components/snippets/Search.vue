@@ -25,7 +25,7 @@
 import { useSnippetsStore } from '@renderer/store/snippetsStore'
 import { Input } from 'ant-design-vue'
 import useSearch from '@renderer/hooks/useSearch'
-import { ref, watch } from 'vue'
+import { onMounted, onUnmounted, ref, watch } from 'vue'
 const snippetsStore = useSnippetsStore()
 const { handleSearch } = useSearch()
 
@@ -55,6 +55,24 @@ function getFocus() {
 function changeInput() {
   handleSearch()
 }
+
+function onVisibilityChange() {
+  if (document.visibilityState === 'visible') {
+    snippetsStore.snippets.search = ''
+    handleSearch()
+    snippetsStore.setWriteFlag(true)
+    // Fallback focus in case writeFlag remains true and watcher does not re-run.
+    search.value?.focus()
+  }
+}
+
+onMounted(() => {
+  document.addEventListener('visibilitychange', onVisibilityChange)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('visibilitychange', onVisibilityChange)
+})
 </script>
 
 <style scoped lang="scss"></style>

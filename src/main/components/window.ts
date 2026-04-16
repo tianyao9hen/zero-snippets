@@ -29,7 +29,7 @@ export const window: Record<WindowNameType, WindowClass> = {
       resizable: true,
       frame: true,
       transparent: false,
-      openDevTools: true,
+      // openDevTools: true,
       initShow: true,
       skipTaskbar: false,
       path: '/content'
@@ -40,8 +40,8 @@ export const window: Record<WindowNameType, WindowClass> = {
   note: {
     id: 12,
     options: {
-      width: 600,
-      height: 400,
+      width: 700,
+      height: 460,
       center: true,
       resizable: true,
       frame: false,

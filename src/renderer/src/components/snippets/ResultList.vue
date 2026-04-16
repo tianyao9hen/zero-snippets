@@ -12,7 +12,7 @@
         item_active: item.uniqueId == selectId,
         item_focus: item.uniqueId == selectId && resultFlag
       }"
-      @click="selectItemByUniqueId(item.uniqueId)"
+      @click="executeItem(item.uniqueId)"
     >
       <div class="result-item-focus"></div>
       <div class="result-item-info truncate flex-1">
@@ -76,19 +76,22 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 import { useSnippetsStore } from '@renderer/store/snippetsStore'
 import useSelect from '@renderer/hooks/useSelect'
 import { iconMap } from '@renderer/composables/iconUtils'
 
 const snippetsStore = useSnippetsStore()
-const { setItemRef, setSectionRef, selectItemByUniqueId } = useSelect()
+const { setItemRef, setSectionRef, executeItem, scrollResultToTop } = useSelect()
 
 // 从 store 获取数据
 const resultList = computed(() => snippetsStore.snippets.resultList)
 const selectId = computed(() => snippetsStore.snippets.selectId)
 const resultFlag = computed(() => snippetsStore.snippets.resultFlag)
 const searchKeyword = computed(() => snippetsStore.snippets.search.trim())
+const selectTypeId = computed(() => snippetsStore.snippets.selectTypeId)
+
+watch(selectTypeId, scrollResultToTop)
 
 // 统一的长度配置
 const TEXT_LIMIT = {

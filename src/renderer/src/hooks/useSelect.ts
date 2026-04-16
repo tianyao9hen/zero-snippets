@@ -104,6 +104,55 @@ export default (enableKeyboard = true) => {
     }
   }
 
+  const executeItem = (uniqueId: string) => {
+    const data = snippetsStore.snippets.resultList
+    const selectedItem = data.find((item) => item.uniqueId === uniqueId)
+    if (selectedItem) {
+      if (selectedItem.typeId === 1) {
+        // 文章类型，打开 content 窗口
+        const path = `/content/1/category/${selectedItem.categoryId}/catelog/${selectedItem.id}/article`
+        window.api.showWindowExclusive('content', path)
+      } else if (selectedItem.typeId === 2) {
+        // 网页类型，判断是否有参数URL
+        const search = snippetsStore.snippets.search.trim()
+        // 如果存在参数且选中项有 paramUrl
+        if (search.includes(' ') && selectedItem.paramUrl) {
+          // 提取参数（第一个空格后的所有内容）
+          const params = search.substring(search.indexOf(' ') + 1).trim()
+          if (params) {
+            // 替换 {} 占位符
+            let targetUrl = selectedItem.paramUrl
+            const paramParts = params.split(/\s+/) // 多个参数使用空格分割，支持多个空格
+
+            // 查找所有 {} 占位符
+            let paramIndex = 0
+            targetUrl = targetUrl.replace(/\{.*?\}/g, () => {
+              const val = paramParts[paramIndex] || ''
+              paramIndex++
+              return val
+            })
+            window.api.openExternal(targetUrl)
+            window.api.hideWindow('search')
+            return
+          }
+        }
+
+        // 默认打开普通 URL
+        if (selectedItem.url) {
+          window.api.openExternal(selectedItem.url)
+          window.api.hideWindow('search')
+        }
+      } else if (selectedItem.typeId === 5) {
+        // 命令类型：根据当前运行状态执行/中止
+        void handleCommandEnter(selectedItem)
+      }
+    }
+  }
+
+  const scrollResultToTop = () => {
+    section.value?.scrollTo(0, 0)
+  }
+
   const handleKeyEvent = (e: KeyboardEvent) => {
     switch (e.code) {
       case 'ArrowUp': {
@@ -150,7 +199,15 @@ export default (enableKeyboard = true) => {
         e.preventDefault() // 阻止默认行为
         // 如果当前焦点在输入框
         if (snippetsStore.snippets.writeFlag) {
-          snippetsStore.setTypeFlag(true)
+          const data = snippetsStore.snippets.resultList
+          if (data.length === 0) return
+          const firstUniqueId = data[0].uniqueId
+          const itemRef = getItemRef(firstUniqueId)
+          snippetsStore.setResultFlag(true)
+          snippetsStore.setId(firstUniqueId)
+          if (itemRef) {
+            section.value?.scrollTo(0, 0)
+          }
           return
         }
         // 如果当前焦点在类型列表
@@ -216,49 +273,7 @@ export default (enableKeyboard = true) => {
         break
       }
       case 'Enter': {
-        const data = snippetsStore.snippets.resultList
-        const uniqueId = snippetsStore.snippets.selectId
-        const selectedItem = data.find((item) => item.uniqueId === uniqueId)
-        if (selectedItem) {
-          if (selectedItem.typeId === 1) {
-            // 文章类型，打开 content 窗口
-            const path = `/content/1/category/${selectedItem.categoryId}/catelog/${selectedItem.id}/article`
-            window.api.showWindowExclusive('content', path)
-          } else if (selectedItem.typeId === 2) {
-            // 网页类型，判断是否有参数URL
-            const search = snippetsStore.snippets.search.trim()
-            // 如果存在参数且选中项有 paramUrl
-            if (search.includes(' ') && selectedItem.paramUrl) {
-              // 提取参数（第一个空格后的所有内容）
-              const params = search.substring(search.indexOf(' ') + 1).trim()
-              if (params) {
-                // 替换 {} 占位符
-                let targetUrl = selectedItem.paramUrl
-                const paramParts = params.split(/\s+/) // 多个参数使用空格分割，支持多个空格
-
-                // 查找所有 {} 占位符
-                let paramIndex = 0
-                targetUrl = targetUrl.replace(/\{.*?\}/g, () => {
-                  const val = paramParts[paramIndex] || ''
-                  paramIndex++
-                  return val
-                })
-                window.api.openExternal(targetUrl)
-                window.api.hideWindow('search')
-                return
-              }
-            }
-
-            // 默认打开普通 URL
-            if (selectedItem.url) {
-              window.api.openExternal(selectedItem.url)
-              window.api.hideWindow('search')
-            }
-          } else if (selectedItem.typeId === 5) {
-            // 命令类型：根据当前运行状态执行/中止
-            void handleCommandEnter(selectedItem)
-          }
-        }
+        executeItem(snippetsStore.snippets.selectId)
         break
       }
     }
@@ -280,6 +295,8 @@ export default (enableKeyboard = true) => {
     setItemRef,
     setSectionRef,
     selectTypeById,
-    selectItemByUniqueId
+    selectItemByUniqueId,
+    executeItem,
+    scrollResultToTop
   }
 }

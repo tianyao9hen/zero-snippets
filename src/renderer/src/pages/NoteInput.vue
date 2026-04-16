@@ -123,6 +123,8 @@ $header-bg: #f9fafb;
       display: flex;
       align-items: center;
       gap: 12px;
+      flex: 1;
+      min-width: 0;
 
       .icon-wrapper {
         color: $primary-color;
@@ -176,6 +178,7 @@ $header-bg: #f9fafb;
       display: flex;
       align-items: center;
       gap: 12px;
+      flex-shrink: 0;
 
       .word-count {
         font-size: 12px;
