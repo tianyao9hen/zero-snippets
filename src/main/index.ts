@@ -1,5 +1,8 @@
 import { app } from 'electron'
+import { join } from 'path'
 import { electronApp, optimizer } from '@electron-toolkit/utils'
+
+app.setPath('userData', join(app.getPath('appData'), 'Zero Snippets'))
 import './components/window'
 import './components/ipc'
 import './components/db'

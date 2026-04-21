@@ -1,4 +1,4 @@
-import { Tray, Menu, nativeImage, app, nativeTheme } from 'electron'
+import { Tray, Menu, nativeImage, app, nativeTheme, systemPreferences } from 'electron'
 import path from 'path'
 import { menu } from './menu'
 import { showWindowExclusive } from './window'
@@ -13,8 +13,36 @@ const getTrayIconPath = (): string => {
   const baseDir = app.isPackaged
     ? path.join(process.resourcesPath, 'resources')
     : path.join(app.getAppPath(), 'resources')
-  const filename = nativeTheme.shouldUseDarkColors ? 'icon_w.png' : 'icon_d.png'
-  return path.join(baseDir, filename)
+
+  let useDarkIcon: boolean
+  if (process.platform === 'win32') {
+    type RegistryReader = (hive: string, key: string, name: string) => number | null
+    const readRegistryValueRaw = (
+      systemPreferences as unknown as { readRegistryValueRaw?: RegistryReader }
+    ).readRegistryValueRaw
+
+    let systemUsesLightTheme: number | null = null
+    if (typeof readRegistryValueRaw === 'function') {
+      try {
+        systemUsesLightTheme = readRegistryValueRaw(
+          'HKCU',
+          'Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize',
+          'SystemUsesLightTheme'
+        )
+      } catch {
+        systemUsesLightTheme = null
+      }
+    }
+
+    // SystemUsesLightTheme=1 浅色任务栏 -> 需要深色图标(icon_d)
+    // SystemUsesLightTheme=0 深色任务栏 -> 需要浅色图标(icon_w)
+    useDarkIcon =
+      systemUsesLightTheme !== null ? systemUsesLightTheme === 0 : nativeTheme.shouldUseDarkColors
+  } else {
+    useDarkIcon = nativeTheme.shouldUseDarkColors
+  }
+
+  return path.join(baseDir, useDarkIcon ? 'icon_w.png' : 'icon_d.png')
 }
 
 /**
@@ -42,7 +70,7 @@ export const createTray = () => {
   tray = new Tray(icon)
 
   // 设置悬停提示
-  tray.setToolTip('Zero Snippets')
+  tray.setToolTip(`Zero Snippets ${app.getVersion()}`)
 
   // 构建上下文菜单
   const contextMenuTemplate = menu.search || []

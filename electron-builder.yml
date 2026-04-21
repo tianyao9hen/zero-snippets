@@ -1,5 +1,5 @@
 appId: com.electron.app
-productName: zero-snippets
+productName: Zero Snippets
 compression: maximum
 # 仅保留中文和英文 locale，减少约 10-15MB（Electron 默认打包 80+ 种语言）
 electronLanguages:
@@ -22,7 +22,7 @@ extraResources:
     filter:
       - '**/*'
 win:
-  executableName: zero-snippets
+  executableName: Zero Snippets
   target:
     - nsis
 nsis:
@@ -30,7 +30,7 @@ nsis:
   shortcutName: ${productName}
   uninstallDisplayName: ${productName}
   createDesktopShortcut: always
-  deleteAppDataOnUninstall: true
+  deleteAppDataOnUninstall: false
   include: build/installer.nsh
   oneClick: false
   allowToChangeInstallationDirectory: true

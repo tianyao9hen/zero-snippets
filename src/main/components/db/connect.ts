@@ -8,7 +8,7 @@ const db = (): BetterSqlist3.Database => {
   // C:\Users\39886\AppData\Roaming\snippets\zero-snippets.db
   const file = 'zero-snippets.db'
   const appDataPath = app.getPath('appData')
-  const dbDir = join(appDataPath, 'zero-snippets')
+  const dbDir = join(appDataPath, 'Zero Snippets')
   
   if (!existsSync(dbDir)) {
     mkdirSync(dbDir, { recursive: true })

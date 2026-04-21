@@ -146,10 +146,6 @@ function dbInit() {
  * 4. note: 随手记
  */
 function initSnippetsType() {
-  // 检查是否已经初始化过，避免重复插入
-  const isInit = findOne(`select * from snippets_type`, {})
-  if (isInit) return
-
   const types: TypeEntity[] = [
     {
       id: 1,
@@ -174,16 +170,27 @@ function initSnippetsType() {
       name: 'note',
       title: '随手记',
       orderNum: 4
+    },
+    {
+      id: 5,
+      name: 'command',
+      title: '命令行',
+      orderNum: 5
     }
   ]
 
-  // 遍历并插入默认类型数据
+  // 按名称幂等插入，兼容旧版本升级后补齐新增类型
   types.forEach((type) => {
-    insert(`insert into snippets_type(name, title, order_num) values($name, $title, $orderNum)`, {
-      name: type.name,
-      title: type.title,
-      orderNum: type.orderNum
+    const existing = findOne<{ id: number }>(`select id from snippets_type where name = $name`, {
+      name: type.name
     })
+    if (!existing) {
+      insert(`insert into snippets_type(name, title, order_num) values($name, $title, $orderNum)`, {
+        name: type.name,
+        title: type.title,
+        orderNum: type.orderNum
+      })
+    }
   })
 }
 

@@ -23,6 +23,7 @@ export function createWindow(options: OptionsClass): BrowserWindow {
     Object.assign(
       {
         show: false,
+        title: 'Zero Snippets',
         frame: true,
         resizable: true,
         autoHideMenuBar: true,
