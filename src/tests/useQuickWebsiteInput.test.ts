@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { useQuickWebsiteInput } from '../renderer/src/hooks/useQuickWebsiteInput'
 import { WebTreeNodeType } from '../renderer/src/enums'
 
+// 页面消息只作为交互反馈，业务测试中用 mock 隔离。
 vi.mock('ant-design-vue', () => ({
   message: {
     success: vi.fn(),
@@ -9,6 +10,7 @@ vi.mock('ant-design-vue', () => ({
   }
 }))
 
+// 一条目录节点和一条网页节点，用于验证目录列表只暴露文件夹。
 const nodes: WebTreeNode[] = [
   {
     id: 1,

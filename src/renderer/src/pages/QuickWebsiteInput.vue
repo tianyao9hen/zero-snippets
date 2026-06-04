@@ -133,6 +133,10 @@
 </template>
 
 <script setup lang="ts">
+/**
+ * @file QuickWebsiteInput.vue
+ * @description 独立新增网站窗口页面，支持选择目录、填写网站信息、获取 favicon 并保存网站节点。
+ */
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useQuickWebsiteInput } from '@renderer/hooks/useQuickWebsiteInput'
 import { processUrl } from '@renderer/composables/urlUtils'
@@ -142,9 +146,9 @@ import {
   FaviconFetchStatus
 } from '@renderer/composables/faviconUtils'
 
-const urlInputRef = ref<HTMLInputElement>()
-const faviconStatus = ref<FaviconFetchStatus>(FaviconFetchStatus.IDLE)
-const faviconError = ref('')
+const urlInputRef = ref<HTMLInputElement>() // 网址输入框，用于窗口打开后自动聚焦
+const faviconStatus = ref<FaviconFetchStatus>(FaviconFetchStatus.IDLE) // favicon 获取状态
+const faviconError = ref('') // favicon 获取或加载失败信息
 
 const {
   folderOptions,
@@ -158,6 +162,9 @@ const {
   close
 } = useQuickWebsiteInput()
 
+/**
+ * 根据 favicon 获取状态生成界面提示文本。
+ */
 const faviconText = computed(() => {
   if (faviconStatus.value === FaviconFetchStatus.SUCCESS) return '图标获取成功'
   if (faviconStatus.value === FaviconFetchStatus.LOADING) return '正在获取图标...'
@@ -165,6 +172,7 @@ const faviconText = computed(() => {
   return '输入网址后可获取网站图标'
 })
 
+// 防抖获取 favicon，避免用户连续修改 URL 时重复触发请求。
 const debouncedFetchFavicon = createDebouncedFaviconFetcher((result) => {
   faviconStatus.value = result.status
 
@@ -180,6 +188,9 @@ const debouncedFetchFavicon = createDebouncedFaviconFetcher((result) => {
   }
 }, 500)
 
+/**
+ * 标准化 URL，并在 URL 有效时触发 favicon 获取。
+ */
 function normalizeUrlAndFetchFavicon() {
   const result = processUrl(form.value.url)
   if (!result.isValid) return
@@ -188,19 +199,31 @@ function normalizeUrlAndFetchFavicon() {
   debouncedFetchFavicon(result.url)
 }
 
+/**
+ * 网址输入框失焦时补全协议并获取 favicon。
+ */
 function handleUrlBlur() {
   normalizeUrlAndFetchFavicon()
 }
 
+/**
+ * 用户点击按钮时手动重新获取 favicon。
+ */
 function fetchFaviconManual() {
   normalizeUrlAndFetchFavicon()
 }
 
+/**
+ * 处理 favicon 图片加载失败状态。
+ */
 function handleFaviconError() {
   faviconStatus.value = FaviconFetchStatus.ERROR
   faviconError.value = '图标加载失败'
 }
 
+/**
+ * 窗口打开时尝试从剪贴板读取 URL 并自动填入表单。
+ */
 function tryFillUrlFromClipboard() {
   const text = readClipboardText()
   if (!text || !isValidUrlForClipboard(text)) return
@@ -212,6 +235,10 @@ function tryFillUrlFromClipboard() {
   }
 }
 
+/**
+ * 处理窗口级快捷键。
+ * @param event 键盘事件
+ */
 function handleKeydown(event: KeyboardEvent) {
   if (event.key === 'Escape') {
     event.preventDefault()

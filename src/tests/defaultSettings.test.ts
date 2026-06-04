@@ -2,11 +2,13 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { DEFAULT_SETTINGS, ensureDefaultSettings } from '../main/components/db/tables'
 import * as settingSql from '../main/components/db/sql/settingSql'
 
+// 只验证默认设置补齐逻辑，不触碰真实 SQLite。
 vi.mock('../main/components/db/sql/settingSql', () => ({
   getSettingByKey: vi.fn(),
   setSetting: vi.fn()
 }))
 
+// tables.ts 导入了数据库执行层，测试中需要隔离 Electron/SQLite 环境。
 vi.mock('../main/components/db/sql/index', () => ({
   createTable: vi.fn(),
   findOne: vi.fn(),

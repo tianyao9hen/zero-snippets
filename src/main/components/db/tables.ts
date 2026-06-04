@@ -1,6 +1,10 @@
 import { createTable, findOne, insert } from './sql'
 import { getSettingByKey, setSetting } from './sql/settingSql'
 
+/**
+ * 应用默认设置列表。
+ * @description 每次启动都会检查这些 key，缺失时写入默认值，用于兼容已安装旧版本的用户数据库。
+ */
 export const DEFAULT_SETTINGS = [
   {
     key: 'shortcut.showSnippets',
@@ -642,6 +646,9 @@ export function ensureDefaultSettings(): void {
   }
 }
 
+/**
+ * 启动初始化默认设置入口。
+ */
 function initDefaultSettings(): void {
   ensureDefaultSettings()
 }
