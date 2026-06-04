@@ -39,15 +39,26 @@
       </div>
       <div class="setting-item">
         <label class="setting-label">AccessKey Secret</label>
-        <input
-          v-model="accessKeySecret"
-          type="password"
-          class="setting-input"
-          placeholder="Secret..."
-          @change="
-            saveSetting(SettingKey.OSS_ACCESS_KEY_SECRET, accessKeySecret, 'OSS AccessKey Secret')
-          "
-        />
+        <div class="secret-input-wrap">
+          <input
+            v-model="accessKeySecret"
+            :type="showAccessKeySecret ? 'text' : 'password'"
+            class="setting-input secret-input"
+            placeholder="Secret..."
+            @change="
+              saveSetting(SettingKey.OSS_ACCESS_KEY_SECRET, accessKeySecret, 'OSS AccessKey Secret')
+            "
+          />
+          <button
+            type="button"
+            class="secret-toggle"
+            :aria-label="showAccessKeySecret ? '隐藏 AccessKey Secret' : '显示 AccessKey Secret'"
+            data-test="toggle-access-key-secret"
+            @click="toggleAccessKeySecretVisibility"
+          >
+            {{ showAccessKeySecret ? '隐藏' : '显示' }}
+          </button>
+        </div>
       </div>
       <div class="setting-item">
         <label class="setting-label">存储目录前缀（可选）</label>
@@ -82,6 +93,7 @@ const accessKeyId = ref('')
 const accessKeySecret = ref('')
 const pathPrefix = ref('')
 const saveError = ref('')
+const showAccessKeySecret = ref(false)
 
 onMounted(async () => {
   if (!settingStore.isLoaded) {
@@ -96,6 +108,13 @@ function loadSettings() {
   accessKeyId.value = settingStore.getSetting(SettingKey.OSS_ACCESS_KEY_ID) || ''
   accessKeySecret.value = settingStore.getSetting(SettingKey.OSS_ACCESS_KEY_SECRET) || ''
   pathPrefix.value = settingStore.getSetting(SettingKey.OSS_PATH_PREFIX) || ''
+}
+
+/**
+ * 切换 AccessKey Secret 输入框明文显示状态。
+ */
+function toggleAccessKeySecretVisibility() {
+  showAccessKeySecret.value = !showAccessKeySecret.value
 }
 
 async function saveSetting(key: string, value: string, remark: string) {
@@ -133,5 +152,18 @@ async function saveSetting(key: string, value: string, remark: string) {
 
 .setting-input:hover {
   @apply border-slate-400;
+}
+
+.secret-input-wrap {
+  @apply flex w-full max-w-md;
+}
+
+.secret-input {
+  @apply rounded-r-none;
+}
+
+.secret-toggle {
+  @apply px-3 py-2 border border-l-0 border-slate-300 rounded-r text-sm text-slate-600 bg-slate-50;
+  @apply hover:bg-slate-100 hover:text-slate-800 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500;
 }
 </style>
