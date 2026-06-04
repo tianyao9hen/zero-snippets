@@ -9,14 +9,14 @@
         <input
           v-model="shortcutValue"
           class="shortcut-input"
-          :class="{ 'is-recording': isRecording, 'is-error': hasError }"
-          :placeholder="isRecording ? '按下快捷键...' : '点击设置快捷键'"
+          :class="{ 'is-recording': snippetsIsRecording, 'is-error': snippetsHasError }"
+          :placeholder="snippetsIsRecording ? '按下快捷键...' : '点击设置快捷键'"
           readonly
-          @focus="startRecording"
-          @blur="stopRecording"
-          @keydown.prevent="handleKeyDown"
+          @focus="snippetsRecorder.startRecording"
+          @blur="snippetsRecorder.stopRecording"
+          @keydown.prevent="snippetsRecorder.handleKeyDown"
         />
-        <span v-if="hasError" class="error-hint">无效快捷键</span>
+        <span v-if="snippetsHasError" class="error-hint">无效快捷键</span>
       </div>
 
       <div class="setting-item">
@@ -24,14 +24,14 @@
         <input
           v-model="noteShortcutValue"
           class="shortcut-input"
-          :class="{ 'is-recording': isRecordingNote, 'is-error': hasErrorNote }"
-          :placeholder="isRecordingNote ? '按下快捷键...' : '点击设置快捷键'"
+          :class="{ 'is-recording': noteIsRecording, 'is-error': noteHasError }"
+          :placeholder="noteIsRecording ? '按下快捷键...' : '点击设置快捷键'"
           readonly
-          @focus="startRecordingNote"
-          @blur="stopRecordingNote"
-          @keydown.prevent="handleKeyDownNote"
+          @focus="noteRecorder.startRecording"
+          @blur="noteRecorder.stopRecording"
+          @keydown.prevent="noteRecorder.handleKeyDown"
         />
-        <span v-if="hasErrorNote" class="error-hint">无效快捷键</span>
+        <span v-if="noteHasError" class="error-hint">无效快捷键</span>
       </div>
     </div>
   </div>
@@ -40,6 +40,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useSettingStore } from '@renderer/store/settingStore'
+import { useShortcutRecorder } from '@renderer/hooks/useShortcutRecorder'
 
 const settingStore = useSettingStore()
 import { SettingKey } from '@renderer/enums/index'
@@ -47,29 +48,21 @@ import { SettingKey } from '@renderer/enums/index'
 
 
 const shortcutValue = ref('')
-const isRecording = ref(false)
-const hasError = ref(false)
-
 const noteShortcutValue = ref('')
-const isRecordingNote = ref(false)
-const hasErrorNote = ref(false)
 
-const MODIFIER_KEYS = ['Control', 'Shift', 'Alt']
-const FORBIDDEN_KEYS = [' ', 'Enter', 'Delete', 'Tab', 'Escape', 'Backspace']
-const ALLOWED_FUNCTION_KEYS = [
-  'F1',
-  'F2',
-  'F3',
-  'F4',
-  'F5',
-  'F6',
-  'F7',
-  'F8',
-  'F9',
-  'F10',
-  'F11',
-  'F12'
-]
+const snippetsRecorder = useShortcutRecorder(async (value) => {
+  shortcutValue.value = value
+  await saveShortcut(value)
+})
+const snippetsIsRecording = snippetsRecorder.isRecording
+const snippetsHasError = snippetsRecorder.hasError
+
+const noteRecorder = useShortcutRecorder(async (value) => {
+  noteShortcutValue.value = value
+  await saveNoteShortcut(value)
+})
+const noteIsRecording = noteRecorder.isRecording
+const noteHasError = noteRecorder.hasError
 
 onMounted(async () => {
   await settingStore.loadSettings()
@@ -80,99 +73,12 @@ onMounted(async () => {
   noteShortcutValue.value = savedNoteValue || 'F2'
 })
 
-function startRecording() {
-  isRecording.value = true
-  hasError.value = false
-}
-
-function stopRecording() {
-  isRecording.value = false
-}
-
-function startRecordingNote() {
-  isRecordingNote.value = true
-  hasErrorNote.value = false
-}
-
-function stopRecordingNote() {
-  isRecordingNote.value = false
-}
-
-function parseKeyEvent(event: KeyboardEvent): { key: string; error: boolean } {
-  const keys: string[] = []
-
-  if (event.ctrlKey) keys.push('Ctrl')
-  if (event.shiftKey) keys.push('Shift')
-  if (event.altKey) keys.push('Alt')
-
-  const key = event.key
-
-  if (FORBIDDEN_KEYS.includes(key)) {
-    return { key: '', error: true }
-  }
-
-  if (MODIFIER_KEYS.includes(key)) {
-    return { key: '', error: false } // Just modifier pressed
-  }
-
-  let mainKey = key
-  if (key.length === 1) {
-    mainKey = key.toUpperCase()
-  } else if (!ALLOWED_FUNCTION_KEYS.includes(key)) {
-    return { key: '', error: true }
-  }
-
-  keys.push(mainKey)
-
-  if (
-    keys.length === 1 &&
-    !ALLOWED_FUNCTION_KEYS.includes(keys[0]) &&
-    !/^[A-Z0-9]$/.test(keys[0])
-  ) {
-    return { key: '', error: true }
-  }
-
-  return { key: keys.join('+'), error: false }
-}
-
-async function handleKeyDown(event: KeyboardEvent) {
-  event.preventDefault()
-  const result = parseKeyEvent(event)
-
-  if (result.error) {
-    hasError.value = true
-    return
-  }
-  if (!result.key) return
-
-  shortcutValue.value = result.key
-  isRecording.value = false
-  hasError.value = false
-  await saveShortcut(result.key)
-}
-
-async function handleKeyDownNote(event: KeyboardEvent) {
-  event.preventDefault()
-  const result = parseKeyEvent(event)
-
-  if (result.error) {
-    hasErrorNote.value = true
-    return
-  }
-  if (!result.key) return
-
-  noteShortcutValue.value = result.key
-  isRecordingNote.value = false
-  hasErrorNote.value = false
-  await saveNoteShortcut(result.key)
-}
-
 async function saveShortcut(value: string) {
   try {
     await settingStore.setSetting(SettingKey.SHORTCUT_KEY, value, '唤起快捷键')
     await window.api.reloadShortcut()
   } catch (error) {
-    hasError.value = true
+    snippetsHasError.value = true
     console.error('保存快捷键失败:', error)
   }
 }
@@ -182,7 +88,7 @@ async function saveNoteShortcut(value: string) {
     await settingStore.setSetting(SettingKey.SHORTCUT_NOTE_KEY, value, '随手记快捷键')
     await window.api.reloadShortcut()
   } catch (error) {
-    hasErrorNote.value = true
+    noteHasError.value = true
     console.error('保存随手记快捷键失败:', error)
   }
 }
