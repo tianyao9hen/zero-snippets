@@ -1,5 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
+import { nextTick } from 'vue'
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 import NoteEditModal from '../../renderer/src/components/content/notes/NoteEditModal.vue'
 
 vi.mock('@bytemd/vue-next', () => ({
@@ -11,7 +14,32 @@ vi.mock('@bytemd/vue-next', () => ({
   },
   Viewer: {
     props: ['value'],
-    template: '<div class="bytemd-viewer">{{ value }}</div>'
+    computed: {
+      tasks() {
+        return String(this.value)
+          .split(/\r?\n/)
+          .map((line) => line.match(/^\s*(?:[-+*]|\d+[.)])\s+\[([ xX])\]\s+(.*)$/))
+          .filter(Boolean)
+          .map((match) => ({
+            checked: String(match[1]).toLowerCase() === 'x',
+            text: match[2]
+          }))
+      }
+    },
+    template: `
+      <div class="bytemd-viewer">
+        <label v-for="(task, index) in tasks" :key="index" class="task-list-item">
+          <input
+            class="task-list-item-checkbox"
+            type="checkbox"
+            :checked="task.checked"
+            disabled
+          />
+          {{ task.text }}
+        </label>
+        <span class="raw-markdown">{{ value }}</span>
+      </div>
+    `
   }
 }))
 
@@ -84,5 +112,52 @@ describe('NoteEditModal.vue', () => {
       noteType: 2
     })
     expect(localStorage.getItem('quick-note-edit-draft:1')).toBeNull()
+  })
+
+  it('enables markdown task checkboxes in preview mode', async () => {
+    const wrapper = mount(NoteEditModal, { props: { note: baseNote } })
+    await nextTick()
+    await nextTick()
+
+    const checkbox = wrapper.find<HTMLInputElement>('input[type="checkbox"]')
+    expect(checkbox.exists()).toBe(true)
+    expect(checkbox.element.disabled).toBe(false)
+  })
+
+  it('silently saves checked markdown tasks from preview mode', async () => {
+    const wrapper = mount(NoteEditModal, { props: { note: baseNote } })
+    await nextTick()
+    await nextTick()
+
+    await wrapper.find<HTMLInputElement>('input[type="checkbox"]').setValue(true)
+
+    expect(wrapper.emitted('silentSave')?.[0][0]).toMatchObject({
+      id: 1,
+      note: '- [x] Todo item'
+    })
+  })
+
+  it('silently saves unchecked markdown tasks from preview mode', async () => {
+    const wrapper = mount(NoteEditModal, {
+      props: { note: { ...baseNote, note: '- [x] Todo item' } }
+    })
+    await nextTick()
+    await nextTick()
+
+    await wrapper.find<HTMLInputElement>('input[type="checkbox"]').setValue(false)
+
+    expect(wrapper.emitted('silentSave')?.[0][0]).toMatchObject({
+      id: 1,
+      note: '- [ ] Todo item'
+    })
+  })
+
+  it('keeps edit modal above the fixed note toolbar', () => {
+    const source = readFileSync(
+      resolve(__dirname, '../../renderer/src/components/content/notes/NoteEditModal.vue'),
+      'utf8'
+    )
+
+    expect(source).toMatch(/\.edit-modal\s*\{[\s\S]*z-index:\s*(1000[1-9]|100[1-9]\d+|10[1-9]\d{2,}|\d{6,})/)
   })
 })

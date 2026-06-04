@@ -29,7 +29,8 @@ defineEmits<{
 
 const types = [
   { value: NoteType.WORK, label: '工作', cls: 'work' },
-  { value: NoteType.LIVE, label: '日常', cls: 'live' },
+  { value: NoteType.REPORT, label: '报表', cls: 'report' },
+  { value: NoteType.LIVE, label: '生活', cls: 'live' },
   { value: NoteType.TODO, label: 'TODO', cls: 'todo' }
 ]
 
@@ -82,6 +83,10 @@ $text-secondary: #6b7280;
       background: #dcfce7;
     }
 
+    &.report {
+      background: #fae8ff;
+    }
+
     &.todo {
       background: #ffedd5;
     }
@@ -115,6 +120,10 @@ $text-secondary: #6b7280;
 
     &.live.active {
       color: #15803d;
+    }
+
+    &.report.active {
+      color: #a21caf;
     }
 
     &.todo.active {

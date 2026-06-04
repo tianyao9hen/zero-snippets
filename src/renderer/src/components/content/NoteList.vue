@@ -163,7 +163,8 @@ const searchInputRef = ref<HTMLInputElement | null>(null)
 
 const noteTypeOptions = [
   { value: NoteType.WORK, label: '工作', cls: 'work' },
-  { value: NoteType.LIVE, label: '日常', cls: 'live' },
+  { value: NoteType.REPORT, label: '报表', cls: 'report' },
+  { value: NoteType.LIVE, label: '生活', cls: 'live' },
   { value: NoteType.TODO, label: 'TODO', cls: 'todo' }
 ]
 
@@ -512,6 +513,12 @@ $card-bg: #ffffff; // White
     background: #dcfce7;
     color: #15803d;
     border-color: #bbf7d0;
+  }
+
+  &.report.active {
+    background: #fae8ff;
+    color: #a21caf;
+    border-color: #f5d0fe;
   }
 
   &.todo.active {

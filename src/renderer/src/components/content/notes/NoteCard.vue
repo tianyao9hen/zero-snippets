@@ -3,6 +3,7 @@
     class="note-card group"
     :class="{
       'type-work': note.noteType === NoteType.WORK,
+      'type-report': note.noteType === NoteType.REPORT,
       'type-live': note.noteType === NoteType.LIVE,
       'type-todo': note.noteType === NoteType.TODO
     }"
@@ -13,6 +14,7 @@
       class="type-badge"
       :class="{
         work: note.noteType === NoteType.WORK,
+        report: note.noteType === NoteType.REPORT,
         live: note.noteType === NoteType.LIVE,
         todo: note.noteType === NoteType.TODO
       }"
@@ -140,6 +142,10 @@ $shadow-md:
     border-color: #22c55e; // Green 500，与角标 live 一致
   }
 
+  &.type-report:hover {
+    border-color: #c026d3; // Fuchsia 600，与角标 report 一致
+  }
+
   &.type-todo:hover {
     border-color: #f97316; // Orange 500，与角标 todo 一致
   }
@@ -165,6 +171,11 @@ $shadow-md:
     &.live {
       background-color: #22c55e; // Green 500
       border: 2px solid #dcfce7; // Green 100 ring
+    }
+
+    &.report {
+      background-color: #c026d3; // Fuchsia 600
+      border: 2px solid #fae8ff; // Fuchsia 50 ring
     }
 
     &.todo {

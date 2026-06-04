@@ -94,6 +94,7 @@
           :key="editorKey"
           v-model="localNote.note"
           :mode="editorMode"
+          @task-toggle="handleTaskToggle"
         />
       </div>
     </div>
@@ -220,6 +221,16 @@ const handleSave = () => {
 }
 
 /**
+ * 处理展示模式 TODO 勾选并立即静默保存。
+ *
+ * @param note 最新 Markdown 内容
+ */
+const handleTaskToggle = (note: string) => {
+  localNote.value.note = note
+  emit('silentSave', { ...localNote.value })
+}
+
+/**
  * 取消编辑。
  */
 const handleCancel = () => {
@@ -262,7 +273,7 @@ $border-color: #e5e7eb;
 .edit-modal {
   position: fixed;
   inset: 0;
-  z-index: 50;
+  z-index: 10010;
   display: flex;
   align-items: center;
   justify-content: center;

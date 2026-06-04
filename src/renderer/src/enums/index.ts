@@ -15,10 +15,12 @@ export enum WebTreeNodeType {
 export enum NoteType {
   /** 工作随手记 */
   WORK = 0,
-  /** 日常随手记 */
+  /** 生活随手记 */
   LIVE = 1,
   /** TODO 待办 */
-  TODO = 2
+  TODO = 2,
+  /** 报表随手记 */
+  REPORT = 3
 }
 
 /**

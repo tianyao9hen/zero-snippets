@@ -108,7 +108,7 @@ describe('NoteList.vue', () => {
   it('filters notes by multiple selected categories', async () => {
     const notes = [
       { id: 1, typeId: 4, noteType: 0, name: '工作记录', note: 'Content', createTime: new Date().toISOString() },
-      { id: 2, typeId: 4, noteType: 1, name: '日常记录', note: 'Content 2', createTime: new Date().toISOString() },
+      { id: 2, typeId: 4, noteType: 1, name: '生活记录', note: 'Content 2', createTime: new Date().toISOString() },
       { id: 3, typeId: 4, noteType: 2, name: 'TODO 记录', note: 'Content 3', createTime: new Date().toISOString() }
     ]
     mockApi.listAllNote.mockResolvedValue(notes)
@@ -120,12 +120,12 @@ describe('NoteList.vue', () => {
     await wrapper.find('[title="搜索随手记"]').trigger('click')
     const chips = wrapper.findAll('.search-chip')
     await chips[0].trigger('click')
-    await chips[2].trigger('click')
+    await chips[3].trigger('click')
 
     expect(wrapper.findAll('.note-card')).toHaveLength(2)
     expect(wrapper.text()).toContain('工作记录')
     expect(wrapper.text()).toContain('TODO 记录')
-    expect(wrapper.text()).not.toContain('日常记录')
+    expect(wrapper.text()).not.toContain('生活记录')
   })
 
   it('renders empty state when no notes', async () => {
