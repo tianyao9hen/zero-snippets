@@ -1,31 +1,69 @@
-import { ref, onMounted, onBeforeUnmount, computed } from 'vue'
-// import { debounce } from '../composables/debounceUtils'
+import { ref, onMounted, onBeforeUnmount, computed, watch } from 'vue'
 import { NoteType } from '../enums'
+import { emitNoteListChanged } from '@renderer/composables/noteEvents'
 
+const DRAFT_KEY = 'quick-note-draft'
+
+interface QuickNoteDraft {
+  title: string // 草稿标题
+  content: string // 草稿内容
+  noteType: NoteType // 草稿类型
+}
+
+/**
+ * 管理随手记输入窗口的表单状态、草稿和保存行为。
+ * @returns 随手记输入窗口需要绑定的状态和操作
+ */
 export function useNoteInput() {
   const content = ref('')
-  const title = ref('') // 新增标题 ref
+  const title = ref('')
   const noteType = ref<NoteType>(NoteType.WORK)
   const isSaving = ref(false)
   const lastSavedTime = ref<string>('')
 
-  // 字数统计
-  const wordCount = computed(() => {
-    return content.value.length
-  })
+  const wordCount = computed(() => content.value.length)
 
   /**
-   * 关闭窗口
+   * 关闭随手记输入窗口。
    */
   const close = () => {
     window.api.hideWindow('note')
   }
 
   /**
-   * 保存笔记
+   * 持久化当前未保存草稿。
+   */
+  const persistDraft = () => {
+    const draft: QuickNoteDraft = {
+      title: title.value,
+      content: content.value,
+      noteType: noteType.value
+    }
+    localStorage.setItem(DRAFT_KEY, JSON.stringify(draft))
+  }
+
+  /**
+   * 清理已保存的草稿。
+   */
+  const clearDraft = () => {
+    localStorage.removeItem(DRAFT_KEY)
+  }
+
+  /**
+   * 重置输入窗口表单。
+   */
+  const resetForm = () => {
+    content.value = ''
+    title.value = ''
+    noteType.value = NoteType.WORK
+  }
+
+  /**
+   * 保存当前随手记内容。
+   * @returns 保存是否成功
    */
   const save = async () => {
-    if (!content.value.trim()) return
+    if (!content.value.trim()) return false
 
     isSaving.value = true
     const note = {
@@ -38,66 +76,66 @@ export function useNoteInput() {
     try {
       await window.api.addNote(note)
       lastSavedTime.value = new Date().toLocaleTimeString()
-      // 注意：这里我们不再清空内容和关闭窗口，而是作为“保存草稿”或“提交”的行为
-      // 如果是快捷键提交（Ctrl+Enter），通常期望关闭窗口。
-      // 如果是自动保存，则不关闭。
-      // 这里我们区分一下：save() 方法仅做保存。
+      emitNoteListChanged()
+      return true
     } catch (error) {
       console.error('Save failed:', error)
+      return false
     } finally {
       isSaving.value = false
     }
   }
 
   /**
-   * 提交并关闭 (用于 Ctrl+Enter 或点击保存按钮)
+   * 提交随手记并在保存成功后关闭窗口。
    */
   const submit = async () => {
     if (!content.value.trim()) {
       close()
       return
     }
-    await save()
-    content.value = ''
-    close()
-  }
 
-  /**
-   * 自动保存 (防抖)
-   */
-  // const autoSave = debounce(async () => {
-  //   if (content.value.trim()) {
-  //     await save()
-  //   }
-  // }, 2000)
-
-  /**
-   * 处理内容变更
-   */
-  const handleContentChange = (val: string) => {
-    content.value = val
-    // 触发自动保存
-    // autoSave() // 暂时禁用自动保存新增记录，因为每次 addNote 都会新增一条。
-    // 对于随手记，通常是“写完保存关闭”。如果需要自动保存草稿，需要更复杂的逻辑（更新同一条草稿）。
-    // 根据需求 "NoteInput 需支持实时保存草稿"，这里简化为：暂存到 localStorage 或者 既然是 addNote，那就不自动 add，而是 wait for submit.
-    // 但需求说 "支持实时保存草稿"，可能是指不会丢。
-    // 鉴于 NoteInput 是 "随手记输入窗口"，通常是暂态的。
-    // 我们先实现手动保存/提交。如果需求强烈暗示“草稿”，我们可以存 localStorage。
-    localStorage.setItem('quick-note-draft', val)
-  }
-
-  /**
-   * 恢复草稿
-   */
-  const restoreDraft = () => {
-    const draft = localStorage.getItem('quick-note-draft')
-    if (draft) {
-      content.value = draft
+    const saved = await save()
+    if (saved) {
+      resetForm()
+      clearDraft()
+      close()
     }
   }
 
   /**
-   * 键盘事件：阻止已处理按键的默认行为与冒泡，避免生产环境下被其它逻辑或系统处理
+   * 同步编辑器内容变化。
+   * @param val 最新的 Markdown 内容
+   */
+  const handleContentChange = (val: string) => {
+    content.value = val
+  }
+
+  /**
+   * 恢复未保存草稿。
+   */
+  const restoreDraft = () => {
+    const rawDraft = localStorage.getItem(DRAFT_KEY)
+    if (!rawDraft) {
+      resetForm()
+      return
+    }
+
+    try {
+      const draft = JSON.parse(rawDraft) as Partial<QuickNoteDraft>
+      title.value = draft.title || ''
+      content.value = draft.content || ''
+      noteType.value = draft.noteType ?? NoteType.WORK
+    } catch {
+      title.value = ''
+      content.value = rawDraft
+      noteType.value = NoteType.WORK
+    }
+  }
+
+  /**
+   * 处理输入窗口快捷键。
+   * @param e 键盘事件
    */
   const handleKeydown = (e: KeyboardEvent) => {
     if (e.key === 'Escape') {
@@ -109,7 +147,6 @@ export function useNoteInput() {
       e.preventDefault()
       e.stopPropagation()
       submit()
-      localStorage.removeItem('quick-note-draft')
     }
   }
 
@@ -121,6 +158,8 @@ export function useNoteInput() {
   onBeforeUnmount(() => {
     window.removeEventListener('keydown', handleKeydown)
   })
+
+  watch([title, content, noteType], persistDraft, { flush: 'sync' })
 
   return {
     content,

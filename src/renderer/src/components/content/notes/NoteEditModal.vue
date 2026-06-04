@@ -81,7 +81,20 @@
         </div>
       </div>
       <div class="modal-body">
-        <NoteEditor ref="editorRef" :key="editorKey" v-model="localNote.note" />
+        <button
+          class="mode-toggle"
+          type="button"
+          :title="editorMode === 'preview' ? '切换到编辑模式' : '切换到展示模式'"
+          @click="toggleEditorMode"
+        >
+          <span>{{ editorMode === 'preview' ? '编辑' : '展示' }}</span>
+        </button>
+        <NoteEditor
+          ref="editorRef"
+          :key="editorKey"
+          v-model="localNote.note"
+          :mode="editorMode"
+        />
       </div>
     </div>
   </div>
@@ -93,30 +106,98 @@ import NoteEditor from './NoteEditor.vue'
 import NoteTypeSwitch from './NoteTypeSwitch.vue'
 import { NoteEntity } from '@renderer/composables/noteGrouping'
 
+const EDIT_DRAFT_PREFIX = 'quick-note-edit-draft:'
+
 const props = defineProps<{
-  note: NoteEntity
+  note: NoteEntity // 当前编辑的随手记
 }>()
 
 const emit = defineEmits<{
+  /** 保存随手记 */
   (e: 'save', note: NoteEntity): void
+  /** 静默保存随手记 */
   (e: 'silentSave', note: NoteEntity): void
+  /** 取消编辑 */
   (e: 'cancel'): void
 }>()
 
+/**
+ * 获取指定随手记的编辑草稿键。
+ * @param id 随手记 ID
+ * @returns 草稿存储键
+ */
+const getDraftKey = (id: number) => `${EDIT_DRAFT_PREFIX}${id}`
+
+/**
+ * 恢复指定随手记的编辑草稿。
+ * @param note 原始随手记
+ * @returns 合并草稿后的随手记
+ */
+const restoreEditDraft = (note: NoteEntity): NoteEntity => {
+  const rawDraft = localStorage.getItem(getDraftKey(note.id))
+  if (!rawDraft) return { ...note }
+
+  try {
+    return { ...note, ...JSON.parse(rawDraft) }
+  } catch {
+    localStorage.removeItem(getDraftKey(note.id))
+    return { ...note }
+  }
+}
+
 const editorRef = ref<InstanceType<typeof NoteEditor> | null>(null)
-const localNote = ref<NoteEntity>({ ...props.note })
+const localNote = ref<NoteEntity>(restoreEditDraft(props.note))
 const isMaximized = ref(false)
 const editorKey = ref(0)
+const editorMode = ref<'preview' | 'edit'>('preview')
 
+/**
+ * 持久化当前编辑草稿。
+ */
+const persistEditDraft = () => {
+  if (!localNote.value.id) return
+  localStorage.setItem(
+    getDraftKey(localNote.value.id),
+    JSON.stringify({
+      name: localNote.value.name,
+      note: localNote.value.note,
+      noteType: localNote.value.noteType
+    })
+  )
+}
+
+/**
+ * 清理当前编辑草稿。
+ */
+const clearEditDraft = () => {
+  if (!localNote.value.id) return
+  localStorage.removeItem(getDraftKey(localNote.value.id))
+}
+
+/**
+ * 切换弹窗最大化状态。
+ */
 const toggleMaximize = () => {
   isMaximized.value = !isMaximized.value
   editorKey.value++
 }
 
+/**
+ * 切换展示模式和编辑模式。
+ */
+const toggleEditorMode = () => {
+  editorMode.value = editorMode.value === 'preview' ? 'edit' : 'preview'
+  editorKey.value++
+  if (editorMode.value === 'edit') {
+    nextTick(() => editorRef.value?.focus())
+  }
+}
+
 watch(
   () => props.note,
   (newVal) => {
-    localNote.value = { ...newVal }
+    localNote.value = restoreEditDraft(newVal)
+    editorMode.value = 'preview'
   },
   { deep: true }
 )
@@ -128,15 +209,27 @@ watch(
   }
 )
 
+watch(localNote, persistEditDraft, { deep: true })
+
+/**
+ * 保存当前编辑内容。
+ */
 const handleSave = () => {
+  clearEditDraft()
   emit('save', { ...localNote.value })
 }
 
+/**
+ * 取消编辑。
+ */
 const handleCancel = () => {
   emit('cancel')
 }
 
-// Keyboard shortcuts：阻止已处理按键的默认行为与冒泡，避免生产环境下被其它逻辑或系统处理
+/**
+ * 处理编辑弹窗快捷键。
+ * @param e 键盘事件
+ */
 const handleKeydown = (e: KeyboardEvent) => {
   if (e.key === 'Escape') {
     e.preventDefault()
@@ -152,9 +245,6 @@ const handleKeydown = (e: KeyboardEvent) => {
 
 onMounted(() => {
   window.addEventListener('keydown', handleKeydown)
-  nextTick(() => {
-    editorRef.value?.focus()
-  })
 })
 
 onBeforeUnmount(() => {
@@ -163,12 +253,11 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped lang="scss">
-// Variables
-$primary-color: #3b82f6; // Blue 500
+$primary-color: #3b82f6;
 $card-bg: #ffffff;
-$text-main: #1f2937; // Gray 800
-$text-secondary: #6b7280; // Gray 500
-$border-color: #e5e7eb; // Gray 200
+$text-main: #1f2937;
+$text-secondary: #6b7280;
+$border-color: #e5e7eb;
 
 .edit-modal {
   position: fixed;
@@ -207,128 +296,135 @@ $border-color: #e5e7eb; // Gray 200
       height: 100vh;
       border-radius: 0;
     }
+  }
 
-    .modal-header {
-      padding: 12px 24px;
-      border-bottom: 1px solid $border-color;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #ffffff;
+  .modal-header {
+    padding: 12px 24px;
+    border-bottom: 1px solid $border-color;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #ffffff;
+  }
 
-      .header-left {
-        display: flex;
-        align-items: center;
-        flex: 1;
-        gap: 12px;
-        min-width: 0;
+  .header-left {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    gap: 12px;
+    min-width: 0;
+  }
 
-        .icon-wrapper {
-          color: $primary-color;
-          display: flex;
-          align-items: center;
-        }
+  .icon-wrapper {
+    color: $primary-color;
+    display: flex;
+    align-items: center;
+  }
 
-        .title-input {
-          flex: 1;
-          font-size: 18px;
-          font-weight: 600;
-          color: $text-main;
-          background: transparent;
-          border: none;
-          outline: none;
-          min-width: 0;
+  .title-input {
+    flex: 1;
+    font-size: 18px;
+    font-weight: 600;
+    color: $text-main;
+    background: transparent;
+    border: none;
+    outline: none;
+    min-width: 0;
 
-          &::placeholder {
-            color: #9ca3af;
-          }
-        }
-      }
+    &::placeholder {
+      color: #9ca3af;
+    }
+  }
 
-      .header-right {
-        display: flex;
-        align-items: center;
-        gap: 16px;
-        margin-left: 16px;
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-left: 16px;
+  }
 
-        .btn-maximize {
-          background: transparent;
-          border: none;
-          color: $text-secondary;
-          cursor: pointer;
-          padding: 4px;
-          border-radius: 4px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          transition: all 0.2s;
+  .btn-maximize,
+  .btn-close {
+    background: transparent;
+    border: none;
+    color: $text-secondary;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
 
-          &:hover {
-            background: #f3f4f6;
-            color: $text-main;
-          }
-        }
+    &:hover {
+      background: #f3f4f6;
+      color: $text-main;
+    }
+  }
 
-        .btn-save {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          background: $primary-color;
-          color: white;
-          border: none;
-          border-radius: 6px;
-          padding: 6px 16px;
-          font-size: 14px;
-          font-weight: 500;
-          cursor: pointer;
-          transition: all 0.2s;
-          box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  .btn-save {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: $primary-color;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 
-          &:hover {
-            background: #2563eb;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-          }
-
-          &:active {
-            transform: translateY(0);
-          }
-
-          kbd {
-            font-family: inherit;
-            font-size: 11px;
-            background: rgba(255, 255, 255, 0.2);
-            padding: 2px 6px;
-            border-radius: 4px;
-          }
-        }
-
-        .btn-close {
-          background: transparent;
-          border: none;
-          color: $text-secondary;
-          cursor: pointer;
-          padding: 4px;
-          border-radius: 4px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          transition: all 0.2s;
-
-          &:hover {
-            background: #f3f4f6;
-            color: $text-main;
-          }
-        }
-      }
+    &:hover {
+      background: #2563eb;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
 
-    .modal-body {
-      flex: 1;
-      overflow: hidden;
-      :deep(.bytemd) {
-        height: 100%;
-      }
+    &:active {
+      transform: translateY(0);
+    }
+
+    kbd {
+      font-family: inherit;
+      font-size: 11px;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+  }
+
+  .modal-body {
+    position: relative;
+    flex: 1;
+    overflow: hidden;
+
+    :deep(.bytemd) {
+      height: 100%;
+    }
+  }
+
+  .mode-toggle {
+    position: absolute;
+    top: 10px;
+    right: 14px;
+    z-index: 3;
+    height: 28px;
+    padding: 0 10px;
+    border: 1px solid $border-color;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.92);
+    color: $text-secondary;
+    cursor: pointer;
+    font-size: 12px;
+    line-height: 28px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+
+    &:hover {
+      color: $text-main;
+      background: #f9fafb;
     }
   }
 }

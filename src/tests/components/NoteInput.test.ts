@@ -1,8 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import NoteInput from '../../renderer/src/pages/NoteInput.vue'
+import { emitNoteListChanged } from '../../renderer/src/composables/noteEvents'
 
-// Mock window.api
+vi.mock('../../renderer/src/composables/noteEvents', () => ({
+  emitNoteListChanged: vi.fn()
+}))
+
 const mockApi = {
   addNote: vi.fn(),
   hideWindow: vi.fn()
@@ -10,62 +14,93 @@ const mockApi = {
 
 global.window.api = mockApi as any
 
-// Mock Bytemd component since it might be heavy or fail in jsdom
-vi.mock('../../renderer/src/components/content/article/Bytemd.vue', () => ({
-  default: {
-    template: '<div class="bytemd-mock"></div>',
-    props: ['articleContent'],
-    emits: ['contentEdit']
-  }
-}))
+const flushPromises = () => new Promise((resolve) => setTimeout(resolve, 0))
 
 describe('NoteInput.vue', () => {
+  const mountNoteInput = () =>
+    mount(NoteInput, {
+      global: {
+        stubs: {
+          NoteTypeSwitch: {
+            props: ['modelValue'],
+            emits: ['update:modelValue'],
+            template: '<button class="note-type-switch" @click="$emit(`update:modelValue`, 2)">type</button>'
+          },
+          NoteEditor: {
+            props: ['modelValue'],
+            emits: ['update:modelValue'],
+            template:
+              '<textarea class="note-editor-stub" :value="modelValue" @input="$emit(`update:modelValue`, $event.target.value)" />'
+          }
+        }
+      }
+    })
+
   beforeEach(() => {
     vi.clearAllMocks()
-    // Reset mock implementation
+    localStorage.clear()
     mockApi.addNote.mockResolvedValue(1)
   })
 
   it('renders correctly', async () => {
-    const wrapper = mount(NoteInput)
-    await new Promise((resolve) => setTimeout(resolve, 0))
+    const wrapper = mountNoteInput()
     await wrapper.vm.$nextTick()
 
-    expect(wrapper.text()).toContain('随手记')
-    expect(wrapper.find('.editor-container')).exists()
-  })
-
-  it('updates content and word count', async () => {
-    const wrapper = mount(NoteInput)
-    await wrapper.setData({ content: 'Hello World' }) // Note: content is ref, but vue-test-utils might need setData or direct vm modification for composables if exposed.
-    // Wait, content is inside useNoteInput. We can trigger Bytemd emit.
-
-    const bytemd = wrapper.findComponent({ name: 'Bytemd' })
-    if (bytemd.exists()) {
-      await bytemd.vm.$emit('contentEdit', 'Hello World')
-      expect(wrapper.vm.wordCount).toBe(11) // This might fail if wordCount is not exposed on vm directly (setup syntax). But template uses it, so it should be reactive.
-      expect(wrapper.text()).toContain('11 字')
-    }
+    expect(wrapper.find('.title-input').exists()).toBe(true)
+    expect(wrapper.find('.note-editor-stub').exists()).toBe(true)
   })
 
   it('calls save api on submit', async () => {
-    const wrapper = mount(NoteInput)
-    // Set content
-    const bytemd = wrapper.findComponent({ name: 'Bytemd' })
-    if (bytemd.exists()) {
-      await bytemd.vm.$emit('contentEdit', 'Test Note')
-      await wrapper.find('.btn.primary').trigger('click')
-      expect(mockApi.addNote).toHaveBeenCalled()
-      expect(mockApi.addNote.mock.calls[0][0]).toMatchObject({
+    const wrapper = mountNoteInput()
+    await wrapper.find('.note-editor-stub').setValue('Test Note')
+    await wrapper.find('.btn.primary').trigger('click')
+    await flushPromises()
+
+    expect(mockApi.addNote).toHaveBeenCalledWith(
+      expect.objectContaining({
         note: 'Test Note',
         typeId: 4
       })
-    }
+    )
   })
 
   it('calls close api on cancel', async () => {
-    const wrapper = mount(NoteInput)
+    const wrapper = mountNoteInput()
     await wrapper.find('.btn.text').trigger('click')
+
     expect(mockApi.hideWindow).toHaveBeenCalledWith('note')
+  })
+
+  it('clears draft and emits note list changed after successful submit', async () => {
+    localStorage.setItem(
+      'quick-note-draft',
+      JSON.stringify({ title: 'Draft title', content: 'Draft content', noteType: 2 })
+    )
+
+    const wrapper = mountNoteInput()
+    await wrapper.find('.note-editor-stub').setValue('Saved content')
+    await wrapper.find('.btn.primary').trigger('click')
+    await flushPromises()
+
+    expect(mockApi.addNote).toHaveBeenCalledWith(
+      expect.objectContaining({ note: 'Saved content', typeId: 4 })
+    )
+    expect(localStorage.getItem('quick-note-draft')).toBeNull()
+    expect(emitNoteListChanged).toHaveBeenCalledTimes(1)
+  })
+
+  it('keeps draft when closing without saving', async () => {
+    const wrapper = mountNoteInput()
+
+    await wrapper.find('.title-input').setValue('Unsubmitted title')
+    await wrapper.find('.note-editor-stub').setValue('Unsubmitted content')
+    await wrapper.find('.btn.text').trigger('click')
+
+    expect(mockApi.hideWindow).toHaveBeenCalledWith('note')
+    expect(JSON.parse(localStorage.getItem('quick-note-draft') || '{}')).toMatchObject({
+      title: 'Unsubmitted title',
+      content: 'Unsubmitted content',
+      noteType: 0
+    })
   })
 })

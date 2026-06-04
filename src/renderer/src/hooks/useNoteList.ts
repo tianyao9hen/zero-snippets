@@ -1,4 +1,5 @@
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { onNoteListChanged } from '@renderer/composables/noteEvents'
 
 export function useNoteList() {
   const notes = ref<NoteEntity[]>([])
@@ -10,6 +11,7 @@ export function useNoteList() {
   const pageSize = 20
   const hasMore = ref(true)
   const displayNotes = ref<NoteEntity[]>([])
+  let stopListeningNoteListChanged: (() => void) | null = null
 
   /**
    * 加载更多
@@ -118,6 +120,11 @@ export function useNoteList() {
 
   onMounted(() => {
     loadNotes()
+    stopListeningNoteListChanged = onNoteListChanged(loadNotes)
+  })
+
+  onBeforeUnmount(() => {
+    stopListeningNoteListChanged?.()
   })
 
   return {

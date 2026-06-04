@@ -69,11 +69,6 @@ const editorRef = ref()
 const { content, title, noteType, isSaving, handleContentChange, submit, close } = useNoteInput()
 
 onMounted(() => {
-  // Set default title
-  if (!title.value) {
-    title.value = new Date().toLocaleString()
-  }
-
   // Focus on editor content area
   // We need to wait for Bytemd to mount
   setTimeout(() => {
