@@ -10,10 +10,12 @@ import { getWindowByName } from './window'
 // 设置表中存储唤起快捷键的 key
 const SHORTCUT_KEY = 'shortcut.showSnippets'
 const SHORTCUT_NOTE_KEY = 'shortcut.showNote'
+const SHORTCUT_QUICK_WEBSITE_KEY = 'shortcut.showQuickWebsite'
 
 // 当前注册的快捷键
 let currentAccelerator: string | null = null
 let currentNoteAccelerator: string | null = null
+let currentQuickWebsiteAccelerator: string | null = null
 
 /**
  * 初始化快捷键
@@ -29,6 +31,10 @@ export async function initShortcut(): Promise<void> {
     const noteSetting = await getSettingByKey(SHORTCUT_NOTE_KEY)
     const noteAccelerator = noteSetting?.value || 'F2'
     await registerNoteShortcut(noteAccelerator)
+
+    const quickWebsiteSetting = await getSettingByKey(SHORTCUT_QUICK_WEBSITE_KEY)
+    const quickWebsiteAccelerator = quickWebsiteSetting?.value || 'F3'
+    await registerQuickWebsiteShortcut(quickWebsiteAccelerator)
   } catch (error) {
     console.error('初始化快捷键失败:', error)
   }
@@ -81,6 +87,27 @@ async function registerNoteShortcut(accelerator: string): Promise<boolean> {
 }
 
 /**
+ * 注册新增网站快捷键
+ */
+async function registerQuickWebsiteShortcut(accelerator: string): Promise<boolean> {
+  if (currentQuickWebsiteAccelerator) {
+    globalShortcut.unregister(currentQuickWebsiteAccelerator)
+  }
+
+  const success = globalShortcut.register(accelerator, () => {
+    toggleQuickWebsiteWindow()
+  })
+
+  if (success) {
+    currentQuickWebsiteAccelerator = accelerator
+  } else {
+    console.error(`新增网站快捷键注册失败: ${accelerator}`)
+  }
+
+  return success
+}
+
+/**
  * 切换搜索窗口显示/隐藏
  */
 function toggleSearchWindow(): void {
@@ -117,6 +144,24 @@ function toggleNoteWindow(): void {
 }
 
 /**
+ * 切换新增网站窗口显示/隐藏
+ */
+function toggleQuickWebsiteWindow(): void {
+  try {
+    const win = getWindowByName('quickWebsite')
+
+    if (win.isVisible()) {
+      win.hide()
+    } else {
+      win.show()
+      win.focus()
+    }
+  } catch (error) {
+    console.error('切换新增网站窗口失败:', error)
+  }
+}
+
+/**
  * 重新加载快捷键
  * 设置变更时调用，重新从数据库读取并注册
  */
@@ -132,6 +177,13 @@ export async function reloadShortcut(): Promise<void> {
       await registerNoteShortcut(noteSetting.value)
     } else {
       await registerNoteShortcut('F2')
+    }
+
+    const quickWebsiteSetting = await getSettingByKey(SHORTCUT_QUICK_WEBSITE_KEY)
+    if (quickWebsiteSetting?.value) {
+      await registerQuickWebsiteShortcut(quickWebsiteSetting.value)
+    } else {
+      await registerQuickWebsiteShortcut('F3')
     }
   } catch (error) {
     console.error('重新加载快捷键失败:', error)
@@ -155,4 +207,5 @@ export function unregisterAllShortcuts(): void {
   globalShortcut.unregisterAll()
   currentAccelerator = null
   currentNoteAccelerator = null
+  currentQuickWebsiteAccelerator = null
 }

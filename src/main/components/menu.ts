@@ -59,5 +59,6 @@ export const menu: Record<WindowNameType, Electron.MenuItemConstructorOptions[] 
   search: mainMenu,
   content: null,
   note: null,
-  commandLog: null
+  commandLog: null,
+  quickWebsite: null
 }

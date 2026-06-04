@@ -69,6 +69,23 @@ export const window: Record<WindowNameType, WindowClass> = {
       // openDevTools: true,
       path: '/command-log'
     }
+  },
+  quickWebsite: {
+    id: 14,
+    options: {
+      width: 760,
+      height: 560,
+      center: true,
+      resizable: true,
+      frame: false,
+      transparent: true,
+      autoHideMenuBar: true,
+      alwaysOnTop: true,
+      skipTaskbar: true,
+      // openDevTools: true,
+      initShow: true,
+      path: '/quick-website-input'
+    }
   }
 }
 
@@ -171,7 +188,7 @@ export const showWindowExclusive = async (
   // 1. 先隐藏其他所有窗口
   ;(Object.keys(window) as WindowNameType[]).forEach((winName) => {
     // NoteInput 与 CommandLog 窗口在其他窗口切换时保持独立，不随之隐藏
-    const isStickyWindow = winName === 'note' || winName === 'commandLog'
+    const isStickyWindow = winName === 'note' || winName === 'commandLog' || winName === 'quickWebsite'
     if (winName !== name && !isStickyWindow) {
       hideWindow(winName)
     }

@@ -14,7 +14,7 @@ type WindowClass = {
 }
 
 // 窗口名称类型
-type WindowNameType = 'search' | 'content' | 'note' | 'commandLog'
+type WindowNameType = 'search' | 'content' | 'note' | 'commandLog' | 'quickWebsite'
 
 type SqlActionType = 'findAll' | 'findOne' | 'insert' | 'update' | 'del'
 

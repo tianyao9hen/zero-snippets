@@ -5,6 +5,7 @@ import Snippets from '@renderer/pages/Snippets.vue'
 import Content from '@renderer/pages/Content.vue'
 import CommandLog from '@renderer/pages/CommandLog.vue'
 import NoteInput from '@renderer/pages/NoteInput.vue'
+import QuickWebsiteInput from '@renderer/pages/QuickWebsiteInput.vue'
 // 子页面按需懒加载，减小初始 bundle（含 bytemd、antd 等重型组件）
 const routes: RouteRecordRaw[] = [
   {
@@ -15,6 +16,11 @@ const routes: RouteRecordRaw[] = [
     path: '/note-input',
     name: 'note-input',
     component: NoteInput
+  },
+  {
+    path: '/quick-website-input',
+    name: 'quick-website-input',
+    component: QuickWebsiteInput
   },
   {
     path: '/snippets',

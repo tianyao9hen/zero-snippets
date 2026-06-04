@@ -40,6 +40,8 @@ export enum SettingKey {
   SHORTCUT_KEY = 'shortcut.showSnippets',
   /** 随手记展示快捷键 */
   SHORTCUT_NOTE_KEY = 'shortcut.showNote',
+  /** 新增网站窗口展示快捷键 */
+  SHORTCUT_QUICK_WEBSITE_KEY = 'shortcut.showQuickWebsite',
   /** 阿里云OSS accessKeyId */
   OSS_ACCESS_KEY_ID = 'oss.accessKeyId',
   /** 阿里云OSS accessKeySecret */

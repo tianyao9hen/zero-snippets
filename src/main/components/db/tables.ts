@@ -1,6 +1,29 @@
 import { createTable, findOne, insert } from './sql'
 import { getSettingByKey, setSetting } from './sql/settingSql'
 
+export const DEFAULT_SETTINGS = [
+  {
+    key: 'shortcut.showSnippets',
+    value: 'F1',
+    remark: '唤起快捷键：显示/隐藏 snippet 搜索窗口'
+  },
+  {
+    key: 'shortcut.showNote',
+    value: 'F2',
+    remark: '唤起快捷键：显示/隐藏 随手记窗口'
+  },
+  {
+    key: 'shortcut.showQuickWebsite',
+    value: 'F3',
+    remark: '唤起快捷键：显示/隐藏 新增网站窗口'
+  },
+  {
+    key: 'note.groupingMode',
+    value: '1',
+    remark: '随手记分组模式'
+  }
+] as const
+
 /**
  * 初始化数据库表结构
  *
@@ -610,29 +633,15 @@ function initSnippetsCommand() {
  * 初始化默认设置
  * 在应用启动时调用，确保必要的默认设置存在
  */
-function initDefaultSettings(): void {
-  const defaultSettings = [
-    {
-      key: 'shortcut.showSnippets',
-      value: 'F1',
-      remark: '唤起快捷键：显示/隐藏 snippet 搜索窗口'
-    },
-    {
-      key: 'shortcut.showNote',
-      value: 'F2',
-      remark: '唤起快捷键：显示/隐藏 随手记窗口'
-    },
-    {
-      key: 'note.groupingMode',
-      value: '1',
-      remark: '随手记分组模式'
-    }
-  ]
-
-  for (const setting of defaultSettings) {
+export function ensureDefaultSettings(): void {
+  for (const setting of DEFAULT_SETTINGS) {
     const existing = getSettingByKey(setting.key)
     if (!existing) {
       setSetting(setting.key, setting.value, setting.remark)
     }
   }
+}
+
+function initDefaultSettings(): void {
+  ensureDefaultSettings()
 }

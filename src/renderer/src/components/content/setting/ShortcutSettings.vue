@@ -33,6 +33,21 @@
         />
         <span v-if="noteHasError" class="error-hint">无效快捷键</span>
       </div>
+
+      <div class="setting-item">
+        <label class="setting-label">新增网站快捷键</label>
+        <input
+          v-model="quickWebsiteShortcutValue"
+          class="shortcut-input"
+          :class="{ 'is-recording': quickWebsiteIsRecording, 'is-error': quickWebsiteHasError }"
+          :placeholder="quickWebsiteIsRecording ? '按下快捷键...' : '点击设置快捷键'"
+          readonly
+          @focus="quickWebsiteRecorder.startRecording"
+          @blur="quickWebsiteRecorder.stopRecording"
+          @keydown.prevent="quickWebsiteRecorder.handleKeyDown"
+        />
+        <span v-if="quickWebsiteHasError" class="error-hint">无效快捷键</span>
+      </div>
     </div>
   </div>
 </template>
@@ -49,6 +64,7 @@ import { SettingKey } from '@renderer/enums/index'
 
 const shortcutValue = ref('')
 const noteShortcutValue = ref('')
+const quickWebsiteShortcutValue = ref('')
 
 const snippetsRecorder = useShortcutRecorder(async (value) => {
   shortcutValue.value = value
@@ -64,6 +80,13 @@ const noteRecorder = useShortcutRecorder(async (value) => {
 const noteIsRecording = noteRecorder.isRecording
 const noteHasError = noteRecorder.hasError
 
+const quickWebsiteRecorder = useShortcutRecorder(async (value) => {
+  quickWebsiteShortcutValue.value = value
+  await saveQuickWebsiteShortcut(value)
+})
+const quickWebsiteIsRecording = quickWebsiteRecorder.isRecording
+const quickWebsiteHasError = quickWebsiteRecorder.hasError
+
 onMounted(async () => {
   await settingStore.loadSettings()
   const savedValue = settingStore.getSetting(SettingKey.SHORTCUT_KEY)
@@ -71,6 +94,9 @@ onMounted(async () => {
 
   const savedNoteValue = settingStore.getSetting(SettingKey.SHORTCUT_NOTE_KEY)
   noteShortcutValue.value = savedNoteValue || 'F2'
+
+  const savedQuickWebsiteValue = settingStore.getSetting(SettingKey.SHORTCUT_QUICK_WEBSITE_KEY)
+  quickWebsiteShortcutValue.value = savedQuickWebsiteValue || 'F3'
 })
 
 async function saveShortcut(value: string) {
@@ -90,6 +116,20 @@ async function saveNoteShortcut(value: string) {
   } catch (error) {
     noteHasError.value = true
     console.error('保存随手记快捷键失败:', error)
+  }
+}
+
+async function saveQuickWebsiteShortcut(value: string) {
+  try {
+    await settingStore.setSetting(
+      SettingKey.SHORTCUT_QUICK_WEBSITE_KEY,
+      value,
+      '新增网站快捷键'
+    )
+    await window.api.reloadShortcut()
+  } catch (error) {
+    quickWebsiteHasError.value = true
+    console.error('保存新增网站快捷键失败:', error)
   }
 }
 </script>
