@@ -111,7 +111,7 @@ const PRESET_TEMPLATES: Record<string, Omit<CommandEntity, 'id' | 'createTime'>>
     type: 'mongodb',
     basePath: 'D:/mongodb/mongodb-win32-x86_64-windows-8.0.4/bin',
     command: 'mongod --config ..\\conf\\mongodb.conf',
-    stopCommand: 'mongod --shutdown --config ../conf/mongodb.conf',
+    stopCommand: 'taskkill /F /FI "IMAGENAME eq mongod.exe"',
     shortcut: 'mongo',
     allowUnified: false,
     orderNum: 0,

@@ -1,6 +1,13 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { DEFAULT_SETTINGS, ensureDefaultSettings } from '../main/components/db/tables'
+import {
+  DEFAULT_SETTINGS,
+  ensureDefaultCommandMigrations,
+  ensureDefaultSettings,
+  MONGODB_NEW_STOP_COMMAND,
+  MONGODB_OLD_STOP_COMMAND
+} from '../main/components/db/tables'
 import * as settingSql from '../main/components/db/sql/settingSql'
+import * as dbSql from '../main/components/db/sql/index'
 
 // 只验证默认设置补齐逻辑，不触碰真实 SQLite。
 vi.mock('../main/components/db/sql/settingSql', () => ({
@@ -11,6 +18,7 @@ vi.mock('../main/components/db/sql/settingSql', () => ({
 // tables.ts 导入了数据库执行层，测试中需要隔离 Electron/SQLite 环境。
 vi.mock('../main/components/db/sql/index', () => ({
   createTable: vi.fn(),
+  edit: vi.fn(),
   findOne: vi.fn(),
   insert: vi.fn()
 }))
@@ -59,5 +67,30 @@ describe('ensureDefaultSettings', () => {
       quickWebsiteSetting.value,
       quickWebsiteSetting.remark
     )
+  })
+})
+
+describe('ensureDefaultCommandMigrations', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  it('updates old MongoDB default stop command to the new taskkill command', () => {
+    ensureDefaultCommandMigrations()
+
+    expect(dbSql.edit).toHaveBeenCalledWith(expect.stringContaining('update snippets_command'), {
+      type: 'mongodb',
+      oldStopCommand: MONGODB_OLD_STOP_COMMAND,
+      newStopCommand: MONGODB_NEW_STOP_COMMAND
+    })
+  })
+
+  it('only migrates MongoDB commands that still use the old default stop command', () => {
+    ensureDefaultCommandMigrations()
+
+    const [sql] = vi.mocked(dbSql.edit).mock.calls[0]
+
+    expect(sql).toContain('type = $type')
+    expect(sql).toContain('stop_command = $oldStopCommand')
   })
 })

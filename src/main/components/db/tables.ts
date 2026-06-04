@@ -1,5 +1,8 @@
-import { createTable, findOne, insert } from './sql'
+import { createTable, edit, findOne, insert } from './sql'
 import { getSettingByKey, setSetting } from './sql/settingSql'
+
+export const MONGODB_OLD_STOP_COMMAND = 'mongod --shutdown --config ../conf/mongodb.conf'
+export const MONGODB_NEW_STOP_COMMAND = 'taskkill /F /FI "IMAGENAME eq mongod.exe"'
 
 /**
  * 应用默认设置列表。
@@ -161,6 +164,7 @@ function dbInit() {
   initSnippetsNotes()
   initDefaultSettings()
   initSnippetsCommand()
+  ensureDefaultCommandMigrations()
 }
 
 /**
@@ -552,7 +556,7 @@ function initSnippetsCommand() {
       type: 'mongodb',
       basePath: 'D:/mongodb/mongodb-win32-x86_64-windows-8.0.4/bin',
       command: 'mongod --config ../conf/mongodb.conf',
-      stopCommand: 'taskkill /F /FI "IMAGENAME eq mongod.exe"',
+      stopCommand: MONGODB_NEW_STOP_COMMAND,
       shortcut: 'mongo',
       allowUnified: 0,
       orderNum: 80,
@@ -644,6 +648,25 @@ export function ensureDefaultSettings(): void {
       setSetting(setting.key, setting.value, setting.remark)
     }
   }
+}
+
+/**
+ * @description 迁移预置命令默认值，仅替换仍使用旧默认值的记录，避免覆盖用户自定义配置。
+ */
+export function ensureDefaultCommandMigrations(): void {
+  edit(
+    `
+    update snippets_command
+    set stop_command = $newStopCommand
+    where type = $type
+      and stop_command = $oldStopCommand
+    `,
+    {
+      type: 'mongodb',
+      oldStopCommand: MONGODB_OLD_STOP_COMMAND,
+      newStopCommand: MONGODB_NEW_STOP_COMMAND
+    }
+  )
 }
 
 /**
