@@ -40,13 +40,17 @@ describe('ArticleSettings.vue', () => {
 
     expect(input.attributes('type')).toBe('password')
     expect(input.element.value).toBe('secret-value')
+    expect(toggle.text()).toBe('')
+    expect(toggle.attributes('aria-label')).toContain('AccessKey Secret')
 
     await toggle.trigger('click')
     expect(input.attributes('type')).toBe('text')
     expect(input.element.value).toBe('secret-value')
+    expect(toggle.text()).toBe('')
 
     await toggle.trigger('click')
     expect(input.attributes('type')).toBe('password')
     expect(input.element.value).toBe('secret-value')
+    expect(toggle.text()).toBe('')
   })
 })

@@ -6,8 +6,9 @@
         <span class="path" :title="selectedFolder.path">{{ selectedFolder.path }}</span>
       </div>
       <div class="actions no-drag">
-        <button class="btn primary" :disabled="isSaving" title="保存" @click="submit">
-          {{ isSaving ? '保存中...' : '保存' }}
+        <button class="btn primary" :disabled="isSaving" title="保存 (Ctrl+Enter)" @click="submit">
+          <span>{{ isSaving ? '保存中...' : '保存' }}</span>
+          <kbd>Ctrl+Enter</kbd>
         </button>
         <button class="btn icon" title="关闭" aria-label="关闭" @click="close">
           <svg
@@ -29,21 +30,77 @@
 
     <main class="quick-website-body no-drag">
       <aside class="folder-panel">
-        <div class="panel-title">选择目录</div>
+        <div class="panel-title">
+          <span>选择目录</span>
+          <span v-if="visibleFolderOptions.length" class="panel-count">{{
+            visibleFolderOptions.length
+          }}</span>
+        </div>
         <div v-if="isLoading" class="empty">加载中...</div>
-        <template v-else>
-          <button
-            v-for="folder in folderOptions"
+        <div v-else class="folder-tree" role="tree">
+          <div
+            v-for="folder in visibleFolderOptions"
             :key="folder.id"
-            class="folder-item"
-            :class="{ active: selectedParentId === folder.id }"
-            :style="{ paddingLeft: `${12 + folder.level * 14}px` }"
-            :title="folder.path"
-            @click="selectedParentId = folder.id"
+            class="folder-row"
+            :class="{
+              active: selectedParentId === folder.id,
+              child: folder.level > 0,
+              leaf: !folder.hasChildren
+            }"
+            :style="{ '--level': folder.level }"
+            role="treeitem"
+            :aria-level="folder.level + 1"
+            :aria-expanded="folder.hasChildren ? expandedFolderIds.has(folder.id) : undefined"
           >
-            <span class="folder-name">{{ folder.title }}</span>
-          </button>
-        </template>
+            <button
+              v-if="folder.hasChildren"
+              type="button"
+              class="folder-toggle"
+              :class="{ expanded: expandedFolderIds.has(folder.id) }"
+              :aria-label="expandedFolderIds.has(folder.id) ? '收起目录' : '展开目录'"
+              :data-test="`folder-toggle-${folder.id}`"
+              @click.stop="toggleFolderExpanded(folder.id)"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                width="14"
+                height="14"
+                stroke="currentColor"
+                stroke-width="2.4"
+                fill="none"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </button>
+            <span v-else class="folder-leaf-dot" aria-hidden="true"></span>
+
+            <button
+              type="button"
+              class="folder-button"
+              :title="folder.path"
+              @click="selectedParentId = folder.id"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                width="16"
+                height="16"
+                stroke="currentColor"
+                stroke-width="2"
+                fill="none"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M3 7a2 2 0 0 1 2-2h5l2 2h7a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+              </svg>
+              <span class="folder-name">{{ folder.title }}</span>
+              <span v-if="folder.children.length" class="folder-count">{{ folder.children.length }}</span>
+            </button>
+          </div>
+        </div>
       </aside>
 
       <section class="form-panel">
@@ -151,16 +208,35 @@ const faviconStatus = ref<FaviconFetchStatus>(FaviconFetchStatus.IDLE) // favico
 const faviconError = ref('') // favicon 获取或加载失败信息
 
 const {
-  folderOptions,
+  folderTree,
+  expandedFolderIds,
   selectedParentId,
   selectedFolder,
   form,
   isLoading,
   isSaving,
   loadTree,
+  toggleFolderExpanded,
   submit,
   close
 } = useQuickWebsiteInput()
+
+const visibleFolderOptions = computed(() => {
+  const folders: (typeof folderTree.value)[number][] = []
+
+  /**
+   * 按展开状态收集当前可见的目录节点。
+   * @param folder 当前目录节点
+   */
+  function visit(folder: (typeof folderTree.value)[number]) {
+    folders.push(folder)
+    if (!expandedFolderIds.value.has(folder.id)) return
+    folder.children.forEach(visit)
+  }
+
+  folderTree.value.forEach(visit)
+  return folders
+})
 
 /**
  * 根据 favicon 获取状态生成界面提示文本。
@@ -172,7 +248,6 @@ const faviconText = computed(() => {
   return '输入网址后可获取网站图标'
 })
 
-// 防抖获取 favicon，避免用户连续修改 URL 时重复触发请求。
 const debouncedFetchFavicon = createDebouncedFaviconFetcher((result) => {
   faviconStatus.value = result.status
 
@@ -320,13 +395,18 @@ onUnmounted(() => {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 6px;
   cursor: pointer;
 }
 
 .btn.primary {
-  min-width: 68px;
+  min-width: 118px;
   background: #2563eb;
   color: #ffffff;
+}
+
+.btn.primary:hover:not(:disabled) {
+  background: #1d4ed8;
 }
 
 .btn.primary:disabled {
@@ -334,11 +414,24 @@ onUnmounted(() => {
   cursor: not-allowed;
 }
 
+.btn.primary kbd {
+  padding: 1px 4px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.22);
+  font-family: inherit;
+  font-size: 10px;
+}
+
 .btn.icon {
   width: 32px;
   padding: 0;
   background: transparent;
   color: #64748b;
+}
+
+.btn.icon:hover {
+  background: rgba(15, 23, 42, 0.06);
+  color: #0f172a;
 }
 
 .quick-website-body {
@@ -357,37 +450,156 @@ onUnmounted(() => {
 
 .panel-title {
   padding: 6px 8px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   font-size: 12px;
   font-weight: 600;
   color: #64748b;
 }
 
-.folder-item {
-  width: 100%;
+.panel-count {
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.folder-tree {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.folder-row {
+  --level: 0;
+  position: relative;
+  min-height: 34px;
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  align-items: center;
+  padding-left: calc(var(--level) * 18px);
+}
+
+.folder-row.child::before {
+  content: '';
+  position: absolute;
+  left: calc((var(--level) * 18px) + 10px);
+  top: -4px;
+  bottom: -4px;
+  width: 1px;
+  background: #dbe3ef;
+}
+
+.folder-row.child::after {
+  content: '';
+  position: absolute;
+  left: calc((var(--level) * 18px) + 10px);
+  top: 17px;
+  width: 11px;
+  height: 1px;
+  background: #dbe3ef;
+}
+
+.folder-toggle,
+.folder-leaf-dot {
+  position: relative;
+  z-index: 1;
+  width: 22px;
+  height: 22px;
+}
+
+.folder-toggle {
+  border: 0;
+  padding: 0;
+  border-radius: 5px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: #64748b;
+  cursor: pointer;
+  transition:
+    background 0.16s,
+    color 0.16s;
+}
+
+.folder-toggle:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.folder-toggle svg {
+  transition: transform 0.16s ease;
+}
+
+.folder-toggle.expanded svg {
+  transform: rotate(90deg);
+}
+
+.folder-leaf-dot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.folder-leaf-dot::before {
+  content: '';
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #cbd5e1;
+}
+
+.folder-button {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
   height: 32px;
   display: flex;
   align-items: center;
+  gap: 8px;
   border: 0;
-  border-radius: 6px;
+  border-radius: 7px;
+  padding: 0 8px;
   background: transparent;
   color: #334155;
   text-align: left;
   cursor: pointer;
 }
 
-.folder-item:hover {
+.folder-button:hover {
   background: #eef2f7;
 }
 
-.folder-item.active {
-  background: #dbeafe;
-  color: #1d4ed8;
+.folder-row.active .folder-button {
+  background: #2563eb;
+  color: #ffffff;
+  box-shadow: 0 1px 2px rgba(37, 99, 235, 0.22);
 }
 
 .folder-name {
+  min-width: 0;
+  flex: 1;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.folder-count {
+  flex-shrink: 0;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #e2e8f0;
+  color: #64748b;
+  font-size: 11px;
+}
+
+.folder-row.active .folder-count {
+  background: rgba(255, 255, 255, 0.22);
+  color: #ffffff;
 }
 
 .form-panel {

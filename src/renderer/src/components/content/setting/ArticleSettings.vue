@@ -56,7 +56,38 @@
             data-test="toggle-access-key-secret"
             @click="toggleAccessKeySecretVisibility"
           >
-            {{ showAccessKeySecret ? '隐藏' : '显示' }}
+            <svg
+              v-if="showAccessKeySecret"
+              viewBox="0 0 24 24"
+              width="18"
+              height="18"
+              stroke="currentColor"
+              stroke-width="2"
+              fill="none"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M17.94 17.94A10.94 10.94 0 0 1 12 20C7 20 2.73 16.89 1 12a12.36 12.36 0 0 1 3.06-4.54"></path>
+              <path d="M9.9 4.24A10.77 10.77 0 0 1 12 4c5 0 9.27 3.11 11 8a12.43 12.43 0 0 1-1.62 2.74"></path>
+              <line x1="1" y1="1" x2="23" y2="23"></line>
+              <path d="M14.12 14.12A3 3 0 0 1 9.88 9.88"></path>
+            </svg>
+            <svg
+              v-else
+              viewBox="0 0 24 24"
+              width="18"
+              height="18"
+              stroke="currentColor"
+              stroke-width="2"
+              fill="none"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
           </button>
         </div>
       </div>
@@ -81,9 +112,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { useSettingStore } from '@renderer/store/settingStore'
+import { onMounted, ref } from 'vue'
 import { SettingKey } from '@renderer/enums'
+import { useSettingStore } from '@renderer/store/settingStore'
 
 const settingStore = useSettingStore()
 
@@ -159,11 +190,12 @@ async function saveSetting(key: string, value: string, remark: string) {
 }
 
 .secret-input {
-  @apply rounded-r-none;
+  @apply flex-1 rounded-r-none min-w-0;
 }
 
 .secret-toggle {
-  @apply px-3 py-2 border border-l-0 border-slate-300 rounded-r text-sm text-slate-600 bg-slate-50;
-  @apply hover:bg-slate-100 hover:text-slate-800 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500;
+  @apply w-10 flex-shrink-0 border border-l-0 border-slate-300 rounded-r text-slate-500 bg-slate-50;
+  @apply inline-flex items-center justify-center hover:bg-slate-100 hover:text-slate-800;
+  @apply focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500;
 }
 </style>
